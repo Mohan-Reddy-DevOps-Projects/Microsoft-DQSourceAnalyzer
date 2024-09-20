@@ -10,6 +10,7 @@ from azure.storage.filedatalake import DataLakeServiceClient
 from azure.identity import DefaultAzureCredential
 import pyarrowfs_adlgen2
 import pyarrow
+import pyarrow.dataset as ds
 
 class ADLSGen2Request(BaseModel):
     account_name: str
@@ -59,29 +60,67 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     def get_table_schema(account_name, file_system_name, directory_path):
         credential = DefaultAzureCredential()
         try:
-            azfs = AzureBlobFileSystem(account_name=account_name, 
-                                    container_name=file_system_name, 
-                                    credential=credential)
-        
-            adls_dir_path = f"{file_system_name}/{directory_path}"
-            all_paths = azfs.find(adls_dir_path)
-            first_parquet_file = None
-            for file_path in all_paths:
-                if file_path.endswith(".parquet"):
-                    first_parquet_file = file_path
-                    break  # Stop searching as soon as the first Parquet file is found
-
-            if not first_parquet_file:
-                return({"status": "error", "message": "No Parquet files found in the specified directory"})
-
-            handler=pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name,credential=credential)
+            handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
             fs = pyarrow.fs.PyFileSystem(handler)
-            with fs.open_input_file(first_parquet_file) as file:
-                    parquet_schema = pq.read_schema(file)
-            # Extract schema as a list of dictionaries
-            schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in parquet_schema]
-            # Return the schema
-            return {"status": "success", "schema": schema_list}
+            full_path = f"{file_system_name}/{directory_path}"
 
+            dataset = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive")
+            parquet_schema = dataset.schema
+
+            schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in parquet_schema]
+            if not schema_list:
+                return {"status": "error", "message": "The specified directory is empty or does not exist."}
+            else:
+                return {"status": "success", "schema": schema_list}
+        
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+        
+
+class ADLSGen2FormatDetector(BaseModel):
+    account_name: str      # Storage account name
+    file_system_name: str  # Container name
+    directory_path: str    # Path to the directory
+
+    def detect_format(account_name, file_system_name, directory_path) -> str:
+        """
+        Detect the format of the directory (Delta or Parquet) on ADLS Gen2.
+        Returns:
+            - "delta": If the directory is in Delta format.
+            - "parquet": If the directory is in Parquet format.
+            - "unsupportedFormat": If neither format is detected.
+        """
+        try:
+            credential = DefaultAzureCredential()
+            handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
+            fs = pyarrow.fs.PyFileSystem(handler)
+
+            full_path = f"{file_system_name}/{directory_path}"
+            
+            # Try to detect Delta format
+            try:
+                fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
+                delta_table = DeltaTable(full_path, file_system=fs)
+                # If no error, it's a Delta format
+                return {"status": "success", "format": "delta" }
+            except Exception:
+                # Not a Delta format, proceed to check for Parquet
+                pass
+            # Try to detect Parquet format
+            try:
+                # Attempt to read the directory as a Parquet dataset
+                dataset = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive")
+                parquet_schema = dataset.schema
+                schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in parquet_schema]
+                if not schema_list:
+                    return {"status": "error", "message": "The specified directory is empty or does not exist."}
+                else:    
+                # If no error, it's a Parquet format
+                    return {"status": "success", "format": "parquet" }
+            except Exception:
+                # Not a Parquet format either
+                pass
+            # If neither format is detected
+            return {"status": "success", "format": "unsupportedFormat" }
         except Exception as e:
             return {"status": "error", "message": str(e)}

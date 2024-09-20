@@ -10,7 +10,7 @@ import pyodbc
 from src.DatabricksUnityCatalog import DatabricksUnityCatalogSchemaRequest, DatabricksUnityCatalogRequest
 from src.Snowflakedw import SnowflakeDWRequest, SnowflakeDWSchemaRequest
 from src.GoogleBigQuery import GoogleBigQueryRequest, GoogleBigQuerySchemaRequest
-from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest
+from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest,ADLSGen2FormatDetector
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 # Load the environment variables from the .env file into the application
 load_dotenv() 
@@ -114,6 +114,17 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
 @app.post("/adlsgen2-getparquetschema")
 async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
     result = ADLSGen2ParquetSchemaRequest.get_table_schema(
+        schema_request.account_name,
+        schema_request.file_system_name,
+        schema_request.directory_path
+    )
+    if result["status"] == "error":
+        raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+@app.post("/adlsgen2-getFormat")
+async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
+    result = ADLSGen2FormatDetector.detect_format(
         schema_request.account_name,
         schema_request.file_system_name,
         schema_request.directory_path
