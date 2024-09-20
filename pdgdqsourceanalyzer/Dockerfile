@@ -1,0 +1,41 @@
+FROM python:3.12.6
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . /app
+
+# Install required dependencies and utilities
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    libaio1 \
+    unixodbc \
+    unixodbc-dev \
+    libsasl2-modules-gssapi-mit  # Install the missing dependency
+
+COPY drivers/simbaspark_2.8.2.1013-2_amd64.deb /tmp/
+
+# Install the Databricks ODBC driver
+#https://www.databricks.com/spark/odbc-drivers-archive#deb
+RUN dpkg -i /tmp/simbaspark_2.8.2.1013-2_amd64.deb && \
+    rm -f /tmp/simbaspark_2.8.2.1013-2_amd64.deb
+
+    # Set up ODBC driver configuration
+RUN echo "[Simba Spark ODBC Driver]" > /etc/odbcinst.ini && \
+    echo "Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so" >> /etc/odbcinst.ini
+
+# Add SQL Server ODBC Driver 18 for Ubuntu
+# Update repository and key handling for ODBC Driver 18
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 mssql-tools && \
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && \
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+
+EXPOSE 8000
+
+ENTRYPOINT ["/bin/bash","./startup.sh"]

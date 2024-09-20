@@ -1,0 +1,14 @@
+pyodbc==5.1.0
+delta-lake-reader[azure]==0.2.16
+pyarrowfs-adlgen2==0.2.5
+adlfs==2023.12.0
+fastapi[all]==0.115.0
+fastapi-utils==0.7.0
+python-dotenv==1.0.1
+applicationinsights==0.11.10
+azure-identity==1.17.1
+azure-storage-file-datalake==12.17.0
+snowflake-connector-python[pandas]==3.12.2
+google-cloud-bigquery==3.25.0
+numpy==1.26.4
+pandas==1.5.3
