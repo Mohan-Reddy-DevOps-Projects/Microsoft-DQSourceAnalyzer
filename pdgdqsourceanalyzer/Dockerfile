@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/cbl-mariner/base/python:3
+FROM python:3.12.6
 
 ENV ENVIRONMENT=DEV
 
