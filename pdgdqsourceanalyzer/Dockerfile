@@ -1,4 +1,4 @@
-FROM python:3.12.6
+FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
@@ -10,13 +10,13 @@ RUN pip3 install -r requirements.txt
 COPY . /app
 
 # Install required dependencies and utilities
-RUN apt-get update && apt-get install -y \
+RUN tdnf install -y \
     curl \
     unzip \
-    libaio1 \
-    unixodbc \
-    unixodbc-dev \
-    libsasl2-modules-gssapi-mit \
+    libaio \
+    unixODBC \
+    unixODBC-devel \
+    cyrus-sasl-gssapi \
     openssl  # Install OpenSSL for SSL support
 
 COPY drivers/simbaspark_2.8.2.1013-2_amd64.deb /tmp/
