@@ -16,9 +16,11 @@ RUN tdnf install -y \
     libaio \
     unixODBC \
     unixODBC-devel \
-    msodbcsql17 \
     cyrus-sasl-gssapi \
     openssl  # Install OpenSSL for SSL support
+
+RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
+    yum clean all
 
 COPY drivers/simbaspark-2.8.2.1013-1.x86_64.rpm /tmp/
 
