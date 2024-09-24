@@ -16,7 +16,7 @@ RUN tdnf install -y \
     libaio \
     unixODBC \
     unixODBC-devel \
-    msodbcsql18 \
+    msodbcsql17 \
     cyrus-sasl-gssapi \
     openssl  # Install OpenSSL for SSL support
 
