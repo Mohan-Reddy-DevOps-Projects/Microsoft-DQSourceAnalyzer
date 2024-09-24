@@ -19,12 +19,12 @@ RUN tdnf install -y \
     cyrus-sasl-gssapi \
     openssl  # Install OpenSSL for SSL support
 
-COPY drivers/simbaspark_2.8.2.1013-2_amd64.deb /tmp/
+COPY drivers/simbaspark-2.8.2.1013-1.x86_64.rpm /tmp/
 
 # Install the Databricks ODBC driver
 #https://www.databricks.com/spark/odbc-drivers-archive#deb
-RUN dpkg -i /tmp/simbaspark_2.8.2.1013-2_amd64.deb && \
-    rm -f /tmp/simbaspark_2.8.2.1013-2_amd64.deb
+RUN tdnf install --nogpgcheck -y /tmp/simbaspark-2.8.2.1013-1.x86_64.rpm && \
+    rm -f /tmp/simbaspark-2.8.2.1013-1.x86_64.rpm
 
     # Set up ODBC driver configuration
 RUN echo "[Simba Spark ODBC Driver]" > /etc/odbcinst.ini && \
