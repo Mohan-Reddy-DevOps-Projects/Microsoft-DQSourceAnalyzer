@@ -1,4 +1,6 @@
-FROM python:3.12.6
+FROM mcr.microsoft.com/cbl-mariner/base/python:3
+
+ENV ENVIRONMENT=DEV
 
 WORKDIR /app
 
@@ -40,3 +42,5 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /et
 EXPOSE 8000
 
 ENTRYPOINT ["/bin/bash","./startup.sh"]
+
+#docker run -e ENVIRONMENT=DEV -p 8000:8000 pdgdqsourceanalyzer:latest

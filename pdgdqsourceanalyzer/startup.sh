@@ -5,6 +5,8 @@ set -a
 source .env
 set -e
 
+ENVIRONMENT=${ENVIRONMENT:-DEV}  # Default to DEV if not provided
+
 python << END
 import os
 import base64
@@ -18,7 +20,7 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 
 # Determine the environment
-environment = os.getenv('ENVIRONMENT')
+environment = os.getenv('ENVIRONMENT', 'DEV')
 
 # Fetch Key Vault names based on environment
 if environment == "DEV":
