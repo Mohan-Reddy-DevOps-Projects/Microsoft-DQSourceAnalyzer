@@ -12,3 +12,7 @@ snowflake-connector-python[pandas]==3.12.2
 google-cloud-bigquery==3.25.0
 numpy==1.26.4
 pandas==1.5.3
+pytest==8.3.3
+pyOpenSSL==24.2.1
+cryptography==43.0.1
+azure-keyvault==4.2.0

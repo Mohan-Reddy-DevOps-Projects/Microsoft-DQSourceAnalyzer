@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     libaio1 \
     unixodbc \
     unixodbc-dev \
-    libsasl2-modules-gssapi-mit  # Install the missing dependency
+    libsasl2-modules-gssapi-mit \
+    openssl  # Install OpenSSL for SSL support
 
 COPY drivers/simbaspark_2.8.2.1013-2_amd64.deb /tmp/
 

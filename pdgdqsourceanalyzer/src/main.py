@@ -18,7 +18,7 @@ load_dotenv()
 app = FastAPI()
 
 # Create the POST endpoint
-@app.post("/databricksUnityCatalog-testconnection")
+@app.post("/databricksunitycatalog/testconnection")
 async def test_databricksUnityCatalog_connection(connection_request: DatabricksUnityCatalogRequest):
     result = DatabricksUnityCatalogRequest.test_connection(
         connection_request.hostname,
@@ -30,7 +30,7 @@ async def test_databricksUnityCatalog_connection(connection_request: DatabricksU
     return result
 
 
-@app.post("/databricksUnityCatalog-getschema")
+@app.post("/databricksunitycatalog/getschema")
 async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatalogSchemaRequest):
     result = DatabricksUnityCatalogSchemaRequest.get_table_schema(
         schema_request.hostname,
@@ -44,7 +44,7 @@ async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatal
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/snowflake-testconnection")
+@app.post("/snowflake/testconnection")
 async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
     result = SnowflakeDWRequest.test_connection(
         connection_request.account,
@@ -58,7 +58,7 @@ async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/snowflake-getschema")
+@app.post("/snowflake/getschema")
 async def get_snowflake_schema(schema_request: SnowflakeDWSchemaRequest):
     result = SnowflakeDWSchemaRequest.get_table_schema(
         schema_request.account,
@@ -74,14 +74,14 @@ async def get_snowflake_schema(schema_request: SnowflakeDWSchemaRequest):
     return result
 
 # New Google BigQuery endpoints
-@app.post("/googleBigQuery-testconnection")
+@app.post("/googlebigquery/testconnection")
 async def test_googleBigQuery_connection(connection_request: GoogleBigQueryRequest):
     result = connection_request.test_connection()
     if result["status"] == "error":
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/googleBigQuery-getschema")
+@app.post("/googlebigquery/getschema")
 async def get_googleBigQuery_schema(schema_request: GoogleBigQuerySchemaRequest):
     result = schema_request.get_table_schema()
     if result["status"] == "error":
@@ -89,7 +89,7 @@ async def get_googleBigQuery_schema(schema_request: GoogleBigQuerySchemaRequest)
     return result
 
 # ADLS Gen2 endpoints
-@app.post("/adlsgen2-testconnection")
+@app.post("/adlsgen2/testconnection")
 async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
     result = ADLSGen2Request.test_connection(
         connection_request.account_name,
@@ -100,7 +100,7 @@ async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/adlsgen2-getschema")
+@app.post("/adlsgen2/getschema")
 async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
     result = ADLSGen2DeltaSchemaRequest.get_table_schema(
         schema_request.account_name,
@@ -111,7 +111,7 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/adlsgen2-getparquetschema")
+@app.post("/adlsgen2/getparquetschema")
 async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
     result = ADLSGen2ParquetSchemaRequest.get_table_schema(
         schema_request.account_name,
@@ -122,7 +122,7 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/adlsgen2-getFormat")
+@app.post("/adlsgen2/getFormat")
 async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
     result = ADLSGen2FormatDetector.detect_format(
         schema_request.account_name,
@@ -134,7 +134,7 @@ async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
     return result
 
 # Azure SQL Database endpoints
-@app.post("/azure-sql-testconnection")
+@app.post("/azuresql/testconnection")
 async def test_azure_sql_connection(connection_request: AzureSQLRequest):
     result = AzureSQLRequest.test_connection(
         connection_request.server,
@@ -144,7 +144,7 @@ async def test_azure_sql_connection(connection_request: AzureSQLRequest):
         raise HTTPException(status_code=400, detail=result["message"])
     return result
 
-@app.post("/azure-sql-getschema")
+@app.post("/azuresql/getschema")
 async def get_azure_sql_schema(schema_request: AzureSQLSchemaRequest):
     result = AzureSQLSchemaRequest.get_table_schema(
         schema_request.server,
