@@ -1,16 +1,31 @@
- trigger:
- - main
+trigger:
+  - main
 
- pool:
-   vmImage: 'ubuntu-latest' 
+pool:
+  vmImage: 'ubuntu-latest'
 
- variables:
-   imageName: 'dqsourceanalyzer'
+variables:
+  imageName: 'dqsourceanalyzer'
+  tag: 'latest'
 
- steps:
- - task: Docker@2
-   displayName: Build an image
-   inputs:
-     repository: $(imageName)
-     command: build
-     Dockerfile: pdgdqsourceanalyzer/Dockerfile
+steps:
+  - checkout: self
+
+  - task: Docker@2
+    displayName: Build an image
+    inputs:
+      containerRegistry: 'dq-source-analyzer-testing'
+      repository: $(imageName)
+      command: build
+      Dockerfile: pdgdqsourceanalyzer/Dockerfile
+      tags: |
+        $(tag)
+
+  - task: Docker@2
+    displayName: Push the image to ACR
+    inputs:
+      containerRegistry: 'dq-source-analyzer-testing'
+      repository: $(imageName)
+      command: push
+      tags: |
+        $(tag)
