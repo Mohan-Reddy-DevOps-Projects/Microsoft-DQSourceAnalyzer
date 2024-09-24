@@ -16,6 +16,7 @@ RUN tdnf install -y \
     libaio \
     unixODBC \
     unixODBC-devel \
+    msodbcsql18 \
     cyrus-sasl-gssapi \
     openssl  # Install OpenSSL for SSL support
 
@@ -29,15 +30,6 @@ RUN tdnf install --nogpgcheck -y /tmp/simbaspark-2.8.2.1013-1.x86_64.rpm && \
     # Set up ODBC driver configuration
 RUN echo "[Simba Spark ODBC Driver]" > /etc/odbcinst.ini && \
     echo "Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so" >> /etc/odbcinst.ini
-
-# Add SQL Server ODBC Driver 18 for Ubuntu
-# Update repository and key handling for ODBC Driver 18
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 mssql-tools && \
-    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && \
-    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 
 EXPOSE 8000
 
