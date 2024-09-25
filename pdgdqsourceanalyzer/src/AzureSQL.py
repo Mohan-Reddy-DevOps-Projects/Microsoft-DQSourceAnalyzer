@@ -27,6 +27,7 @@ class AzureSQLRequest(BaseModel):
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
+                f"TrustServerCertificate=yes;"
                 f"Token={token};"
             )
             connection = pyodbc.connect(connection_string)
@@ -63,6 +64,7 @@ class AzureSQLSchemaRequest(BaseModel):
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
+                f"TrustServerCertificate=yes;"
                 f"Token={token};"
             )
             connection = pyodbc.connect(connection_string)
