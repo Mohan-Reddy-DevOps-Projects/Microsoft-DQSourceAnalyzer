@@ -1,10 +1,16 @@
 from google.cloud import bigquery
 from google.oauth2 import service_account
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import json
 
 class GoogleBigQueryRequest(BaseModel):
-    credentials_json: str  # JSON string of the service account credentials
+    credentials_json: str = Field(..., description="Service Account Credentials must be provided") # JSON string of the service account credentials
+    
+    @field_validator('credentials_json')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def test_connection(self):
         """
@@ -28,10 +34,16 @@ class GoogleBigQueryRequest(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class GoogleBigQuerySchemaRequest(BaseModel):
-    credentials_json: str  # JSON string of the service account credentials
-    project_id: str
-    dataset_id: str
-    table_id: str
+    credentials_json: str = Field(..., description="Service Account Credentials must be provided") # JSON string of the service account credentials
+    project_id: str = Field(..., description="Project Id must be provided")
+    dataset_id: str = Field(..., description="Dataset Id Credentials must be provided")
+    table_id: str = Field(..., description="Table Name must be provided")
+    
+    @field_validator('credentials_json','project_id','dataset_id','table_id')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def get_table_schema(self):
         """

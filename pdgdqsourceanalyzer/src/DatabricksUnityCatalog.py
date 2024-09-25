@@ -1,10 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import pyodbc
 
 class DatabricksUnityCatalogRequest(BaseModel):
-    hostname: str
-    http_path: str
-    access_token: str
+    hostname: str = Field(..., description="Databricks hostname must be provided")
+    http_path: str = Field(..., description="Databricks HTTP path must be provided")
+    access_token: str = Field(..., description="Access token must be provided")
+
+    @field_validator('hostname', 'http_path', 'access_token')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def test_connection(hostname, http_path, access_token):
         port = 443  # Default port for Databricks ODBC
@@ -46,12 +52,18 @@ class DatabricksUnityCatalogRequest(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class DatabricksUnityCatalogSchemaRequest(BaseModel):
-    hostname: str
-    http_path: str
-    access_token: str
-    catalog: str
-    unitycatalogschema: str
-    table: str
+    hostname: str = Field(..., description="Databricks hostname must be provided")
+    http_path: str = Field(..., description="Databricks HTTP path must be provided")
+    access_token: str = Field(..., description="Access token must be provided")
+    catalog: str = Field(..., description="Databricks catalog must be provided")
+    unitycatalogschema: str = Field(..., description="Databricks unitycatalogschema must be provided")
+    table: str = Field(..., description="Table Name must be provided")
+
+    @field_validator('hostname', 'http_path', 'access_token','catalog','unitycatalogschema','table')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def get_table_schema(hostname, http_path, access_token, catalog, unitycatalogschema, table):
         port = 443  # Default port for Databricks ODBC
