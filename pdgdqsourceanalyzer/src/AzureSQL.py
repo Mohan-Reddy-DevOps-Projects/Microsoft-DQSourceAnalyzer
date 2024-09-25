@@ -17,7 +17,7 @@ class AzureSQLRequest(BaseModel):
 
             # Create a connection string
             connection_string = (
-                f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+                f"DRIVER={{ODBC Driver 17 for SQL Server}};"
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
@@ -47,7 +47,7 @@ class AzureSQLSchemaRequest(BaseModel):
             token = credential.get_token("https://database.windows.net/.default").token
 
             connection_string = (
-                f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+                f"DRIVER={{ODBC Driver 17 for SQL Server}};"
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
