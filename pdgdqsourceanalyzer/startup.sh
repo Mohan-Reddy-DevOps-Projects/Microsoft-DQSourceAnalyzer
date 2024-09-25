@@ -7,7 +7,7 @@ set -e
 
 ENVIRONMENT=${ENVIRONMENT:-DEV}  # Default to DEV if not provided
 
-python << END
+python3 << END
 import os
 import base64
 import ssl
