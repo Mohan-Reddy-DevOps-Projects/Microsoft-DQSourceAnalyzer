@@ -28,12 +28,12 @@ stages:
           displayName: '🏗 Build DataQualityService Docker Image'
           inputs:
             repositoryName: dataqualityservice
-            dockerFileRelPath: DataQualityServiceDockerFiles/Dockerfile
-            dockerFileContextPath: DataQualityServiceDockerFiles
+            dockerFileRelPath: Deployment/Dockerfile
+            dockerFileContextPath: Deployment
             registry: dataqualityacr.azurecr.io
             addPipelineData: false
             push: false
-            saveImageToPath: DataQualityServiceImage.tar.gz
+            saveImageToPath: PdgDqsourceAnalyzerImage.tar.gz
             buildkit: 1
             enable_network: true # Disable it once dotnet performance tools are available in nuget feed
             build_tag: $(Build.BuildNumber) # Docker image tag

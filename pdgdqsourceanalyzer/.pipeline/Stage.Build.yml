@@ -37,10 +37,10 @@ stages:
             displayName: '📦 Package Ev2 tar archive for Data Quality service'
             inputs:
               script: |
-                cd $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/Helm && tar cvfz $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/deployAKS.tar.gz ./*
+                cd $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/Helm && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/deployAKS.tar.gz ./*
 
           - task: CmdLine@2
             displayName: '📦 Package Script folder for ACR push'
             inputs:
               script: |
-                cd $(Build.SourcesDirectory)/src/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
+                cd $(Build.SourcesDirectory)/src/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
