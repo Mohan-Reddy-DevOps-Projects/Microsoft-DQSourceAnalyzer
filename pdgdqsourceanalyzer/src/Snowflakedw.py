@@ -1,13 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import snowflake.connector
 
 class SnowflakeDWRequest(BaseModel):
-    user: str
-    password: str
-    account: str
-    warehouse: str
-    database: str
-    snowflakeschema: str
+    user: str = Field(..., description="UserName must be provided")
+    password: str = Field(..., description="Password must be provided")
+    account: str = Field(..., description="Account must be provided")
+    warehouse: str = Field(..., description="Warehouse must be provided")
+    database: str = Field(..., description="Database must be provided")
+    snowflakeschema: str = Field(..., description="Schema must be provided")
+    
+    @field_validator('user','password','account','warehouse','database','snowflakeschema')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def test_connection(account, user, password, warehouse, database, snowflakeschema):
         try:
@@ -39,13 +45,19 @@ class SnowflakeDWRequest(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class SnowflakeDWSchemaRequest(BaseModel):
-    user: str
-    password: str
-    account: str
-    warehouse: str
-    database: str
-    snowflakeschema: str
-    table: str
+    user: str = Field(..., description="UserName must be provided")
+    password: str = Field(..., description="Password must be provided")
+    account: str = Field(..., description="Account must be provided")
+    warehouse: str = Field(..., description="Warehouse must be provided")
+    database: str = Field(..., description="Database must be provided")
+    snowflakeschema: str = Field(..., description="Schema must be provided")
+    table: str = Field(..., description="Table Name must be provided")
+    
+    @field_validator('user','password','account','warehouse','database','snowflakeschema','table')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def get_table_schema(account, user, password, warehouse, database, snowflakeschema, table):
         try:

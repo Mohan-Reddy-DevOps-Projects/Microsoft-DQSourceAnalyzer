@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from azure.identity import DefaultAzureCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 from typing import List, Dict
@@ -13,9 +13,15 @@ import pyarrow
 import pyarrow.dataset as ds
 
 class ADLSGen2Request(BaseModel):
-    account_name: str
-    file_system_name: str
-    directory_path: str
+    account_name: str = Field(..., description="Storage account name must be provided")
+    file_system_name: str = Field(..., description="File System Name must be provided")
+    directory_path: str = Field(..., description="Directory Path must be provided")
+    
+    @field_validator('account_name', 'file_system_name', 'directory_path')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def test_connection(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, str]:
         try:
@@ -35,9 +41,15 @@ class ADLSGen2Request(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class ADLSGen2DeltaSchemaRequest(BaseModel):
-    account_name: str      #storageaccountname
-    file_system_name: str  #mycontainer
-    directory_path: str  #"someDeltapath/mytable"
+    account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
+    file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
+    directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    
+    @field_validator('account_name', 'file_system_name', 'directory_path')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -54,9 +66,16 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class ADLSGen2ParquetSchemaRequest(BaseModel):
-    account_name: str      #storageaccountname
-    file_system_name: str  #mycontainer
-    directory_path: str  #"someDeltapath/mytable"    
+    account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
+    file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
+    directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    
+    @field_validator('account_name', 'file_system_name', 'directory_path')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
+        
     def get_table_schema(account_name, file_system_name, directory_path):
         credential = DefaultAzureCredential()
         try:
@@ -78,9 +97,15 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
         
 
 class ADLSGen2FormatDetector(BaseModel):
-    account_name: str      # Storage account name
-    file_system_name: str  # Container name
-    directory_path: str    # Path to the directory
+    account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
+    file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
+    directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    
+    @field_validator('account_name', 'file_system_name', 'directory_path')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def detect_format(account_name, file_system_name, directory_path) -> str:
         """

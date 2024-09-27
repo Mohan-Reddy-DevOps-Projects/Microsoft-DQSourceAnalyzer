@@ -1,11 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import pyodbc
 from azure.identity import DefaultAzureCredential
 from typing import List, Dict
 
 class AzureSQLRequest(BaseModel):
-    server: str
-    database: str
+    server: str = Field(..., description="Server must be provided")
+    database: str = Field(..., description="Database must be provided")
+    
+    @field_validator('server', 'database')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def test_connection(server: str, database: str) -> Dict[str, str]:
         port = 1433
@@ -21,6 +27,7 @@ class AzureSQLRequest(BaseModel):
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
+                f"TrustServerCertificate=yes;"
                 f"Token={token};"
             )
             connection = pyodbc.connect(connection_string)
@@ -35,9 +42,15 @@ class AzureSQLRequest(BaseModel):
             return {"status": "error", "message": str(e)}
 
 class AzureSQLSchemaRequest(BaseModel):
-    server: str
-    database: str
-    table: str
+    server: str = Field(..., description="Server must be provided")
+    database: str = Field(..., description="Database must be provided")
+    table: str = Field(..., description="Table Name must be provided")
+    
+    @field_validator('server', 'database','table')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
 
     def get_table_schema(server: str, database: str, table: str) -> Dict[str, List[Dict[str, str]]]:
         port = 1433 
@@ -51,6 +64,7 @@ class AzureSQLSchemaRequest(BaseModel):
                 f"SERVER={server};"
                 f"DATABASE={database};"
                 f"Authentication=ActiveDirectoryMsi;"
+                f"TrustServerCertificate=yes;"
                 f"Token={token};"
             )
             connection = pyodbc.connect(connection_string)
