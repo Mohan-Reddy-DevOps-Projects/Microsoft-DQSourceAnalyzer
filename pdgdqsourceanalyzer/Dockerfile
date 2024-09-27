@@ -17,7 +17,8 @@ RUN tdnf install -y \
     unixODBC \
     unixODBC-devel \
     cyrus-sasl-gssapi \
-    openssl  # Install OpenSSL for SSL support
+    openssl  \
+    ca-certificates
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
