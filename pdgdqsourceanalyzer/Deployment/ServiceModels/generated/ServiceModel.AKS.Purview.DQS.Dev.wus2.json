@@ -1,0 +1,31 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "Development"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.AKS.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.AKS.Resource",
+      "ArmTemplatePath": "Templates\\Template.AKS.Purview.DQS.json"
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "dqservice-dev-rg-wus2",
+    "Location": "West US 2",
+    "InstanceOf": "Purview.DQS.AKS.Group",
+    "AzureSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.AKS.Cluster",
+      "InstanceOf": "Purview.DQS.AKS.Resource",
+      "ArmParametersPath": "Parameters\\generated\\Parameters.AKS.Purview.DQS.DEV.wus2.json",
+      "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+    }]
+  }]
+}

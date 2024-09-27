@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value" : "dev"
+    },
+    "deploymentTags": {
+      "value": {
+        "Service": "Purview Data Quality Service",
+        "Environment": "Development",
+        "Build Number": "BUILD_NUMBER"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "dqs-dev-loganalytics-wus2"
+    },
+    "clusterName": {
+      "value": "dqs-dg-dev-aks-wus2"
+    },
+    "nodeType": {
+      "value": "standard_dc2s_v3"
+    },
+    "numberOfNodesMin": {
+      "value": 2
+    },
+    "numberOfNodesMax": {
+      "value": 3
+    },
+    "clusterUmiIdentityName": {
+      "value": "PurviewDQS_UMIManagedIdentity_dev_wus2"
+    },
+    "kubernetesVersion": {
+        "value": "1.29.2"
+    },
+    "keyVaultName": {
+      "value": "dqs-dev-kv-wus2"
+    },
+    "publicIpDns": {
+        "value": "dqservice"
+    },
+    "dnsApis": {
+      "value": [
+        "purview-dqservice-dev"
+      ]
+    },
+    "dnsServiceZone": {
+      "value": "babylon-service.azure-test.com"
+    },
+    "dnsZoneSubscriptionId": {
+      "value": "47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d"
+    },
+    "dnsZoneResourceGroup": {
+      "value": "rp-df-common-rg"
+    },
+    "ev2ExtensionIdentityObjectId": {
+      "value": "7dcedb92-9cc9-4d05-8779-8275510a112d"
+    },
+    "podIdentityName":{
+      "value": "PurviewDQS_ManagedIdentity_NonProd"
+    },
+     "podIdentitySubscriptionId":{
+      "value": "d0542b74-5839-4ee0-8ec4-74e91468eaa7"
+    },
+    "podIdentityPrincipalId":{
+      "value": "452d4c91-7096-4336-a5f6-678d2d7b5e5b"
+    },
+    "podIdentityResourceId":{
+      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd"
+    },
+    "regionShortName": {
+      "value": "wus2"
+    },
+    "regionFullName": {
+      "value": "westus2"
+    },
+    "storageAccountName": {
+      "value": "dqservicedevstoragewus2"
+    },
+    "userAssignedIdentities_akspod_resourceid": {
+      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-dev-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd"
+    },
+    "userAssignedIdentities_dqsprod_resourceid": {
+      "value": "/subscriptions/16ec6df3-9d0b-4d9e-a7a4-76c9582fd9f6/resourceGroups/dqs-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsdf"
+    },
+    "userAssignedIdentities_dqsprod_clientid": {
+      "value": "b9a5106a-275e-4b0d-bdd2-38f6ece82df6"
+    },
+    "userAssignedIdentities_dqsprod_objectid": {
+      "value": "d469ee03-2adf-4a36-b6c9-ba34d85e04b4"
+    },
+    "availabilityZones": {
+      "value": [
+  "3"
+]
+    },
+    "logicAppManagedIdentityName": {
+      "value": "dqs-logicApp-dev-managedIdentity-wus2"
+    },
+    "aksRegionCompactLocation": {
+      "value": "westus2"
+    }
+  }
+}

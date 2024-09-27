@@ -1,0 +1,42 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "Dogfood"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.PushImage.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.PushImages.Resource",
+      "ComposedOf": {
+        "Extension": {
+          "rolloutParametersPath": "Parameters\\generated\\Parameters.PushImage.Purview.DQS.DF.wus2.json",
+          "Shell": [
+            {
+              "type": "push-dataqualityservice-shell-type",
+              "properties": {
+                "imageName": "adm-mariner-20-l",
+                "imageVersion": "v9"
+              }
+            }
+          ]
+        }
+      }
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "dqservice-df-rg-wus2",
+    "Location": "West US 2",
+    "InstanceOf": "Purview.DQS.PushImage.Group",
+    "AzureSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.PushImages.Cluster",
+      "InstanceOf": "Purview.DQS.PushImages.Resource"
+    }]
+  }]
+}

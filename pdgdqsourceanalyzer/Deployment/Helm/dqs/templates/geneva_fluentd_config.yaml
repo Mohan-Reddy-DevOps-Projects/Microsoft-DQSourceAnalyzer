@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-conf
+data:
+  kubernetes.conf: {{ .Files.Get "fluentd/kubernetes.conf" | quote }}
+  fluentd.conf: {{ .Files.Get "fluentd/fluentd.conf" | quote }}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.Infra",
+    "Environment": "Production"
+    },
+    "ServiceResourceGroupDefinitions": [
+    {
+      "Name": "Purview.DQS.Infra.Group",
+        "ServiceResourceDefinitions": [
+        {
+          "Name": "Purview.DQS.Infra.Resource",
+          "ArmTemplatePath": "Templates\\Template.Infra.Purview.DQS.json"
+        }]
+    }],
+    "ServiceResourceGroups": [
+    {
+      "AzureResourceGroupName": "dqservice-prod-rg-eus2", 
+      "Location": "East US 2",
+      "InstanceOf": "Purview.DQS.Infra.Group",
+      "AzureSubscriptionId": "bd48ec9b-1c15-4bb5-80a4-5882276d75c2",
+      "ServiceResources": [
+      {
+          "Name": "Purview.DQS.Infra",
+          "InstanceOf": "Purview.DQS.Infra.Resource",
+          "ArmParametersPath": "Parameters\\generated\\Parameters.Infra.Purview.DQS.PROD.eus2.json",
+          "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+      }]
+    }]
+}

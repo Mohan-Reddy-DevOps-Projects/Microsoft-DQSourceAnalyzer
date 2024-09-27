@@ -1,0 +1,31 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "Canary"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.AKS.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.AKS.Resource",
+      "ArmTemplatePath": "Templates\\Template.AKS.Purview.DQS.json"
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "dqservice-cnry-rg-eus2",
+    "Location": "East US 2 EUAP",
+    "InstanceOf": "Purview.DQS.AKS.Group",
+    "AzureSubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.AKS.Cluster",
+      "InstanceOf": "Purview.DQS.AKS.Resource",
+      "ArmParametersPath": "Parameters\\generated\\Parameters.AKS.Purview.DQS.CNRY.eus2.json",
+      "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+    }]
+  }]
+}

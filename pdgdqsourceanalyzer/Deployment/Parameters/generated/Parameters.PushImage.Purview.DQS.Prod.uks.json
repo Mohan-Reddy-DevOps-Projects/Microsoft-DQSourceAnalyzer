@@ -1,0 +1,50 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "ShellExtensions": [
+  {
+    "name": "push-dataqualityservice-to-acr",
+	"type": "push-dataqualityservice-shell-type",
+    "properties": {
+      "maxexecutiontime": "PT30M"
+    },
+    "package": {
+      "reference": {
+        "path": "pushImageToAcr.tar.gz"
+      }
+    },
+    "launch": {
+      "command": [
+        "push_tarball_to_acr.sh"
+      ],
+      "environmentVariables": [
+	  {
+        "name": "DESTINATION_ACR_NAME",
+        "value": "dataqualityacrprod"
+      },
+      {
+        "name": "TARBALL_IMAGE_FILE_NAME",
+        "reference": {
+              "path": "DataQualityServiceImage.tar.gz"
+        },
+        "asSecureValue": "true"
+      },
+      {
+        "name": "IMAGE_METADATA_FILE_NAME",
+        "reference": {
+              "path": "DataQualityServiceImage-metadata.json"
+        },
+        "asSecureValue": "true"
+      }
+    ],
+	  "secretVolumes": [],
+      "fileVolumes": [],
+      "identity": {
+        "type": "UserAssigned",
+        "UserAssignedIdentities": [
+          "/subscriptions/34a8ddf8-ebee-475d-97d3-494d34c800b7/resourceGroups/babylon-gw-infra-prod-rg-eus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/Babylon_Ev2Shell_ManagedIdentity_Prod"
+        ]
+      }
+    }
+  }]
+}

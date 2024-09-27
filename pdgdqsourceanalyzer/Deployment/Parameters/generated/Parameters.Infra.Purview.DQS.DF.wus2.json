@@ -1,0 +1,95 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentTags": {
+      "value": {
+        "Service": "Purview Data Quality Service Infrastructure",
+        "Environment": "Dogfood",
+        "Build Number": "BUILD_NUMBER"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "dqs-df-loganalytics-wus2"
+    },
+    "logAnalyticsLocation": {
+      "value": "westus2"
+    },
+    "keyVaultName": {
+      "value": "dqs-df-kv-wus2"
+    },
+    "keyVaultLogicAppName": {
+      "value": "dqs-lapp-df-kv-wus2"
+    },
+    "secretGeneratorAppObjectId": {
+      "value": "e1ad5d60-234a-490a-b020-e57ad06d9bca"
+    },
+    "aksClusterIdentitySecretName": {
+      "value": "Test-DQ-AKS-ClusterIdentity-Key"
+    },
+    "aksClusterIdentitySecretKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d/resourceGroups/babylon-corp-secretsource/providers/Microsoft.KeyVault/vaults/babyloncorp-secretsource"
+        },
+        "secretName": "DQ-AKS-ClusterIdentity-Key"
+      }
+    },
+    "blobSecretName": {
+      "value": "blobConnectionString"
+    },
+    "globalBlobSecretKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d/resourceGroups/babylon-corp-secretsource/providers/Microsoft.KeyVault/vaults/babyloncorp-secretsource"
+        },
+        "secretName": "dq-df-storage-key"
+      }
+    },
+    "sparkSecretName": {
+      "value": "sparkexternalcomputekey"
+    },
+    "globalSparkSecretKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d/resourceGroups/babylon-corp-secretsource/providers/Microsoft.KeyVault/vaults/babyloncorp-secretsource"
+        },
+        "secretName": "dq-spark-compute-key"
+      }
+    },
+    "ruleAISafetySecretName": {
+      "value": "dq-aisafety"
+    },
+    "globalRuleAISafetySecretKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d/resourceGroups/babylon-corp-secretsource/providers/Microsoft.KeyVault/vaults/babyloncorp-secretsource"
+        },
+        "secretName": "dq-aisafety"
+      }
+    },
+    "datastoreCredentialsSecretName": {
+      "value": "datastoreCredentials"
+    },
+    "globalDatastoreCredentialsSecretKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/47e8596d-ee73-4eb2-b6b4-cc13c2b87d6d/resourceGroups/babylon-corp-secretsource/providers/Microsoft.KeyVault/vaults/babyloncorp-secretsource"
+        },
+        "secretName": "dqservice-df-datastore-cred-key"
+      }
+    },
+    "storageAccountName": {
+      "value": "dqservicedfstoragewus2"
+    },
+    "storageAccountReplicationType": {
+      "value": "Standard_LRS"
+    },
+    "logicAppManagedIdentityName": {
+      "value": "dqs-logicApp-df-managedIdentity-wus2"
+    },
+    "logicAppKeyVaultConnectionName": {
+      "value": "dqs-logicApp-df-keyVaultConnection-wus2"
+    },
+  }
+}

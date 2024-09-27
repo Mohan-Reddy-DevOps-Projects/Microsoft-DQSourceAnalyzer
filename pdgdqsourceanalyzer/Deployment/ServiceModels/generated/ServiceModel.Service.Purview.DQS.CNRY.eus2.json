@@ -1,0 +1,41 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.Service",
+    "Environment": "Canary"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.Service.Group",
+    "ServiceResourceDefinitions": [
+    {
+        "Name": "ShellResource",
+        "ComposedOf": {
+          "Extension": {
+            "Shell": [
+            {
+              "type": "shellRun",
+              "properties": {
+                "imageName": "adm-mariner-20-l",
+                "imageVersion": "v9"
+              }
+            }]
+          }
+        }
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+      "AzureResourceGroupName": "dqservice-cnry-rg-eus2",
+      "Location": "East US 2",
+      "InstanceOf": "Purview.DQS.Service.Group",
+      "AzureSubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",
+      "ServiceResources": [
+      {
+        "Name": "Purview.DQS.AKS.Service",
+        "InstanceOf": "ShellResource",
+        "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.CNRY.eus2.json"
+      }]
+  }]
+}

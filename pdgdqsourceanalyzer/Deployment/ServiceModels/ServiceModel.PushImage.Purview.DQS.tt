@@ -1,0 +1,53 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "<#= environment["name"] #>"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.PushImage.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.PushImages.Resource",
+      "ComposedOf": {
+        "Extension": {
+          "rolloutParametersPath": "Parameters\\generated\\Parameters.PushImage.Purview.DQS.<#= GetUpperCaseEnvironmentShortName(environment) #>.<#= environment["shortLocation"] #>.json",
+          "Shell": [
+            {
+              "type": "push-dataqualityservice-shell-type",
+              "properties": {
+                "imageName": "adm-mariner-20-l",
+                "imageVersion": "v9"
+              }
+            }
+          ]
+        }
+      }
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "<#= GetInfraResourceGroup(environment) #>",
+    "Location": "<#= environment["location"] #>",
+    "InstanceOf": "Purview.DQS.PushImage.Group",
+    "AzureSubscriptionId": "<#= environment["subscription"] #>",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.PushImages.Cluster",
+      "InstanceOf": "Purview.DQS.PushImages.Resource"
+    }]
+  }]
+}
+<#
+  string fileName = String.Format("ServiceModel.PushImage.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("ServiceModels\\generated", fileName);
+}
+#>
+Unused generated text file

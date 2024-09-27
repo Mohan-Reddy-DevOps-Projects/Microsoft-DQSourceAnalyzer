@@ -1,0 +1,42 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "<#= environment["name"] #>"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.AKS.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.AKS.Resource",
+      "ArmTemplatePath": "Templates\\Template.AKS.Purview.DQS.json"
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "<#= GetInfraResourceGroup(environment) #>",
+    "Location": "<#= environment["location"] #>",
+    "InstanceOf": "Purview.DQS.AKS.Group",
+    "AzureSubscriptionId": "<#= environment["subscription"] #>",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.AKS.Cluster",
+      "InstanceOf": "Purview.DQS.AKS.Resource",
+      "ArmParametersPath": "Parameters\\generated\\Parameters.AKS.Purview.DQS.<#= GetUpperCaseEnvironmentShortName(environment) #>.<#= environment["shortLocation"] #>.json",
+      "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+    }]
+  }]
+}
+<#
+  string fileName = String.Format("ServiceModel.AKS.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("ServiceModels\\generated", fileName);
+}
+#>
+Unused generated text file

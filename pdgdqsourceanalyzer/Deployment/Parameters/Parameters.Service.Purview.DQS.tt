@@ -1,0 +1,105 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "ShellExtensions": [
+  {
+    "name": "deploy-dqs-to-aks",
+    "type": "shellRun",
+    "properties": {
+      "maxexecutiontime": "PT30M"
+    },
+    "package": {
+      "reference": {
+        "path": "deployAKS.tar.gz"
+      }
+    },
+    "launch": {
+      "command": [
+        "dqs/deployAKS.sh"
+      ],
+      "environmentVariables": [
+      {
+        "name": "aksClusterName",
+        "value": "<#= GetClusterName(environment)  #>"
+      },
+      {
+        "name": "aksGroupName",
+        "value": "<#= GetInfraResourceGroup(environment) #>"
+      },
+      {
+        "name": "publicIpName",
+        "value": "<#= GetPublicIpDns(environment) #>-<#= ToLower(environment["shortName"]) #>-public-ip-<#= ToLower(environment["shortLocation"]) #>"
+      },
+      {
+        "name": "publicIpGroup",
+        "value": "<#= GetInfraResourceGroup(environment) #>"
+      },
+      {
+        "name": "keyVaultName",
+        "value": "<#= GetKeyVaultName(environment) #>"
+      },
+      {
+        "name": "helmReleaseName",
+        "value": "<#= GetHelmReleaseName(environment) #>"
+      },
+      {
+        "name": "helmValueFile",
+        "value": "<#= GetHelmValueFile(environment) #>"
+      },
+      {
+        "name": "subId",
+        "value": "<#= environment["subscription"] #>"
+      },
+      {
+        "name": "genevaCertName",
+        "value": "<#= GetGenevaCertSecretName(environment) #>"
+      },
+      {
+        "name": "podIdentityName",
+        "value": "<#= GetPodIdentityName(environment) #>"
+      },
+      {
+        "name": "podIdentityGroup",
+        "value": "<#= GetSharedInfraResourceGroup(environment) #>"
+      },
+      {
+        "name": "podIdentitySubscriptionId",
+        "value": "<#= GetPodIdentitySubscriptionId(environment) #>"
+      },
+      {
+        "name": "deploymentType",
+        "value": "<#= GetEnvironmentTypeName(environment) #>"
+      },
+      {
+        "name": "tlsCertName",
+        "value": "<#= GetServerCertSecretName(environment) #>"
+      },
+      {
+        "name": "tlsDNS",
+        "value": "<#= GetDataQualityServerCertSubjectName(environment) #>"
+      },
+      {
+        "name": "allowedServiceTags",
+        "value": "<#= GetEnvironmentType(environment)["allowedServiceTagsAuthz"].ToString() #>"
+      }
+    ],
+      "identity": {
+        "type": "UserAssigned",
+        "UserAssignedIdentities": [
+          "<#= GetEv2ExtensionIdentityResourceId(environment) #>"
+        ]
+      }
+    }
+  }]
+}
+<#
+  string fileName = String.Format("Parameters.Service.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("Parameters\\generated", fileName);
+}
+#>
+Unused generated text file

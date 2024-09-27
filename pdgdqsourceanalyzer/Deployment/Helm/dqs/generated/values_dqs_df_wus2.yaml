@@ -1,0 +1,336 @@
+# # Geneva properties
+gcs_cloud_name: AzurePublicCloud
+gcs_environment: Test 
+gcs_account: BabylonNonProd 
+gcs_region: westus2
+gcs_namespace: DQSNonProd 
+gcs_config_version: 3.21        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
+gcs_keyvault_name: dqs-df-kv-wus2
+gcs_keyvault_tenant: 72f988bf-86f1-41af-91ab-2d7cd011db47
+gcs_cert_name: dqs-geneva-df-cert
+gcs_cert_san: TEST-AME.WUS.GENEVA.KEYVAULT.BABYLON.AZURE-TEST.COM                      
+
+# # Leave metric_endpoint commented out for PROD environment. Uncomment it for INT environment.
+# # metricEndpoint: https://az-int.metrics.nsatc.net/
+
+# # You should override these with the latest version of the Geneva images available here:
+# # https://genevamondocs.azurewebsites.net/collect/references/linuxcontainers.html
+# # https://eng.ms/docs/products/geneva/collect/references/linuxcontainers
+# # MDSD, MDM, FluentD are Distroless Containers and AzSecPack is Standard Geneva Container (Ubuntu)
+mdsd:
+  dockerTag: mariner_20240910.1
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdsd
+fluentd:
+  dockerTag: mariner_20240903.1
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevafluentd_td-agent
+mdm:
+  dockerTag: 2.2024.905.1816-1bada0-20240905t2212
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdm
+
+dqs:
+  tlsDNS: purview-dqservice-df-westus2.babylon-service.azure-test.com
+  instances: 2                    # This should match the number of VMs in the cluster
+  allowedServiceTags: "AzureCloud,CorpNetPublic"
+  appSettings:
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },  
+      "EnvironmentConfig": {
+        "Environment": "Dogfood",
+        "Location": "westus2"
+      },
+      "AllowedHosts": "*",
+
+      "ClientCertificateConfig": {
+        "AuthorizedCallers": [
+          {
+            "Subject": "gateway-df-client.babylon.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "Gateway"
+          },
+          {
+            "Subject": "provision.purview-dg.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "ProvisioningService"
+          },
+          {
+            "Subject": "rp.babylon-service-ame.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "ResourceProvider"
+          },
+          {
+            "Subject": "geneva-action.babylon-service-ame.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "GenevaAction"
+          },
+          {
+            "Subject": "ame.genevaActions.purview-dg.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "GenevaAction"
+          },
+          {
+            "Subject": "wus3.purviewflow-service.purview.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "PurviewFlow"
+          },
+          {
+            "Subject": "workflow-client-wus3.workflow.purview.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "WorkflowService"
+          },
+          {
+            "Subject": "wus2.dataquality-service.purview.azure-test.com",
+            "Issuer": "AME", 
+            "CallerCategory": "DQS"
+          },
+          {
+            "Subject": "wus2.dataquality-logicapp.purview.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "DQLogicApp"
+          },
+          {
+            "Subject": "health.purview-dg.azure-test.com",
+            "Issuer": "AME",
+            "CallerCategory": "DEH"
+          },
+          {"Subject":"wus2.dataquality-jobmanager.purview.azure-test.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"wus2.dataquality-jobmanager.purview.azure-test.com","Issuer":"AME","CallerCategory":"DQJobManager"}
+        ]
+      },
+      "ServerConfig": {
+        "Port": 443,
+        "KeyVaultUri": "https://dqs-df-kv-wus2.vault.azure.net/",
+        "SecretName": "dqs-server-df-cert",
+        "RefreshRate": "1.00:00:00"
+      },
+      "SecretsConfiguration": {
+        "KeyVaultUri": "https://dqs-df-kv-wus2.vault.azure.net/",
+        "SecretNamesList": [
+          "blobConnectionString",
+          "sparkexternalcomputekey",
+          "datastoreCredentials",
+          "dq-aisafety"
+        ]
+      },
+      "CertificatesConfiguration": {
+        "KeyVaultUri": "https://dqs-df-kv-wus2.vault.azure.net/",
+        "RefreshRate": "1.00:00:00",
+        "CertificateList": [
+          "ClientCertificate:dqs-client-df-cert",
+          "MEOClientCertificate:meo-client-cert"
+        ]
+      },
+      "GenevaMetricConfig": {
+        "Account": "BabylonNonProd",
+        "DefaultMetricsNamespace": "DQSNonProd",
+        "Host": "geneva-services",
+        "Port": 8125,
+        "Environment": "Dogfood",
+        "Location": "westus2"
+      },  
+      "PurviewConfiguration" : {
+          "ManagementBaseUri": "https://westus2.rp.purview-service.azure-test.com:8218",
+          "enableSDK": true,
+          "ApiVersion": "2019-11-01-preview",
+          "PurviewFirstPartyApp": {
+            "ApplicationId": "73c2949e-da2d-457a-9607-fcc665198967",
+            "Resource": "5d13f7d7-0567-429c-9880-320e9555e5fc",
+            "CertificateName": "ClientCertificate",
+            "TenantId": "f686d426-8d16-42db-81b7-ab578e110ccd",
+            "Authority": "https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd",
+            "AzureRegion": "westus2"
+          }
+      }, 
+      "AuthorizationConfiguration.ArtifactStore": {
+       "AppId": "73c2949e-da2d-457a-9607-fcc665198967",
+       "AuthenticationSubject": "",
+       "Authority": "https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd",
+       "TenantId": "f686d426-8d16-42db-81b7-ab578e110ccd",
+       "Resource": "5d13f7d7-0567-429c-9880-320e9555e5fc",
+       "CertificateName": "",
+       "BaseManagementUri": "https://df.wus3.artifactstore.purview-service.azure-test.com",
+       "AzureRegion": "westus2"
+      }, 
+      "MicrosoftGraphServiceConfiguration": {
+       "BaseManagementUri": "https://graph.microsoft-ppe.com",
+       "Authority": "https://login.windows-ppe.net",
+       "Scopes": [
+          "https://graph.microsoft-ppe.com/.default"
+        ]
+      },
+      "DQConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-df-westus2.babylon-service.azure-test.com",
+        "InternalClusterUri": "https://metadata-service.default.svc.cluster.local",
+        "CertificateName": "ClientCertificate",
+        "OldProxyServiceUri": "https://purview-dqs-df-westus2.babylon-service.azure-test.com"
+      },
+      "DEHConfiguration": {
+        "BaseManagementUri": "https://df-westus2-health.purview-dg.azure-test.com"
+      },
+      "PfsConfiguration": {
+        "BaseManagementUri": "https://purview-dqjm-ppe-westus2.babylon-service.azure-test.com",
+        "CertificateName": "ClientCertificate"
+      },    
+      "CatalogConfiguration": {
+        "BaseManagementUri": "https://westus2-dogfood.catalog.purview-service.azure-test.com",
+        "CertificateName": "ClientCertificate"
+      },
+      "DGCatalogConfiguration": {
+        "BaseManagementUri": "https://df-westus2.dgcatalog.purview-service.azure-test.com",
+        "CertificateName": "ClientCertificate"
+      },
+      "DQJMRegionConfiguration": {
+        "RegionConfig": {"westus2":"https://purview-dqjm-ppe-westus2.babylon-service.azure-test.com"},
+      },
+      "JobCompletionQueueConfiguration": {
+        "AccountName": "dqservicedfstoragewus2",
+        "QueueName": "jobcompletionv2",
+        "QueueRequestTimeout": "00:00:59",
+        "QueueRetryCount": "3",
+        "QueueVisibilityTimeout": "00:00:10:00.00",
+        "TimeToLive": "1.00:00:00",
+      },
+      "AlertConsumerConfiguration": {
+        "InitialStartDelay": "00:00:01:00",
+        "WaitAfterSuccessInterval": "00:00:00:00.01",
+        "WaitAfterQueueEmptyInterval": "00:00:00:30",
+        "WaitAfterFirstErrorInterval": "00:00:00:30"
+      },
+      "ValidationService": {
+        "Uri": "https://purview-dqv-df-westus2.babylon-service.azure-test.com"
+      },
+      "JobManagementConfig": {
+        "storageAccountName": "dqservicedfstoragewus2",
+        "storageArmEndpoint": "https://management.azure.com",
+        "storageAuthority": "https://login.microsoftonline.com/",
+        "storageResourceGroup": "dqservice-df-rg-wus2",
+        "storageSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+        "storageTenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "storageSuffix": "core.windows.net",
+        "notificationListenerQueueName": "backgroundjobsqueue",
+        "storageTableName": "backgroundjobsworktable",
+        "storageQueueNamePrefix": "backgroundjobsqueue",
+        "location": "westus2",
+        "BackgroundJobConnectionString": ""
+     },
+     "DQStorageAccountConfiguration": {
+        "StorageAccountName": "dqservicedfstoragewus2",
+        "StorageAccountSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+        "StorageAccountResourceGroupName": "dqservice-df-rg-wus2",
+        "StorageAccountAuthority": "https://login.microsoftonline.com/",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-df-rg-wus2/providers/Microsoft.Storage/storageAccounts/dqservicedfstoragewus2",
+        "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "Resource": "https://management.azure.com"
+     },
+     "InsightsEventHubConfiguration": {
+        "IsEnabled": True,
+        "EventHubNamespace": "dg-df-hub-wus2.servicebus.windows.net",
+        "EventHubName": "dataqualityeventv2"
+     },
+     "CatalogEventHubConfiguration": {
+        "ProcessingStorageAccountName": "dqservicedfstoragewus2",
+        "IsEnabled": True,
+        "EventHubNamespace": "dg-df-hub-wus2.servicebus.windows.net",
+        "EventHubName": "catalogevent"
+     },
+     "OnlineMLServiceConfiguration": {
+        "AuthMIObjectId":"82d3b5ec-72d4-44d3-b0f4-7adec8f9990e",
+        "Host":"endp-rulesug-dgdqmlv4-wus2.westus2.inference.ml.azure.com",
+        "EndpointName":"endp-rulesug-dgdqmltest4-wus2",
+        "Subscription":"16ec6df3-9d0b-4d9e-a7a4-76c9582fd9f6",
+        "ResourceGroup":"dqservice-ml-dftest-rg-wus2",
+        "Workspace":"mlwdgdqmltest4wus2",
+        "AiSafetyEndpointName":"https://dqs-ml-content-safety-wus2.cognitiveservices.azure.com/",
+        "AiSafetyEndpointRegionLoc":"nonprod"
+     },
+    "GenevaLog": {
+        "Environment": "Test"
+    },
+    "GenevaMetrics": {
+        "StatsDHost": "geneva-services",
+        "Port": 8125,
+        "MdmAccountName": "BabylonNonProd",
+        "MdmNamespace": "DQSNonProd",
+        "ShoeboxMdmAccountName": "DQServiceNonProdShoebox",
+        "ShoeboxMdmNamespace": "BabylonNonProdShoebox",
+        "DefaultDimensions": { "Environment": "Test" }
+    },
+    "ClientCertificates": {
+        "RefreshRate": "1.00:00:00",
+        "Certificates": {
+            "ArtifactStoreClient": {
+                "KeyVaultUri": "https://dqs-df-kv-wus2.vault.azure.net/",
+                "SecretName": "dqs-client-df-cert"
+            }
+        }
+    },
+    "ClientCertificate": {
+        "KeyVaultUri": "https://dqs-df-kv-wus2.vault.azure.net/",
+        "SecretName": "dqs-client-df-cert",
+        "RefreshRate": "1.00:00:00"
+    },
+    "ArtifactStore": {
+        "BaseManagementUri": "https://df.wus3.artifactstore.purview-service.azure-test.com"
+    },
+    "ConnectivityConfiguration": {
+        "BaseManagementUri": "https://wus.connectivity.azure-test.com"
+    },
+    "PolicyServiceConfiguration": {
+        "BaseManagementUri": "https://purview-policystore-df-westus2.babylon-service.azure-test.com"
+    },
+    "ParserConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-df-westus2.babylon-service.azure-test.com"
+    },
+    "ExecutionConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-df-westus2.babylon-service.azure-test.com"
+    },
+    "LogicAppSchedulerConfiguration": {
+        "SubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+        "ResourceGroup": "dqservice-df-rg-wus2",
+        "LogicAppLocation": "westus2",
+        "KeyVaultUri": "https://dqs-lapp-df-kv-wus2.vault.azure.net/",
+        "LogicAppManagedIdentityId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-df-managedIdentity-wus2",
+        "KeyVaultClientCertName": "dqs-logicapp-client-df-cert",
+        "KeyVaultConnectionResourceId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-df-rg-wus2/providers/Microsoft.Web/connections/dqs-logicApp-df-keyVaultConnection-wus2",
+        "KeyVaultConnectorApiId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/providers/Microsoft.Web/locations/westus2/managedApis/keyvault"
+    },
+    "AzureEnvironment": {
+        "ManagementEndpoint": "https://management.core.windows.net/",
+        "ResourceManagerEndpoint" : "https://api-dogfood.resources.windows-int.net/"
+    },
+    "MicrosoftEmailServiceConfiguration": {
+        "MEOAppId": "803dbb61-7e4a-4e47-bfc5-52ddec37e260",
+        "MEOEndpoint": "https://eur.comms.azure.net/api/v2/",
+        "MEOAudience": "https://emailorchestrator.onmicrosoft.com/11c28534-b7e2-4e0b-ba01-54777bea593e",
+        "MEOAuthority": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "CertificateName": "MEOClientCertificate"
+    },
+    "ActionPublisherConfiguration": {
+        "BaseManagementUri": "https://df-westus2-health.purview-dg.azure-test.com",
+        "CertificateName": "ClientCertificate"
+    },
+    "SparkJobConfiguration": {
+        "MDQSparkExecutionConfiguration": {
+            "DriverMemory": "28g",
+            "DriverCores": "4",
+            "ExecutorMemory": "28g",
+            "ExecutorCores": "4",
+            "NumExecutors": "1",
+            "NodePoolType": "small"
+        },
+        "DQSparkExecutionConfiguration": {
+            "DriverMemory": "28g",
+            "DriverCores": "4",
+            "ExecutorMemory": "28g",
+            "ExecutorCores": "4",
+            "NumExecutors": "1",
+            "MinDynamicExecutor": "1",
+            "MaxDynamicExecutor": "10",
+            "NodePoolType": "xlarge"
+        }
+    },
+    }

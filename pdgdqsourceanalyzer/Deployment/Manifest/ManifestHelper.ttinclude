@@ -1,0 +1,1052 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="$(NuGetPackageRoot)newtonsoft.json\13.0.3\lib\net45\Newtonsoft.Json.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="Newtonsoft.Json" #>
+<#@ import namespace="Newtonsoft.Json.Linq" #>
+<#@ output extension=".log" #>
+
+<# 
+string manifestPath = Host.ResolveAssemblyReference("$(ManifestPath)");
+
+InitRootOutputDir(Host.ResolveAssemblyReference("$(GeneratedRoot)"));
+InitEnvironments($"{manifestPath}\\EnvironmentManifest.json");
+#>
+
+<#+
+/*
+ * Helper functions for template generation
+ */
+
+// The root output directory
+string rootOutputDir;
+
+// Objects shared across environment types 
+JToken environmentTypes;
+JToken environments;
+
+// Initialize the root directory
+void InitRootOutputDir(string directoryPath)
+{
+  rootOutputDir = directoryPath;
+}
+
+// Load the manifest and parse it
+void InitEnvironments(string manifestPath)
+{
+  var environmentManifestRaw = File.ReadAllText(manifestPath);
+  var environmentManifestJson = JObject.Parse(environmentManifestRaw);
+
+  environmentTypes = environmentManifestJson["environmentTypes"];
+  environments = environmentManifestJson["environments"];
+}
+
+// Get the value of a boolean property; if it doesn't exist return default
+bool GetBool(JToken token, string propertyName, bool defaultValue = false)
+{
+  var propertyValue = token[propertyName];
+  if (propertyValue != null)
+  {
+    return (bool)propertyValue;
+  }
+  return defaultValue;
+}
+
+// Get the name of the infrastructure resource group
+string GetInfraResourceGroup(JToken environment)
+{
+  return $"dqservice-{ToLower(environment["shortName"])}-rg-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the name of the shared infrastructure resource group
+string GetSharedInfraResourceGroup(JToken environment)
+{
+  return IsProduction(environment) ? "dqs-prod-shared-resources" : "dqservice-shared-resources";
+}
+
+// Get the Blob Connection key name
+string GetBlobConnectionKeyName(JToken environment)
+{
+  return $"dq-{ToLower(environment["shortName"])}-storage-key";
+}
+
+// Get the Datastore credentials secret key name
+string GetDatastoreCredentialsKeyName(JToken environment)
+{
+  return $"dqservice-{ToLower(environment["shortName"])}-datastore-cred-key";
+}
+
+// Get the Pfs Logs Storage Account Credential
+string GetPfsStorageAccountCredentialsKeyName(JToken environment)
+{
+  return $"pfs-{ToLower(environment["shortName"])}-logs-storage-cred-key";
+}
+
+// Effective environment name, e.g. for Canary it's Production
+string GetEffectiveEnvName(JToken environment)
+{
+  return environment["effectiveName"]?.ToString() ?? environment["name"]?.ToString();
+}
+
+// Environment name, e.g. for Canary it's Production
+string GetEnvName(JToken environment)
+{
+  return environment["name"]?.ToString() ?? environment["name"]?.ToString();
+}
+
+// Short Location name
+string GetEnvShortLocation(JToken environment)
+{
+  return environment["shortLocation"]?.ToString() ?? environment["shortLocation"]?.ToString();
+}
+
+// True if this is a production environment
+bool IsProduction(JToken environment)
+{
+  return GetEffectiveEnvName(environment).Equals("Production", StringComparison.OrdinalIgnoreCase);
+}
+
+// Return the type of environment
+string GetEnvironmentTypeName(JToken environment)
+{
+  return IsProduction(environment) ? "Prod" : "Test";
+}
+
+JToken GetEnvironmentType(JToken environment)
+{
+  return environmentTypes[GetEnvironmentTypeName(environment)];
+}
+
+// Get the Azure AD tenant Id associated to an environment
+string GetTenantId(JToken environment)
+{
+  return GetEnvironmentType(environment)["tenantId"].ToString();
+}
+
+// Get the enterprise client application Id of an environment
+string GetClientAppId(JToken environment)
+{
+  return GetEnvironmentType(environment)["clientAppId"].ToString();
+}
+
+string GetClientObjId(JToken environment)
+{
+  return GetEnvironmentType(environment)["clientObjId"].ToString();
+}
+
+string GetStorageAccountName(JToken environment)
+{
+  return $"dqservice{ToLower(environment["shortName"])}storage{ToLower(environment["shortLocation"])}";
+}
+
+string GetStorageAccountReplicationType(JToken environment)
+{
+  return environment["storageAccountReplicationType"]?.ToString() ?? "Standard_ZRS";
+}
+
+string GetRegion(JToken environment)
+{
+  return environment["location"].ToString();
+}
+
+string GetSubscriptionId(JToken environment)
+{
+  return environment["subscription"].ToString();
+}
+
+string GetGenevaActionAuthorizedSubject(JToken environment)
+{
+  return IsProduction(environment) ? "geneva-action.babylon-service-ame.azure.com" : "geneva-action.babylon-service-ame.azure-test.com";
+}
+
+string GetDGGenevaActionAuthorizedSubject(JToken environment)
+{
+  return IsProduction(environment) ? "ame.genevaActions.purview-dg.azure.com" : "ame.genevaActions.purview-dg.azure-test.com";
+}
+
+
+string GetPurviewFirstPartyTenantId(JToken environment)
+{
+  return GetEnvironmentType(environment)["PurviewFirstPartyTenant"].ToString();
+}
+
+// Get the secret geneation keyvault resource id
+string GetSecretGenerationKeyVaultResourceId(JToken environment)
+{
+  return GetEnvironmentType(environment)["secretGenerationKeyVaultResourceId"].ToString();
+}
+
+// Get node type
+string GetNodeType(JToken environment)
+{
+  return environment["vmSkuOverride"]?.ToString() ?? (IsProduction(environment) ? $"Standard_D4s_v3" : $"standard_dc2s_v3");
+}
+
+// Get the min number of nodes for AKS cluster
+int GetMinNumberOfNodes(JToken environment)
+{
+  return (GetEnvironmentType(environment)["numberOfNodesMin"]).ToObject<int>();
+}
+
+// Get the max number of nodes for AKS cluster
+int GetMaxNumberOfNodes(JToken environment)
+{
+  return (GetEnvironmentType(environment)["numberOfNodesMax"]).ToObject<int>();
+}
+
+// Get the Certificate generation app Id
+string GetSecretGeneratorAppId(JToken environment)
+{
+  return GetEnvironmentType(environment)["secretGeneratorAppId"].ToString();
+}
+
+// Get the SecretGenerator App ObjectId
+string GetSecretGeneratorAppObjectId(JToken environment)
+{
+  return GetEnvironmentType(environment)["secretGeneratorAppObjectId"].ToString();
+}
+
+// Get the Certificate generation keyvault
+string GetSecretGenerationKeyvault(JToken environment)
+{
+  return GetEnvironmentType(environment)["secretGenerationKeyVault"].ToString();
+}
+
+// Get the name of the log analytics workspace
+string GetLogAnalyticsWorkspaceName(JToken environment)
+{
+  return $"dqs-{ToLower(environment["shortName"])}-loganalytics-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the log analytics location
+string GetLogAnalyticsLocation(JToken environment)
+{
+  return environment["logAnalyticsLocation"]?.ToString() ?? GetCompactLocation(environment);
+}
+
+string GetAksDeploymentCompactLocation(JToken environment)
+{
+  return environment["aksRegionOverrideLocation"]?.ToString() ?? $"{GetCompactLocation(environment)}";
+}
+
+// Get the name of the pod identity
+string GetPodIdentityName(JToken environment)
+{
+  return IsProduction(environment) ? "PurviewDQS_ManagedIdentity_Prod" : "PurviewDQS_ManagedIdentity_NonProd";
+}
+
+// Get the subscription Id of the pod identity
+string GetPodIdentitySubscriptionId(JToken environment)
+{
+  return IsProduction(environment) ? "4058cc89-e218-48c1-8a0a-9855f708296b" : "d0542b74-5839-4ee0-8ec4-74e91468eaa7";
+}
+
+// Get the principal Id of the pod identity
+string GetPodIdentityPrincipalId(JToken environment)
+{
+  return IsProduction(environment) ? "ea534029-ff81-4f74-af63-91e8938e7595" : "452d4c91-7096-4336-a5f6-678d2d7b5e5b";
+}
+
+// Get the resource Id of the pod identity
+string GetPodIdentityResourceId(JToken environment)
+{
+  return IsProduction(environment) ? 
+    "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod" :
+    "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd";
+}
+
+// Get the name of dns api
+string GetDnsApi(JToken environment)
+{
+  if (environment["isTempEnv"] != null)
+  {
+    return $"purview-dqservice-{ToLower(environment["shortName"])}";
+  }
+  return $"purview-dqservice-{ToLower(GetEffectiveEnvShortName(environment))}";
+}
+
+// Get the name of the key vault for the current environment. Should be <= 24 chars.
+string GetKeyVaultName(JToken environment)
+{
+  return $"dqs-{ToLower(environment["shortName"])}-kv-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the name of the key vault used by logic apps for the current environment. Should be <= 24 chars.
+string GetKeyVaultLogicAppName(JToken environment)
+{
+  return $"dqs-lapp-{ToLower(environment["shortName"])}-kv-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the name of the user-assigned managed identity used by scheduler logic apps for the current environment.
+string GetLogicAppManagedIdentityName(JToken environment)
+{
+  return $"dqs-logicApp-{ToLower(environment["shortName"])}-managedIdentity-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the name of the keyvault API connection used by scheduler logic apps for the current environment.
+string GetLogicAppKeyVaultConnectionName(JToken environment)
+{
+  return $"dqs-logicApp-{ToLower(environment["shortName"])}-keyVaultConnection-{ToLower(environment["shortLocation"])}";
+}
+
+string GetLogicAppManagedIdentityId(JToken environment)
+{
+  return $"/subscriptions/{environment["subscription"].ToString()}/resourceGroups/{GetInfraResourceGroup(environment)}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{GetLogicAppManagedIdentityName(environment)}";
+}
+
+string GetKeyVaultConnectionResourceId(JToken environment)
+{
+  return $"/subscriptions/{environment["subscription"].ToString()}/resourceGroups/{GetInfraResourceGroup(environment)}/providers/Microsoft.Web/connections/{GetLogicAppKeyVaultConnectionName(environment)}";
+}
+
+string GetKeyVaultConnectorApiId(JToken environment)
+{
+  return $"/subscriptions/{environment["subscription"].ToString()}/providers/Microsoft.Web/locations/{GetCompactLocation(environment)}/managedApis/keyvault";
+}
+
+// Get the name of the public ip dns
+string GetPublicIpDns(JToken environment)
+{
+  return $"dqservice";
+}
+
+// Get the name of the AKS cluster
+string GetClusterName(JToken environment)
+{
+  return $"dqs-dg-{ToLower(environment["shortName"])}-aks-{ToLower(environment["shortLocation"])}";
+}
+
+// Get the client Id of the cluster manager application
+string GetClusterManagerClientId(JToken environment)
+{
+  return GetEnvironmentType(environment)["clusterManagerClientId"].ToString();
+}
+
+// Get the service principal Id of the cluster manager application
+string GetClusterManagerServicePrincipalId(JToken environment)
+{
+  return GetEnvironmentType(environment)["clusterManagerServicePrincipalId"].ToString();
+}
+
+// Get the full ARM resource Id of the key vault
+string GetKeyVaultResourceId(JToken environment)
+{
+  return $"/subscriptions/{environment["subscription"].ToString()}/resourceGroups/{GetInfraResourceGroup(environment)}/providers/Microsoft.KeyVault/vaults/{GetKeyVaultName(environment)}";
+}
+
+// Get the name of the DNS zone
+string GetDNSZone(JToken environment)
+{
+  return "babylon-service";
+}
+
+// Get the name of the Azure zone
+string GetAzureZone(JToken environment)
+{
+  return IsProduction(environment) ? "azure.com" : "azure-test.com";
+}
+
+// Get the subscription id where the DNS zone is defined
+string GetDnsZoneSubscriptionId(JToken environment)
+{
+  return GetEnvironmentType(environment)["dnsZoneSubscriptionId"].ToString();
+}
+
+// Get the resource group where the DNS zone is defined
+string GetDnsZoneResourceGroup(JToken environment)
+{
+  return GetEnvironmentType(environment)["dnsZoneResourceGroup"].ToString();
+}
+
+// The App Id of the Ev2 extension application
+string GetEv2ExtensionIdentityObjectId(JToken environment)
+{
+  return GetEnvironmentType(environment)["ev2ExtensionIdentityObjectId"].ToString();
+}
+
+// The resource Id of the Ev2 extension application
+string GetEv2ExtensionIdentityResourceId(JToken environment)
+{
+  return GetEnvironmentType(environment)["ev2ExtensionIdentityResourceId"].ToString();
+}
+
+// Get the name of the key vault secret that stores the service's server certificate
+string GetServerCertSecretName(JToken environment)
+{
+  return $"dqs-server-{ToLower(environment["shortName"])}-cert";  
+}
+
+// Get the name of the key vault secret that stores the service's client certificate
+string GetClientCertSecretName(JToken environment)
+{
+  return $"dqs-client-{ToLower(environment["shortName"])}-cert";  
+}
+
+// Get the name of the key vault secret that stores the client certificate used by logic apps to authenticate to DQS
+string GetLogicAppClientCertSecretName(JToken environment)
+{
+  return $"dqs-logicapp-client-{ToLower(environment["shortName"])}-cert";
+}
+
+// Get the name of the geneva certificate
+string GetGenevaCertSecretName(JToken environment)
+{
+  return $"dqs-geneva-{ToLower(environment["shortName"])}-cert";
+}
+
+// Save the preceding output to a new file
+void SaveOutput(string folder, string outputFileName)
+{
+  string folderPath = String.IsNullOrWhiteSpace(folder) ? rootOutputDir : Path.Combine(rootOutputDir, folder);
+  if (!Directory.Exists(folderPath))
+  {
+    Directory.CreateDirectory(folderPath);
+  }
+
+  string outputFilePath = Path.Combine(folderPath, outputFileName);
+  File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString().Trim(), new UTF8Encoding(false)); 
+
+  this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+} 
+
+// The name of the helm value file
+string GetHelmValueFile(JToken environment)
+{
+  return $"values_dqs_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
+}
+
+// Get the pod number for AKS deployment
+int GetPodNumber(JToken environment)
+{
+  return (GetEnvironmentType(environment)["numberOfPods"]).ToObject<int>();
+}
+
+// The name of the helm release
+string GetHelmReleaseName(JToken environment)
+{
+  return $"release-dqs-{ToLower(environment["shortName"])}";
+}
+
+// Get the name of the dqs server certificate subject name
+string GetDataQualityServerCertSubjectName(JToken environment)
+{
+  if (environment["isTempEnv"] != null)
+  {
+    return $"purview-dqservice-{ToLower(GetEffectiveEnvShortName(environment))}-{GetCompactLocation(environment)}.{GetDNSZone(environment)}.{GetAzureZone(environment)}','purview-dqs-{ToLower(environment["shortName"])}-{GetCompactLocation(environment)}.{GetDNSZone(environment)}.{GetAzureZone(environment)}";
+  }
+  return $"purview-dqservice-{ToLower(GetEffectiveEnvShortName(environment))}-{GetCompactLocation(environment)}.{GetDNSZone(environment)}.{GetAzureZone(environment)}";
+}
+
+// Get the name of the dqs client certificate subject name sent to rp for authentication
+string GetDataQualityClientCertSubjectName(JToken environment)
+{
+  return $"{GetTargetUrlLocation(environment)}.dataquality-service.purview.{GetAzureZone(environment)}";
+}
+
+// Get the subject name of the client certificate used by logic apps to authenticate to DQS
+string GetLogicAppClientCertSubjectName(JToken environment)
+{
+  return $"{GetTargetUrlLocation(environment)}.dataquality-logicapp.purview.{GetAzureZone(environment)}";
+}
+
+// Get the name of the deh client certificate subject name
+string GetDEHClientCertSubjectName(JToken environment)
+{
+  return $"health.purview-dg.{GetAzureZone(environment)}";
+}
+
+// Get upper case Env name like 'DEV' or 'DF'
+string GetUpperCaseEnvironmentShortName(JToken environment)
+{
+  return environment["shortName"].ToString().ToUpper();
+}
+
+// Get the name of the geneva CNAME
+string GetGenevaCertSubjectName(JToken environment)
+{
+  //__ENVIRONMENT__.__SHORT_LOCATION__.GENEVA.KEYVAULT.BABYLON.AZURE.COM
+  string env = !IsProduction(environment) ? "TEST" : environment["shortName"].ToString().ToUpper();
+  // WUS location certificate is whitelisted on Geneva
+  string location = !IsProduction(environment) ? "WUS" : environment["shortLocation"].ToString().ToUpper();
+  return $"{env}-AME.{location}.GENEVA.KEYVAULT.BABYLON.{GetAzureZone(environment).ToUpper()}";
+}
+
+// The environment for target links - e.g. all links in the Dev environment point to Dogfood services
+JToken GetTargetEnvironment(JToken environment)
+{
+  if (environment["targetEnvironment"] == null)
+  {
+    return environment;
+  }
+  foreach (var env in environments)
+  {
+    if (env["name"].ToString() == environment["targetEnvironment"].ToString())
+    {
+      return env;
+    }
+  }
+  throw new Exception("Invalid targetEnvironment reference:" + environment["targetEnvironment"]);
+}
+
+// Get the TargetUrl location
+string GetTargetUrlLocation(JToken environment)
+{
+    return environment["shortLocationOverride"]?.ToString() ?? environment["shortLocation"]?.ToString();
+}
+
+//Get the Base Management URI
+string GetArtifactStoreBaseManagementUri(JToken environment)
+{
+  if(environment["artifactStoreEndpointOverride"] != null)
+  {
+      return $"{environment["artifactStoreEndpointOverride"].ToString()}";
+  }
+  return IsProduction(environment) ? $"https://{ToLower(environment["shortName"])}.{GetTargetUrlLocation(environment)}.artifactstore.purview-service.azure.com" : "https://df.wus3.artifactstore.purview-service.azure-test.com"  ;
+}
+
+//Get the Validation Service URI
+string GetValidationServiceURI(JToken environment)
+{
+  return IsProduction(environment) ? $"https://purview-dqv-prod-{GetCompactLocation(environment)}.babylon-service.azure.com" : "https://purview-dqv-df-westus2.babylon-service.azure-test.com";
+}
+
+//Get the PurviewFirstPartyApp Authority URI
+string GetPurviewFirstPartyAppAuthority(JToken environment)
+{
+ return IsProduction(environment) ? $"https://login.microsoftonline.com/{GetPurviewFirstPartyTenantId(environment)}" : $"https://login.windows-ppe.net/{GetPurviewFirstPartyTenantId(environment)}";
+}
+
+//Get the Purview Account Lookup URI
+string GetPurviewAccountUri(JToken environment)
+{
+  if(GetEnvShortLocation(environment).Equals("cus", StringComparison.OrdinalIgnoreCase))
+  {
+    return "https://centralus-ppe.rp.purview-service.azure.com:8218";
+  }
+  return IsProduction(environment) ? $"https://{GetCompactLocation(environment)}.rp.purview-service.azure.com:8218" : "https://westus2.rp.purview-service.azure-test.com:8218"  ;
+}
+
+// Remove spaces from full location name and make lowercase
+string GetCompactLocation(JToken environment)
+{
+  return ToLower(environment["location"]).Replace(" ", String.Empty);
+}
+
+// Remove spaces from full location name and make lowercase
+string GetCompactLocationForPfs(JToken environment)
+{
+  if (IsProduction(environment))
+  {
+    return isProdIgnoringCanary(environment) ? $"{ToLower(environment["shortLocation"])}" : $"{ToLower(environment["shortLocationOverride"])}";
+  }
+  else
+  {
+      return "wus3";
+  }
+}
+
+// Remove spaces from full location name and make lowercase
+string GetCompactLocationForDqjm(JToken environment)
+{
+  if (IsProduction(environment))
+  {
+    return isProdIgnoringCanary(environment) ? $"{ToLower(environment["shortLocation"])}" : $"{ToLower(environment["shortLocationOverride"])}";
+  }
+  else
+  {
+      return "wus2";
+  }
+}
+
+string GetAllDataQualityJobManagerCertName(JToken environment)
+{
+  List<Dictionary<string, string>> dqjmCertConfig = new();
+  
+  foreach (var env in environments)
+  {
+    if (GetEnvironmentType(env) == GetEnvironmentType(environment))
+    {
+        dqjmCertConfig.Add(new Dictionary<string, string>{ 
+            { "Subject", $"{GetCompactLocationForDqjm(env)}.dataquality-jobmanager.purview.{GetAzureZone(env)}" },
+            { "Issuer", "AME" },
+            { "CallerCategory", "DQJobManager" }
+        });
+    }
+  }
+  string result = JsonConvert.SerializeObject(dqjmCertConfig);
+  return result.Substring(1, result.Length-2); 
+}
+
+string GetCrossRegionMapConfig(JToken environment)
+{
+  Dictionary<string, string> dqRegionConfig = new();
+  
+  foreach (var env in environments)
+  {
+    if (GetEnvironmentType(env) == GetEnvironmentType(environment))
+    {
+      if(!dqRegionConfig.ContainsKey($"{GetCompactLocation(env)}")){
+        string key = $"{GetCompactLocation(env)}";
+        //string value = $"{GetCompactLocationForDqjm(env)}.dataquality-jobmanager.purview.{GetAzureZone(env)}";
+        string value = $"{GetPfsBaseManagementUri(env)}";
+        dqRegionConfig.Add(key,value);
+        //dqRegionConfig.Add($"{GetCompactLocation(env)}", $"{GetCompactLocationForDqjm(env)}.dataquality-jobmanager.purview.{GetAzureZone(env)}");
+      }
+    }
+  }
+
+  return JsonConvert.SerializeObject(dqRegionConfig); 
+  //return result.Substring(1, result.Length-2);
+}
+
+
+// Effective environment short name, e.g. for Cnry it's Prod
+string GetEffectiveEnvShortName(JToken environment)
+{
+  return environment["effectiveShortName"]?.ToString() ?? environment["shortName"]?.ToString();
+}
+
+// ToLower helper shortcut to avoid ToString()
+string ToLower(JToken jtoken)
+{
+  return jtoken.ToString().ToLower();
+}
+
+// Get the location where the Ev2 extension is executed. Some locations do not support Ev2 extensions, so the default location is overridden
+string GetEv2ExtensionLocation(JToken environment)
+{
+  return (environment["ev2ExtensionLocation"] ?? environment["location"]).ToString();
+}
+
+// Return the login authority
+string GetLoginAuthority(JToken environment)
+{
+  return IsProduction(environment) ? "https://login.microsoftonline.com/common" : "https://login.windows-ppe.net/common";
+}
+
+string GetMicrosoftGraphEndpoint(JToken environment)
+{
+  return GetEnvironmentType(environment)["MicrosoftGraphEndpoint"].ToString();
+}
+
+string GetMicrosoftGraphAuthorityBaseUri(JToken environment)
+{
+ return IsProduction(environment) ? $"https://login.microsoftonline.com" : $"https://login.windows-ppe.net";
+}
+
+string GetMetadataBaseManagementUri(JToken environment)
+{
+  return IsProduction(environment) ? $"https://purview-dqservice-{GetEffectiveEnvShortName(environment).ToLower()}-{GetCompactLocation(environment)}.babylon-service.{GetAzureZone(environment)}" : "https://purview-dqservice-df-westus2.babylon-service.azure-test.com";
+}
+
+string GetDEHBaseManagementUri(JToken environment)
+{
+  return $"https://{GetEffectiveEnvShortName(environment).ToLower()}-{GetCompactLocation(environment)}-health.purview-dg.{GetAzureZone(environment)}";
+}
+
+string GetOldDQSBaseManagementUri(JToken environment)
+{
+  return IsProduction(environment) ? $"https://purview-dqs-{GetEffectiveEnvShortName(environment).ToLower()}-{GetCompactLocation(environment)}.babylon-service.{GetAzureZone(environment)}" : "https://purview-dqs-df-westus2.babylon-service.azure-test.com";
+}
+
+
+string GetMetadataInternalclusterUri(JToken environment)
+{
+  return "https://metadata-service.default.svc.cluster.local";
+}
+
+string GetPfsBaseManagementUri(JToken environment)
+{
+  return IsProduction(environment) ? $"https://purview-dqjm-{GetEffectiveEnvShortName(environment).ToLower()}-{GetCompactLocation(environment)}.babylon-service.{GetAzureZone(environment)}" : "https://purview-dqjm-ppe-westus2.babylon-service.azure-test.com";
+}
+
+//Get the Catalog Base Management URI
+string GetCatalogBaseManagementUri(JToken environment)
+{
+  return IsProduction(environment) ? $"https://{GetCompactLocation(environment)}-prod.catalog.purview-service.azure.com" : "https://westus2-dogfood.catalog.purview-service.azure-test.com";
+}
+
+string GetGenevaEnv(JToken environment)
+{
+    return IsProduction(environment) ? "Prod" : "Test";
+}
+
+string GetGenevaShoeBoxMdmAccountNamespace(JToken environment)
+{
+    return IsProduction(environment) ? "DQServiceProdShoebox" : "DQServiceNonProdShoebox";
+}
+
+string GetGenevaShoeBoxMdmAccountName(JToken environment)
+{
+    return IsProduction(environment) ? "BabylonProdShoebox" : "BabylonNonProdShoebox";
+}
+
+string GetDGCatalogBaseManagementUri(JToken environment)
+{
+  return IsProduction(environment) ? $"https://prod-{GetCompactLocation(environment)}.dgcatalog.purview-service.azure.com" : "https://df-westus2.dgcatalog.purview-service.azure-test.com";
+}
+
+string GetPolicyStoreBaseManagementUri(JToken environment)
+{
+    return IsProduction(environment) ? "$https://purview-policystore-prod-{GetCompactLocation(environment)}.babylon-service.azure-test.com": "https://purview-policystore-df-westus2.babylon-service.azure-test.com";
+}
+
+// Get the name of the Acr name
+string GetAcrName(JToken environment)
+{
+  return GetEnvironmentType(environment)["acrName"].ToString();
+}
+
+// Get node type
+string GetSparkDriverNodeType(JToken environment)
+{
+  return environment["driverNodeTypeOverride"]?.ToString() ?? GetEnvironmentType(environment)["driverNodeType"]?.ToString();  
+}
+
+// Get node type
+string GetSparkExecutorNodeType(JToken environment)
+{
+  return environment["executorNodeTypeOverride"]?.ToString() ?? GetEnvironmentType(environment)["executorNodeType"]?.ToString();  
+}
+
+// Get the min number of nodes for AKS cluster
+int GetDriverMinNumberOfNodes(JToken environment)
+{
+  return (GetEnvironmentType(environment)["numberOfDriverNodesMin"]).ToObject<int>();
+}
+
+// Get the max number of nodes for AKS cluster
+int GetDriverMaxNumberOfNodes(JToken environment)
+{
+  return environment["numberOfDriverNodesMaxOverride"]?.ToObject<int>() ?? (GetEnvironmentType(environment)["numberOfDriverNodesMax"]).ToObject<int>();
+}
+
+
+// Get the min number of nodes for AKS cluster
+int GetExecutorMinNumberOfNodes(JToken environment)
+{
+  return (GetEnvironmentType(environment)["numberOfExecutorNodesMin"]).ToObject<int>();
+}
+
+// Get the max number of nodes for AKS cluster
+int GetExecutorMaxNumberOfNodes(JToken environment)
+{
+  return environment["numberOfExecutorNodesMaxOverride"]?.ToObject<int>() ?? (GetEnvironmentType(environment)["numberOfExecutorNodesMax"]).ToObject<int>();
+}
+
+string GetSparkPodIdentityName(JToken environment)
+{
+  return IsProduction(environment) ? "dqsprod" : "dqsdf";
+}
+
+string GetSparkPodIdentityGroup(JToken environment)
+{
+  return IsProduction(environment) ? "aks-cnry-rg-eus2" : "dqs-df-rg-wus2";
+}
+
+string GetSparkPodIdentitySubscription(JToken environment)
+{
+  return IsProduction(environment) ? "37fce4be-a3d5-44dc-8c2c-975cf08d1af4" : "16ec6df3-9d0b-4d9e-a7a4-76c9582fd9f6";
+}
+
+string GetAksPodIdentityResourceId(JToken environment)
+{
+  return $"/subscriptions/{GetSubscriptionId(environment)}/resourceGroups/{GetInfraResourceGroup(environment)}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{GetPodIdentityName(environment)}";
+}
+
+string GetSparkPodIdentityResourceId(JToken environment)
+{
+  return $"/subscriptions/{GetSparkPodIdentitySubscription(environment)}/resourceGroups/{GetSparkPodIdentityGroup(environment)}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{GetSparkPodIdentityName(environment)}";
+}
+
+string GetSparkPodIdentityClientId(JToken environment)
+{
+  return IsProduction(environment) ? "7dc0a6e7-6202-467d-8941-8cfd1805c513" : "b9a5106a-275e-4b0d-bdd2-38f6ece82df6";
+}
+
+string GetSparkPodIdentityObjectId(JToken environment)
+{
+  return IsProduction(environment) ? "e9e4300e-b402-453d-8a1a-a2dad20ef4b2" : "d469ee03-2adf-4a36-b6c9-ba34d85e04b4";
+}
+
+// The name of the helm release
+string GetSparkAksHelmReleaseName(JToken environment)
+{
+  return $"release-sparkaks-{ToLower(environment["shortName"])}";
+}
+
+// The name of the helm value file
+string GetSparkAksHelmValueFile(JToken environment)
+{
+  return $"values_sparkaks_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
+}
+
+// Get the  availability zones to deploy for AKS cluster
+object GetAvailabilityZones(JToken environment)
+{
+  return environment["aksAvailabilityZonesOverride"] ?? (GetEnvironmentType(environment)["aksAvailabilityZones"]);
+}
+
+// The connector Id for the ICM Notification
+string GetConnectorId(JToken environment)
+{
+    return GetEnvironmentType(environment)["connectorId"].ToString();
+}
+
+// Considering Canary is Not Prod for same cases
+bool isProdIgnoringCanary(JToken environment)
+{
+  return environment["name"].ToString().Equals("Production", StringComparison.OrdinalIgnoreCase);
+}
+
+// Get catalog data change fullly qualified event hub namespace
+string GetInsightsEventHubNamespace(JToken environment)
+{
+  return $"{GetEventHubNamespaceName(environment)}.servicebus.windows.net";
+}
+
+string GetInsightsEventHubName(JToken environment)
+{
+    return "dataqualityeventv2";
+}
+
+bool GetInsightsEventHubEnablement(JToken environment)
+{
+    return true;
+}
+
+string GetCatalogEventHubNamespace(JToken environment)
+{
+  return $"{GetEventHubNamespaceName(environment)}.servicebus.windows.net";
+}
+
+string GetCatalogEventHubName(JToken environment)
+{
+    return "catalogevent";
+}
+
+bool GetCatalogEventHubEnablement(JToken environment)
+{
+    return true;
+}
+
+string GetOnlineMLAuthMIObjectId(JToken environment)
+{
+    if(environment["onlineMLAuthMIObjectId"] != null)
+        return environment["onlineMLAuthMIObjectId"].ToString();
+    else 
+       return null;
+}
+string GetAiSafetyEndpointName(JToken environment)
+{
+    var nonProdEP = "https://dqs-ml-content-safety-wus2.cognitiveservices.azure.com/";
+    var isProd = IsProduction(environment);
+    if(!isProd) {
+        return nonProdEP;
+    }
+    string safetyHostPrefix =  environment["safetyHostPrefix"].ToString();
+    var prodEP = $"https://{safetyHostPrefix}.api.cognitive.microsoft.com/";
+    return prodEP;
+}
+
+string GetAiSafetyEndpointRegionLocationKey(JToken environment)
+{
+    var isProd = IsProduction(environment);
+    if(!isProd) {
+        return "nonprod";
+    }
+    string loc =  environment["shortLocation"].ToString();
+    if (environment.SelectToken("shortLocationOverride") != null){
+        loc =  environment["shortLocationOverride"].ToString();
+    }
+    return loc;
+}
+
+string GetOnlineMLSubscription(JToken environment)
+{
+    if(environment["onlineMLHostSub"] != null)
+     return environment["onlineMLHostSub"].ToString();
+    else 
+     return null;
+}
+
+
+string GetOnlineMLResourceGroup(JToken environment)
+{
+
+    if(environment["onlineMLHostRG"] != null)
+        return environment["onlineMLHostRG"].ToString();
+    else 
+      return null;
+
+
+}
+
+
+
+string GetOnlineMLWorkspace(JToken environment)
+{
+
+    if(environment["onlineMLWS"] != null)
+      return environment["onlineMLWS"].ToString();
+    else 
+      return null;
+
+
+
+}
+
+string GetOnlineMLHost(JToken environment)
+{
+
+    if(environment["onlineMLHostPrefix"] == null){
+        return null;
+    }
+    var isProd = IsProduction(environment);
+    if(isProd){
+        string prefix =  environment["onlineMLHostPrefix"].ToString();
+        string loc =  environment["shortLocation"].ToString();
+        string region =  environment["onlineMLRGregion"].ToString();
+        if (environment.SelectToken("shortLocationOverride") != null){
+            loc =  environment["shortLocationOverride"].ToString();
+            // NO ML in canary - test with cus and try for now.
+            if(loc.Equals("eus2euap")){
+                loc = "cus";
+            }
+        }
+        return $"{prefix}-{loc}.{region}.inference.ml.azure.com";
+    }
+    else {
+        return "endp-rulesug-dgdqmlv4-wus2.westus2.inference.ml.azure.com";
+    }
+
+
+
+
+}
+
+string GetOnlineMLEndpint(JToken environment)
+{
+
+    if(environment["onlineMLHostPrefix"] == null){
+        return null;
+    }
+
+    string prefix =  environment["onlineMLHostPrefix"].ToString();
+    string loc =  environment["shortLocation"].ToString();
+    if (environment.SelectToken("shortLocationOverride") != null){
+        loc =  environment["shortLocationOverride"].ToString();
+    }
+
+    return $"{prefix}-{loc}";
+}
+
+string GetResourceManagementUri(JToken environment) {
+    return IsProduction(environment) ?  "https://management.azure.com/" : "https://api-dogfood.resources.windows-int.net/";
+}
+
+// Get event hub namespace
+string GetEventHubNamespaceName(JToken environment)
+{
+  return $"dg-{ToLower(environment["shortName"])}-hub-{ToLower(environment["shortLocation"])}";
+}
+
+string GetMEOClientCertificateName(JToken environment)
+{
+  return IsProduction(environment) ?  GetClientCertSecretName(environment) : "meo-client-cert";
+}
+
+string GetMEOAppId(JToken environment)
+{
+  return GetEnvironmentType(environment)["meoAppId"].ToString();
+}
+
+// The name of the managed identity for pods
+string GetClusterIdentityName(JToken environment)
+{
+      return $"PurviewDQS_UMIManagedIdentity_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}";
+}
+
+string GetMDQSparkDriverMemory(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["driverMemory"].ToString();
+}
+
+string GetMDQSparkDriverCores(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["driverCores"].ToString();
+}
+
+string GetMDQSparkExecutorMemory(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["executorMemory"].ToString();
+}
+
+string GetMDQSparkExecutorCores(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["executorCores"].ToString();
+}
+
+string GetMDQSparkNumExecutors(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["numExecutors"].ToString();
+}
+
+string GetMDQMinDynamicExecutor(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["minDynamicExecutor"].ToString();
+}
+
+string GetMDQMaxDynamicExecutor(JToken environment)
+{
+  return environment["mdqSparkExecutionConfiguration"]["maxDynamicExecutor"].ToString();
+}
+
+string GetDQSparkDriverMemory(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["driverMemory"].ToString();
+}
+
+string GetDQSparkDriverCores(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["driverCores"].ToString();
+}
+
+string GetDQSparkExecutorMemory(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["executorMemory"].ToString();
+}
+
+string GetDQSparkExecutorCores(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["executorCores"].ToString();
+}
+
+string GetDQSparkNumExecutors(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["numExecutors"].ToString();
+}
+
+string GetDQMinDynamicExecutor(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["minDynamicExecutor"].ToString();
+}
+
+string GetDQMaxDynamicExecutor(JToken environment)
+{
+  return environment["dqSparkExecutionConfiguration"]["maxDynamicExecutor"].ToString();
+}
+
+string GetMDQNodePoolType(JToken environment)
+{
+  return "small";
+}
+
+string GetDQNodePoolType(JToken environment)
+{
+  return "xlarge";
+}
+#>

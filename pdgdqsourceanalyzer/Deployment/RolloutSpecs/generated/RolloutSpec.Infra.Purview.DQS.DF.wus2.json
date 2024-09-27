@@ -1,0 +1,22 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+  "ContentVersion": "1.0.0.0",
+  "RolloutMetadata": {
+    "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.Infra.Purview.DQS.DF.wus2.json",
+    "Name": "Data Quality Service Infrastructure Dogfood West US 2 BUILD_NUMBER",
+    "RolloutType": "Major",
+    "BuildSource": {
+      "Parameters": {
+        "ServiceGroupRoot": "ServiceGroupRoot",
+        "VersionFile": "build_ver.txt"
+      }
+	  }
+  },
+  "OrchestratedSteps": [
+  {
+    "Name": "Rollout_Service",
+    "TargetType": "ServiceResource",
+    "TargetName": "Purview.DQS.Infra",
+    "Actions": [ "Deploy" ]
+  }]
+}

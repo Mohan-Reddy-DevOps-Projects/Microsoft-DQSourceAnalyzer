@@ -1,0 +1,235 @@
+<!--
+  This Geneva warmpath configuration file is checked in as a reference.p
+  To deploy it for a different event namespace, the namespace and monikers have to be changed,
+  as well as the "account" attribute of MdsdEvents.
+  
+  "DataQualityEvents" is an example of a customized event, emitted by the gateway service AKS pods.
+  Add additional events in "sources" and "MdsdEvents"
+-->
+<MonitoringManagement eventVersion="1" version="1.0" timestamp="2019-11-12T00:00:00Z" namespace="DQSNonProd">
+	<Accounts>
+		<Account moniker="dqservicenonproddiag" isDefault="true" />
+		<Account moniker="dqservicenonprodsecurity" />
+		<Account moniker="dqservicenonprodaudit" alias="AuditStore"/>
+	</Accounts>
+	<Management eventVolume="Medium" defaultRetentionInDays="29">
+		<Identity>
+			<IdentityComponent name="Tenant" envariable="TENANT" />
+			<IdentityComponent name="Role" envariable="ROLE" />
+			<IdentityComponent name="RoleInstance" envariable="ROLEINSTANCE" />
+			<IdentityComponent name="GenevaPodName" useComputerName="true" />
+		</Identity>
+		<AgentResourceUsage cpuPercentUsage="50" diskQuotaInMB="8000" />
+		<AgentMetrics mdmMonitoringAccount="BabylonNonProd" />
+	</Management>
+	<Schemas>
+		<Schema name="syslog">
+			<Column type="str" name="Facility" mdstype="mt:wstr" />
+			<Column type="str" name="Severity" mdstype="mt:int32" />
+			<Column type="str-rfc3339" name="EventTime" mdstype="mt:utc" />
+			<Column type="str" name="SendingHost" mdstype="mt:wstr" />
+			<Column type="str" name="Msg" mdstype="mt:wstr" />
+		</Schema>
+		<Schema name="azsecv1">
+			<Column type="str" name="Facility" mdstype="mt:wstr" />
+			<Column type="str" name="Severity" mdstype="mt:int32" />
+			<Column type="str-rfc3339" name="EventTime" mdstype="mt:utc" />
+			<Column type="str" name="SendingHost" mdstype="mt:wstr" />
+			<Column type="str" name="Msg" mdstype="mt:wstr" />
+		</Schema>
+		<Schema name="azsecv2">
+			<Column type="str" name="AzSecID" mdstype="mt:wstr" />
+			<Column type="str" name="ScanName" mdstype="mt:wstr" />
+			<Column type="str-rfc3339" name="EventTime" mdstype="mt:utc" />
+			<Column type="str" name="Data" mdstype="mt:wstr" />
+			<Column type="str" name="PartCount" mdstype="mt:int32" />
+			<Column type="str" name="PartIndex" mdstype="mt:int32" />
+		</Schema>
+	</Schemas>
+	<Sources>
+		<Source name="dataquality" dynamic_schema="true" />
+		<Source name="dataqualitymetadata" dynamic_schema="true" />
+		<Source name="dataqualityin" dynamic_schema="true" />
+		<Source name="dataqualityout" dynamic_schema="true" />
+		<Source name="dataqualityjob" dynamic_schema="true" />
+		<Source name="dataqualitytelemetry" dynamic_schema="true" />
+		<Source name="dataqualityifxaudit" dynamic_schema="true" />
+		<Source name="k8scontainers" dynamic_schema="true" />
+		<Source name="kern" schema="syslog" />
+		<Source name="auth" schema="syslog" />
+		<Source name="authpriv" schema="syslog" />
+		<Source name="cron" schema="syslog" />
+		<Source name="user" schema="syslog" />
+		<Source name="daemon" schema="syslog" />
+		<Source name="syslog" schema="syslog" />
+		<Source name="heartbeat" schema="azsecv1" />
+		<Source name="baseline" schema="azsecv1" />
+		<Source name="software" schema="azsecv1" />
+		<Source name="clamav" schema="azsecv1" />
+		<Source name="scan_event" schema="azsecv2" />
+		<Source name="audit" dynamic_schema="true" />
+		<Source name="alert" schema="azsecv2" />
+		<Source name="diag" dynamic_schema="true" />
+	</Sources>
+	<Events>
+		<MdsdEvents>
+			<MdsdEventSource source="dataquality">
+				<RouteEvent eventName="DataQualityServiceLogEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualitymetadata">
+				<RouteEvent eventName="DataQualityMetadataLogEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualityin">
+				<RouteEvent eventName="DataQualityApiInLogEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualityout">
+				<RouteEvent eventName="DataQualityApiOutLogEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualityjob">
+				<RouteEvent eventName="DataQualityJobStatusLogEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualitytelemetry">
+				<RouteEvent eventName="DataQualityTelemetryEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="dataqualityifxaudit">
+				<RouteEvent eventName="DataQualityIFxAudit" storeType="CentralBond" priority="Normal" account="dqservicenonprodaudit" />
+			</MdsdEventSource>
+			<MdsdEventSource source="k8scontainers">
+				<RouteEvent eventName="KubernetesContainers" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="kern">
+				<RouteEvent eventName="LinuxAsmSecurity" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="auth">
+				<RouteEvent eventName="LinuxAsmSecurity" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="authpriv">
+				<RouteEvent eventName="LinuxAsmSecurity" storeType="CentralBond" priority="High" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="cron">
+				<RouteEvent eventName="LinuxAsmSyslog" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="user">
+				<RouteEvent eventName="LinuxAsmSyslog" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="daemon">
+				<RouteEvent eventName="LinuxAsmSyslog" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="syslog">
+				<RouteEvent eventName="LinuxAsmSyslog" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="heartbeat">
+				<RouteEvent eventName="LinuxAsmHeartbeat" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="baseline">
+				<RouteEvent eventName="LinuxAsmBaseline" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="software">
+				<RouteEvent eventName="LinuxAsmSoftware" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="clamav">
+				<RouteEvent eventName="LinuxAsmClamav" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="scan_event">
+				<RouteEvent eventName="LinuxAsmScanEvent" storeType="CentralBond" priority="Normal" account="dqservicenonprodsecurity" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="audit">
+				<RouteEvent eventName="LinuxAsmAudit" storeType="CentralBond" priority="Normal" account="dqservicenonprodaudit" duration="PT1M" />
+			</MdsdEventSource>
+			<MdsdEventSource source="diag">
+				<RouteEvent eventName="ProxyEvent" storeType="CentralBond" priority="Normal" account="dqservicenonproddiag" />
+			</MdsdEventSource>
+			<MdsdEventSource source="alert">
+				<RouteEvent eventName="LinuxAsmAlert" priority="Normal" duration="PT1M" storeType="CentralBond" account="dqservicenonprodsecurity" />
+			</MdsdEventSource>
+		</MdsdEvents>
+		<!-- enable vsa scan -->
+		<FileMonitors storeType="CentralBond" account="dqservicenonprodsecurity">
+			<FileWatchItem eventName="AsmVsaFMSnap" container="shava-snapshots">
+				<Directory>/var/lib/vsanodescan/snapshots/</Directory>
+			</FileWatchItem>
+		</FileMonitors>
+		<DerivedEvents>
+			<!-- audit application event -->
+			<!-- NOTE: please do not change the event name -->
+			<DerivedEvent duration="PT1M" eventName="LinuxAsmIfxAuditApplication" source="dataqualityifxaudit" storeType="CentralBond" whereToRun="Local" account="AuditStore">
+				<Query>
+					<![CDATA[
+              where (RegexMatch(log,"^ifxauditappl: .*") != "" && RegexMatch(log,"IFxAuditHeartBeatOperationIFx") == "")
+              let EventData = RegexMatch(log,"(^ifxauditappl: (.*))", 2)
+              select Tenant,Role,MachineName,RoleInstance,EventData
+            ]]>
+				</Query>
+			</DerivedEvent>
+			<!-- audit management event -->
+			<!-- NOTE: please do not change the event name -->
+			<DerivedEvent duration="PT1M" eventName="LinuxAsmIfxAuditManagement" source="dataqualityifxaudit" storeType="CentralBond" whereToRun="Local" account="AuditStore">
+				<Query>
+					<![CDATA[
+              where (RegexMatch(log,"^ifxauditmgmt: .*") != "" && RegexMatch(log,"IFxAuditHeartBeatOperationIFx") == "")
+              let EventData = RegexMatch(log,"(^ifxauditmgmt: (.*))", 2)
+              select Tenant,Role,MachineName,RoleInstance,EventData
+            ]]>
+				</Query>
+			</DerivedEvent>
+			<!-- audit heartbeat event -->
+			<!-- NOTE: please do not change the event name -->
+			<DerivedEvent duration="PT1M" eventName="LinuxAsmIfxAuditHeartbeat" source="dataqualityifxaudit" storeType="CentralBond" whereToRun="Local" account="AuditStore">
+				<Query>
+					<![CDATA[
+              where (RegexMatch(log,"IFxAuditHeartBeatOperationIFx") != "")
+              let EventData = RegexMatch(log,"(^ifxauditappl: (.*))", 2)
+              select Tenant,Role,MachineName,RoleInstance,EventData
+            ]]>
+				</Query>
+			</DerivedEvent>
+			<!-- audit errors -->
+			<DerivedEvent duration="PT1M" eventName="LinuxAsmIfxAuditError" source="dataqualityifxaudit" storeType="CentralBond" whereToRun="Local" account="AuditStore">
+				<Query>
+					<![CDATA[
+              where (RegexMatch(log,"^ifxauditfail: .*") != "")
+              let EventData = RegexMatch(log,"(^ifxauditfail: (.*))", 2)
+              select Tenant,Role,MachineName,RoleInstance,EventData
+            ]]>
+				</Query>
+			</DerivedEvent>
+		</DerivedEvents>
+	</Events>
+	<EventStreamingAnnotations>
+		<EventStreamingAnnotation name="^DataQualityServiceLogEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^DataQualityMetadataLogEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^DataQualityApiInLogEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^DataQualityApiOutLogEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^DataQualityJobStatusLogEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^DataQualityTelemetryEvent$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+		<EventStreamingAnnotation name="^KubernetesContainers$">
+			<LogAnalytics>
+				<Content>LogAnalyticsContent</Content>
+			</LogAnalytics>
+		</EventStreamingAnnotation>
+	</EventStreamingAnnotations>
+</MonitoringManagement>

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.Service",
+    "Environment": "Production"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.Service.Group",
+    "ServiceResourceDefinitions": [
+    {
+        "Name": "ShellResource",
+        "ComposedOf": {
+          "Extension": {
+            "Shell": [
+            {
+              "type": "shellRun",
+              "properties": {
+                "imageName": "adm-mariner-20-l",
+                "imageVersion": "v9"
+              }
+            }]
+          }
+        }
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+      "AzureResourceGroupName": "dqservice-prod-rg-scus",
+      "Location": "South Central US",
+      "InstanceOf": "Purview.DQS.Service.Group",
+      "AzureSubscriptionId": "7bebfd8b-c0ba-4dee-8b6e-1ebc1f22a847",
+      "ServiceResources": [
+      {
+        "Name": "Purview.DQS.AKS.Service",
+        "InstanceOf": "ShellResource",
+        "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.PROD.scus.json"
+      }]
+  }]
+}

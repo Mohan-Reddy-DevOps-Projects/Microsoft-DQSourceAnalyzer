@@ -1,0 +1,377 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentTags": {
+            "type": "object",
+            "defaultValue": {},
+            "metadata": {
+                "description": "User-supplied tags to identify the resource, e.g. environment, branch, build number, etc"
+            }
+        },
+        "deploymentTime": {
+            "type": "object",
+            "defaultValue": {
+                "Deployment UTC time": "[utcNow('o')]"
+            },
+            "metadata": {
+                "description": "Date and time when deployment was performed. Parameter must not be supplied, always uses default value"
+            }
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the log analytics workspace associated to the AKS cluster. Workspace must exist; it is not created by this deployment"
+            }
+        },
+        "logAnalyticsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the log analytics workspace location"
+            }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the keyvault containing the client and server certificates and other application secrets."
+            }
+        },
+        "keyVaultLogicAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the keyvault containing the client certificate used by logic apps"
+            }
+        },
+        "secretGeneratorAppObjectId": {
+            "type": "string",
+            "defaultValue": "00000000-0000-0000-0000-000000000000",
+            "metadata": {
+                "description": "Ev2 App object id to generate cert"
+            }
+        },
+        "aksClusterIdentitySecretName": {
+            "type": "string",
+            "metadata": {
+                "description": "Aks Cluster Identity Secret Name"
+            }
+        },
+        "aksClusterIdentitySecretKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Aks Cluster Identity Secret key"
+            }
+        },
+        "blobSecretName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "globalBlobSecretKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "sparkSecretName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "ruleAISafetySecretName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "globalSparkSecretKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "globalRuleAISafetySecretKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "datastoreCredentialsSecretName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "globalDatastoreCredentialsSecretKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the storage account"
+            }
+        },
+        "storageAccountReplicationType": {
+            "type": "string",
+            "allowedValues": [ "Standard_LRS", "Standard_ZRS", "Standard_GRS" ],
+            "metadata": {
+                "description": "The replication type of the storage account"
+            }
+        },
+        "logicAppManagedIdentityName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the user assigned managed identity used by scheduler logic apps"
+            }
+        },
+        "logicAppKeyVaultConnectionName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the keyvault API connection used by scheduler logic apps"
+            }
+        }
+    },
+    "variables": {
+      "location": "[resourcegroup().location]",
+      "tenantId": "[subscription().tenantId]",
+      "keyVaultVersion": "2019-09-01",
+      "operationalInsightsVersion": "2020-03-01-preview",
+      "secretsPermissions": [
+        "get",
+        "set"
+      ],
+      "keysPermissions": [
+        "get",
+        "list"
+      ],
+      "certificatesPermissions": [
+        "Get",
+        "List",
+        "Update",
+        "Create",
+        "Import",
+        "Delete",
+        "Recover",
+        "Backup",
+        "Restore",
+        "ManageContacts",
+        "ManageIssuers",
+        "GetIssuers",
+        "ListIssuers",
+        "SetIssuers",
+        "DeleteIssuers"
+      ]
+    },
+  "resources": [
+    {
+        "type": "Microsoft.KeyVault/vaults",
+        "apiVersion": "[variables('keyVaultVersion')]",
+        "name": "[parameters('keyVaultName')]",
+        "location": "[variables('location')]",
+        "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+        "properties": {
+            "tenantId": "[variables('tenantId')]",
+            "sku": {
+                "family": "A",
+                "name": "Standard"
+            },
+            "accessPolicies": [
+                {
+                    "objectId": "[parameters('secretGeneratorAppObjectId')]",
+                    "tenantId": "[variables('tenantId')]",
+                    "permissions": {
+                        "keys": "[variables('keysPermissions')]",
+                        "secrets": "[variables('secretsPermissions')]",
+                        "certificates": "[variables('certificatesPermissions')]"
+                    }
+                }
+            ],
+            "enabledForDeployment": true,
+            "enabledForDiskEncryption": false,
+            "enabledForTemplateDeployment": true,
+            "enableSoftDelete": true
+        }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "[variables('keyVaultVersion')]",
+      "name": "[parameters('keyVaultLogicAppName')]",
+      "location": "[variables('location')]",
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "dependsOn": [ "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('logicAppManagedIdentityName'))]" ],
+      "properties": {
+        "tenantId": "[variables('tenantId')]",
+        "sku": {
+          "family": "A",
+          "name": "Standard"
+        },
+        "accessPolicies": [
+          {
+            "objectId": "[parameters('secretGeneratorAppObjectId')]",
+            "tenantId": "[variables('tenantId')]",
+            "permissions": {
+              "keys": "[variables('keysPermissions')]",
+              "secrets": "[variables('secretsPermissions')]",
+              "certificates": "[variables('certificatesPermissions')]"
+            }
+          },
+          {
+            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('logicAppManagedIdentityName')), '2018-11-30').principalId]",
+            "tenantId": "[variables('tenantId')]",
+            "permissions": {
+              "secrets": [ "get" ]
+            }
+          }
+        ],
+        "enabledForDeployment": true,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": true,
+        "enableSoftDelete": true
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultVersion')]",
+      "name": "[concat(parameters('keyVaultName'), '/',parameters('aksClusterIdentitySecretName'))]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ],
+      "properties": {
+        "value": "[parameters('aksClusterIdentitySecretKey')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultVersion')]",
+      "name": "[concat(parameters('keyVaultName'), '/',parameters('blobSecretName'))]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ],
+      "properties": {
+        "value": "[parameters('globalBlobSecretKey')]"
+      }
+    },
+    {
+        "type": "Microsoft.KeyVault/vaults/secrets",
+        "apiVersion": "[variables('keyVaultVersion')]",
+        "name": "[concat(parameters('keyVaultName'), '/',parameters('sparkSecretName'))]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+        ],
+        "properties": {
+            "value": "[parameters('globalSparkSecretKey')]"
+        }
+    },
+    {
+        "type": "Microsoft.KeyVault/vaults/secrets",
+        "apiVersion": "[variables('keyVaultVersion')]",
+        "name": "[concat(parameters('keyVaultName'), '/',parameters('ruleAISafetySecretName'))]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+        ],
+        "properties": {
+            "value": "[parameters('globalRuleAISafetySecretKey')]"
+        }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "[variables('keyVaultVersion')]",
+      "name": "[concat(parameters('keyVaultName'), '/',parameters('datastoreCredentialsSecretName'))]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ],
+      "properties": {
+        "value": "[parameters('globalDatastoreCredentialsSecretKey')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "[variables('operationalInsightsVersion')]",
+      "name": "[parameters('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('logAnalyticsLocation')]",
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "properties": {
+        "sku": {
+          "name": "pergb2018"
+        },
+        "retentionInDays": 30,
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    // storage account
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('storageAccountName')]",
+      "apiVersion": "2019-06-01",
+      "kind": "StorageV2",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot",
+        "allowBlobPublicAccess":  false
+      },
+      "sku": {
+        "name": "[parameters('storageAccountReplicationType')]",
+        "tier": "Standard"
+      },
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]"
+    },
+    {
+        "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+        "apiVersion": "2018-11-30",
+        "name": "[parameters('logicAppManagedIdentityName')]",
+        "location": "[variables('location')]",
+        "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]"
+    },
+    {
+        "type": "Microsoft.Web/connections",
+        "apiVersion": "2016-06-01",
+        "name": "[parameters('logicAppKeyVaultConnectionName')]",
+        "location": "[variables('location')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+        ],
+        "properties": {
+            "displayName": "[parameters('logicAppKeyVaultConnectionName')]",
+            "api": {
+                "name": "keyvault",
+                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', variables('location'), '/managedApis/keyvault')]",
+                "type": "Microsoft.Web/locations/managedApis"
+            },
+            "parameterValueType": "Alternative",
+            "alternativeParameterValues": {
+                "vaultName": "[parameters('keyVaultName')]"
+            }
+        }
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value" : "prod"
+    },
+    "deploymentTags": {
+      "value": {
+        "Service": "Purview Data Quality Service",
+        "Environment": "Production",
+        "Build Number": "BUILD_NUMBER"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "dqs-prod-loganalytics-cus"
+    },
+    "clusterName": {
+      "value": "dqs-dg-prod-aks-cus"
+    },
+    "nodeType": {
+      "value": "Standard_D4s_v3"
+    },
+    "numberOfNodesMin": {
+      "value": 3
+    },
+    "numberOfNodesMax": {
+      "value": 4
+    },
+    "clusterUmiIdentityName": {
+      "value": "PurviewDQS_UMIManagedIdentity_prod_cus"
+    },
+    "kubernetesVersion": {
+        "value": "1.29.2"
+    },
+    "keyVaultName": {
+      "value": "dqs-prod-kv-cus"
+    },
+    "publicIpDns": {
+        "value": "dqservice"
+    },
+    "dnsApis": {
+      "value": [
+        "purview-dqservice-prod"
+      ]
+    },
+    "dnsServiceZone": {
+      "value": "babylon-service.azure.com"
+    },
+    "dnsZoneSubscriptionId": {
+      "value": "34a8ddf8-ebee-475d-97d3-494d34c800b7"
+    },
+    "dnsZoneResourceGroup": {
+      "value": "rp-prod-common-rg"
+    },
+    "ev2ExtensionIdentityObjectId": {
+      "value": "b6d8ea13-1c91-4df5-a306-3ce6d97599b9"
+    },
+    "podIdentityName":{
+      "value": "PurviewDQS_ManagedIdentity_Prod"
+    },
+     "podIdentitySubscriptionId":{
+      "value": "4058cc89-e218-48c1-8a0a-9855f708296b"
+    },
+    "podIdentityPrincipalId":{
+      "value": "ea534029-ff81-4f74-af63-91e8938e7595"
+    },
+    "podIdentityResourceId":{
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+    },
+    "regionShortName": {
+      "value": "cus"
+    },
+    "regionFullName": {
+      "value": "centralus"
+    },
+    "storageAccountName": {
+      "value": "dqserviceprodstoragecus"
+    },
+    "userAssignedIdentities_akspod_resourceid": {
+      "value": "/subscriptions/a3f438c0-30ef-4caa-a9e5-d3d3584005c1/resourceGroups/dqservice-prod-rg-cus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+    },
+    "userAssignedIdentities_dqsprod_resourceid": {
+      "value": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/aks-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsprod"
+    },
+    "userAssignedIdentities_dqsprod_clientid": {
+      "value": "7dc0a6e7-6202-467d-8941-8cfd1805c513"
+    },
+    "userAssignedIdentities_dqsprod_objectid": {
+      "value": "e9e4300e-b402-453d-8a1a-a2dad20ef4b2"
+    },
+    "availabilityZones": {
+      "value": []
+    },
+    "logicAppManagedIdentityName": {
+      "value": "dqs-logicApp-prod-managedIdentity-cus"
+    },
+    "aksRegionCompactLocation": {
+      "value": "centralus"
+    }
+  }
+}

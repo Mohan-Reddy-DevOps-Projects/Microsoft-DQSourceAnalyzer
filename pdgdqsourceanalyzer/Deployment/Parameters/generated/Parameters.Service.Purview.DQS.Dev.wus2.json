@@ -1,0 +1,94 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "ShellExtensions": [
+  {
+    "name": "deploy-dqs-to-aks",
+    "type": "shellRun",
+    "properties": {
+      "maxexecutiontime": "PT30M"
+    },
+    "package": {
+      "reference": {
+        "path": "deployAKS.tar.gz"
+      }
+    },
+    "launch": {
+      "command": [
+        "dqs/deployAKS.sh"
+      ],
+      "environmentVariables": [
+      {
+        "name": "aksClusterName",
+        "value": "dqs-dg-dev-aks-wus2"
+      },
+      {
+        "name": "aksGroupName",
+        "value": "dqservice-dev-rg-wus2"
+      },
+      {
+        "name": "publicIpName",
+        "value": "dqservice-dev-public-ip-wus2"
+      },
+      {
+        "name": "publicIpGroup",
+        "value": "dqservice-dev-rg-wus2"
+      },
+      {
+        "name": "keyVaultName",
+        "value": "dqs-dev-kv-wus2"
+      },
+      {
+        "name": "helmReleaseName",
+        "value": "release-dqs-dev"
+      },
+      {
+        "name": "helmValueFile",
+        "value": "values_dqs_dev_wus2.yaml"
+      },
+      {
+        "name": "subId",
+        "value": "d0542b74-5839-4ee0-8ec4-74e91468eaa7"
+      },
+      {
+        "name": "genevaCertName",
+        "value": "dqs-geneva-dev-cert"
+      },
+      {
+        "name": "podIdentityName",
+        "value": "PurviewDQS_ManagedIdentity_NonProd"
+      },
+      {
+        "name": "podIdentityGroup",
+        "value": "dqservice-shared-resources"
+      },
+      {
+        "name": "podIdentitySubscriptionId",
+        "value": "d0542b74-5839-4ee0-8ec4-74e91468eaa7"
+      },
+      {
+        "name": "deploymentType",
+        "value": "Test"
+      },
+      {
+        "name": "tlsCertName",
+        "value": "dqs-server-dev-cert"
+      },
+      {
+        "name": "tlsDNS",
+        "value": "purview-dqservice-dev-westus2.babylon-service.azure-test.com"
+      },
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud,CorpNetPublic"
+      }
+    ],
+      "identity": {
+        "type": "UserAssigned",
+        "UserAssignedIdentities": [
+          "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-MI-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DQ-EV2-Identity"
+        ]
+      }
+    }
+  }]
+}

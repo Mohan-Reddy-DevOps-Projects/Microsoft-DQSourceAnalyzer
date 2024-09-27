@@ -1,0 +1,112 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value" : "<#= ToLower(environment["shortName"]) #>"
+    },
+    "deploymentTags": {
+      "value": {
+        "Service": "Purview Data Quality Service",
+        "Environment": "<#= environment["name"] #>",
+        "Build Number": "BUILD_NUMBER"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "<#= GetLogAnalyticsWorkspaceName(environment) #>"
+    },
+    "clusterName": {
+      "value": "<#= GetClusterName(environment) #>"
+    },
+    "nodeType": {
+      "value": "<#= GetNodeType(environment) #>"
+    },
+    "numberOfNodesMin": {
+      "value": <#= GetMinNumberOfNodes(environment) #>
+    },
+    "numberOfNodesMax": {
+      "value": <#= GetMaxNumberOfNodes(environment) #>
+    },
+    "clusterUmiIdentityName": {
+      "value": "<#= GetClusterIdentityName(environment) #>"
+    },
+    "kubernetesVersion": {
+        "value": "1.29.2"
+    },
+    "keyVaultName": {
+      "value": "<#= GetKeyVaultName(environment) #>"
+    },
+    "publicIpDns": {
+        "value": "<#= GetPublicIpDns(environment) #>"
+    },
+    "dnsApis": {
+      "value": [
+        "<#= GetDnsApi(environment) #>"
+      ]
+    },
+    "dnsServiceZone": {
+      "value": "<#= GetDNSZone(environment) #>.<#= GetAzureZone(environment) #>"
+    },
+    "dnsZoneSubscriptionId": {
+      "value": "<#= GetDnsZoneSubscriptionId(environment) #>"
+    },
+    "dnsZoneResourceGroup": {
+      "value": "<#= GetDnsZoneResourceGroup(environment) #>"
+    },
+    "ev2ExtensionIdentityObjectId": {
+      "value": "<#= GetEv2ExtensionIdentityObjectId(environment) #>"
+    },
+    "podIdentityName":{
+      "value": "<#= GetPodIdentityName(environment) #>"
+    },
+     "podIdentitySubscriptionId":{
+      "value": "<#= GetPodIdentitySubscriptionId(environment) #>"
+    },
+    "podIdentityPrincipalId":{
+      "value": "<#= GetPodIdentityPrincipalId(environment) #>"
+    },
+    "podIdentityResourceId":{
+      "value": "<#= GetPodIdentityResourceId(environment) #>"
+    },
+    "regionShortName": {
+      "value": "<#= ToLower(environment["shortLocation"]) #>"
+    },
+    "regionFullName": {
+      "value": "<#= GetCompactLocation(environment) #>"
+    },
+    "storageAccountName": {
+      "value": "<#= GetStorageAccountName(environment) #>"
+    },
+    "userAssignedIdentities_akspod_resourceid": {
+      "value": "<#= GetAksPodIdentityResourceId(environment) #>"
+    },
+    "userAssignedIdentities_dqsprod_resourceid": {
+      "value": "<#= GetSparkPodIdentityResourceId(environment) #>"
+    },
+    "userAssignedIdentities_dqsprod_clientid": {
+      "value": "<#= GetSparkPodIdentityClientId(environment) #>"
+    },
+    "userAssignedIdentities_dqsprod_objectid": {
+      "value": "<#= GetSparkPodIdentityObjectId(environment) #>"
+    },
+    "availabilityZones": {
+      "value": <#= GetAvailabilityZones(environment) #>
+    },
+    "logicAppManagedIdentityName": {
+      "value": "<#= GetLogicAppManagedIdentityName(environment) #>"
+    },
+    "aksRegionCompactLocation": {
+      "value": "<#= GetAksDeploymentCompactLocation(environment) #>"
+    }
+  }
+}
+<#
+  string fileName = String.Format("Parameters.AKS.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("Parameters\\generated", fileName);
+}
+#>

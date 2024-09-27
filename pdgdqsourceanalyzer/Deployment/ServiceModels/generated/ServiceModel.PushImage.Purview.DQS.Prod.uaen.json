@@ -1,0 +1,42 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "Production"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.PushImage.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.PushImages.Resource",
+      "ComposedOf": {
+        "Extension": {
+          "rolloutParametersPath": "Parameters\\generated\\Parameters.PushImage.Purview.DQS.PROD.uaen.json",
+          "Shell": [
+            {
+              "type": "push-dataqualityservice-shell-type",
+              "properties": {
+                "imageName": "adm-mariner-20-l",
+                "imageVersion": "v9"
+              }
+            }
+          ]
+        }
+      }
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "dqservice-prod-rg-uaen",
+    "Location": "UAE North",
+    "InstanceOf": "Purview.DQS.PushImage.Group",
+    "AzureSubscriptionId": "30bfa56c-d3e6-41cb-93e6-b13c4477045e",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.PushImages.Cluster",
+      "InstanceOf": "Purview.DQS.PushImages.Resource"
+    }]
+  }]
+}

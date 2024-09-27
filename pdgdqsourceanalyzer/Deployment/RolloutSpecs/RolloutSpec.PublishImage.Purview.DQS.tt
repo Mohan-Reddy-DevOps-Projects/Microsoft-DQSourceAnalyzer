@@ -1,0 +1,50 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+  "ContentVersion": "1.0.0.0",
+  "RolloutMetadata": {
+    "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.PushImage.Purview.DQS.<#= GetUpperCaseEnvironmentShortName(environment) #>.<#= environment["shortLocation"] #>.json",
+    "Name": "Purview Data Quality AKS Cluster <#= environment["name"] #> <#= environment["location"] #> BUILD_NUMBER",
+    "RolloutType": "Major",
+    "BuildSource": {
+      "Parameters": {
+        "ServiceGroupRoot": "ServiceGroupRoot",
+        "VersionFile": "build_ver.txt"
+      }
+<#
+if (IsProduction(environment))
+{
+#>
+    },
+   "Notification": {
+      "incident": {
+        "providerType": "IcM",
+        "properties": {
+          "connectorId": "<#= GetConnectorId(environment) #>",
+          "routingId": "MDM://Purview-DataQualityAlert",
+          "environment": "<#= IsProduction(environment) ? "Prod" : "Test" #>"
+        }
+      }
+<#
+}
+#>
+    }
+  },
+  "OrchestratedSteps": [
+  {
+    "Name": "push-dataqualityservice-to-acr",
+    "TargetType": "ServiceResource",
+    "TargetName": "Purview.DQS.PushImages.Cluster",
+    "Actions": [ "Shell/push-dataqualityservice-to-acr" ]
+  }]
+}
+<#
+  string fileName = String.Format("RolloutSpec.PublishImage.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("RolloutSpecs\\generated", fileName);
+}
+#>
+Unused generated text file

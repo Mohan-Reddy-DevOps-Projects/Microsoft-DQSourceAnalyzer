@@ -1,0 +1,31 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.Infra",
+    "Environment": "Dogfood"
+    },
+    "ServiceResourceGroupDefinitions": [
+    {
+      "Name": "Purview.DQS.Infra.Group",
+        "ServiceResourceDefinitions": [
+        {
+          "Name": "Purview.DQS.Infra.Resource",
+          "ArmTemplatePath": "Templates\\Template.Infra.Purview.DQS.json"
+        }]
+    }],
+    "ServiceResourceGroups": [
+    {
+      "AzureResourceGroupName": "dqservice-df-rg-wus2", 
+      "Location": "West US 2",
+      "InstanceOf": "Purview.DQS.Infra.Group",
+      "AzureSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
+      "ServiceResources": [
+      {
+          "Name": "Purview.DQS.Infra",
+          "InstanceOf": "Purview.DQS.Infra.Resource",
+          "ArmParametersPath": "Parameters\\generated\\Parameters.Infra.Purview.DQS.DF.wus2.json",
+          "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+      }]
+    }]
+}

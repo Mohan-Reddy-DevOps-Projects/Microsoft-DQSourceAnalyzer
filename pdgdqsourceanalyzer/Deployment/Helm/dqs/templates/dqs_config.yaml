@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: purview-dqs-config
+data:
+  appsettings.json: |
+    {{ .Values.dqs.appSettings | toJson }}

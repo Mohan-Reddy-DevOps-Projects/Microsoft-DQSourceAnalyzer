@@ -1,0 +1,336 @@
+# # Geneva properties
+gcs_cloud_name: AzurePublicCloud
+gcs_environment: DiagnosticsPROD 
+gcs_account: BabylonProd 
+gcs_region: japaneast
+gcs_namespace: DQSProd 
+gcs_config_version: 1.7        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
+gcs_keyvault_name: dqs-prod-kv-jpe
+gcs_keyvault_tenant: 33e01921-4d64-4f8c-a055-5bdaffd5e33d
+gcs_cert_name: dqs-geneva-prod-cert
+gcs_cert_san: PROD-AME.JPE.GENEVA.KEYVAULT.BABYLON.AZURE.COM                      
+
+# # Leave metric_endpoint commented out for PROD environment. Uncomment it for INT environment.
+# # metricEndpoint: https://az-int.metrics.nsatc.net/
+
+# # You should override these with the latest version of the Geneva images available here:
+# # https://genevamondocs.azurewebsites.net/collect/references/linuxcontainers.html
+# # https://eng.ms/docs/products/geneva/collect/references/linuxcontainers
+# # MDSD, MDM, FluentD are Distroless Containers and AzSecPack is Standard Geneva Container (Ubuntu)
+mdsd:
+  dockerTag: mariner_20240910.1
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdsd
+fluentd:
+  dockerTag: mariner_20240903.1
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevafluentd_td-agent
+mdm:
+  dockerTag: 2.2024.905.1816-1bada0-20240905t2212
+  genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdm
+
+dqs:
+  tlsDNS: purview-dqservice-prod-japaneast.babylon-service.azure.com
+  instances: 3                    # This should match the number of VMs in the cluster
+  allowedServiceTags: "AzureCloud,CorpNetPublic"
+  appSettings:
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },  
+      "EnvironmentConfig": {
+        "Environment": "Production",
+        "Location": "japaneast"
+      },
+      "AllowedHosts": "*",
+
+      "ClientCertificateConfig": {
+        "AuthorizedCallers": [
+          {
+            "Subject": "gateway-prod-client.babylon.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "Gateway"
+          },
+          {
+            "Subject": "provision.purview-dg.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "ProvisioningService"
+          },
+          {
+            "Subject": "rp.babylon-service-ame.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "ResourceProvider"
+          },
+          {
+            "Subject": "geneva-action.babylon-service-ame.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "GenevaAction"
+          },
+          {
+            "Subject": "ame.genevaActions.purview-dg.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "GenevaAction"
+          },
+          {
+            "Subject": "jpe.purviewflow-service.purview.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "PurviewFlow"
+          },
+          {
+            "Subject": "workflow-client-jpe.workflow.purview.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "WorkflowService"
+          },
+          {
+            "Subject": "jpe.dataquality-service.purview.azure.com",
+            "Issuer": "AME", 
+            "CallerCategory": "DQS"
+          },
+          {
+            "Subject": "jpe.dataquality-logicapp.purview.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "DQLogicApp"
+          },
+          {
+            "Subject": "health.purview-dg.azure.com",
+            "Issuer": "AME",
+            "CallerCategory": "DEH"
+          },
+          {"Subject":"eus2euap.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"eus2.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"weu.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"wus2.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"scus.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"jpe.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"cc.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"ne.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"cus.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"ae.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"brs.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"fc.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"uaen.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"sea.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"uks.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"cid.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"wus.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"wcus.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"},{"Subject":"eus.dataquality-jobmanager.purview.azure.com","Issuer":"AME","CallerCategory":"DQJobManager"}
+        ]
+      },
+      "ServerConfig": {
+        "Port": 443,
+        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "SecretName": "dqs-server-prod-cert",
+        "RefreshRate": "1.00:00:00"
+      },
+      "SecretsConfiguration": {
+        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "SecretNamesList": [
+          "blobConnectionString",
+          "sparkexternalcomputekey",
+          "datastoreCredentials",
+          "dq-aisafety"
+        ]
+      },
+      "CertificatesConfiguration": {
+        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "RefreshRate": "1.00:00:00",
+        "CertificateList": [
+          "ClientCertificate:dqs-client-prod-cert",
+          "MEOClientCertificate:dqs-client-prod-cert"
+        ]
+      },
+      "GenevaMetricConfig": {
+        "Account": "BabylonProd",
+        "DefaultMetricsNamespace": "DQSProd",
+        "Host": "geneva-services",
+        "Port": 8125,
+        "Environment": "Production",
+        "Location": "japaneast"
+      },  
+      "PurviewConfiguration" : {
+          "ManagementBaseUri": "https://japaneast.rp.purview-service.azure.com:8218",
+          "enableSDK": true,
+          "ApiVersion": "2019-11-01-preview",
+          "PurviewFirstPartyApp": {
+            "ApplicationId": "73c2949e-da2d-457a-9607-fcc665198967",
+            "Resource": "https://datafactory.azure.com/",
+            "CertificateName": "ClientCertificate",
+            "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+            "Authority": "https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+            "AzureRegion": "japaneast"
+          }
+      }, 
+      "AuthorizationConfiguration.ArtifactStore": {
+       "AppId": "73c2949e-da2d-457a-9607-fcc665198967",
+       "AuthenticationSubject": "",
+       "Authority": "https://login.microsoftonline.com/33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+       "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+       "Resource": "https://datafactory.azure.com/",
+       "CertificateName": "",
+       "BaseManagementUri": "https://prod.jpe.artifactstore.purview-service.azure.com",
+       "AzureRegion": "japaneast"
+      }, 
+      "MicrosoftGraphServiceConfiguration": {
+       "BaseManagementUri": "https://graph.microsoft.com",
+       "Authority": "https://login.microsoftonline.com",
+       "Scopes": [
+          "https://graph.microsoft.com/.default"
+        ]
+      },
+      "DQConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-prod-japaneast.babylon-service.azure.com",
+        "InternalClusterUri": "https://metadata-service.default.svc.cluster.local",
+        "CertificateName": "ClientCertificate",
+        "OldProxyServiceUri": "https://purview-dqs-prod-japaneast.babylon-service.azure.com"
+      },
+      "DEHConfiguration": {
+        "BaseManagementUri": "https://prod-japaneast-health.purview-dg.azure.com"
+      },
+      "PfsConfiguration": {
+        "BaseManagementUri": "https://purview-dqjm-prod-japaneast.babylon-service.azure.com",
+        "CertificateName": "ClientCertificate"
+      },    
+      "CatalogConfiguration": {
+        "BaseManagementUri": "https://japaneast-prod.catalog.purview-service.azure.com",
+        "CertificateName": "ClientCertificate"
+      },
+      "DGCatalogConfiguration": {
+        "BaseManagementUri": "https://prod-japaneast.dgcatalog.purview-service.azure.com",
+        "CertificateName": "ClientCertificate"
+      },
+      "DQJMRegionConfiguration": {
+        "RegionConfig": {"eastus2euap":"https://purview-dqjm-prod-eastus2euap.babylon-service.azure.com","eastus2":"https://purview-dqjm-prod-eastus2.babylon-service.azure.com","westeurope":"https://purview-dqjm-prod-westeurope.babylon-service.azure.com","westus2":"https://purview-dqjm-prod-westus2.babylon-service.azure.com","southcentralus":"https://purview-dqjm-prod-southcentralus.babylon-service.azure.com","japaneast":"https://purview-dqjm-prod-japaneast.babylon-service.azure.com","canadacentral":"https://purview-dqjm-prod-canadacentral.babylon-service.azure.com","northeurope":"https://purview-dqjm-prod-northeurope.babylon-service.azure.com","centralus":"https://purview-dqjm-prod-centralus.babylon-service.azure.com","australiaeast":"https://purview-dqjm-prod-australiaeast.babylon-service.azure.com","brazilsouth":"https://purview-dqjm-prod-brazilsouth.babylon-service.azure.com","francecentral":"https://purview-dqjm-prod-francecentral.babylon-service.azure.com","uaenorth":"https://purview-dqjm-prod-uaenorth.babylon-service.azure.com","southeastasia":"https://purview-dqjm-prod-southeastasia.babylon-service.azure.com","uksouth":"https://purview-dqjm-prod-uksouth.babylon-service.azure.com","centralindia":"https://purview-dqjm-prod-centralindia.babylon-service.azure.com","westus":"https://purview-dqjm-prod-westus.babylon-service.azure.com","westcentralus":"https://purview-dqjm-prod-westcentralus.babylon-service.azure.com","eastus":"https://purview-dqjm-prod-eastus.babylon-service.azure.com"},
+      },
+      "JobCompletionQueueConfiguration": {
+        "AccountName": "dqserviceprodstoragejpe",
+        "QueueName": "jobcompletionv2",
+        "QueueRequestTimeout": "00:00:59",
+        "QueueRetryCount": "3",
+        "QueueVisibilityTimeout": "00:00:10:00.00",
+        "TimeToLive": "1.00:00:00",
+      },
+      "AlertConsumerConfiguration": {
+        "InitialStartDelay": "00:00:01:00",
+        "WaitAfterSuccessInterval": "00:00:00:00.01",
+        "WaitAfterQueueEmptyInterval": "00:00:00:30",
+        "WaitAfterFirstErrorInterval": "00:00:00:30"
+      },
+      "ValidationService": {
+        "Uri": "https://purview-dqv-prod-japaneast.babylon-service.azure.com"
+      },
+      "JobManagementConfig": {
+        "storageAccountName": "dqserviceprodstoragejpe",
+        "storageArmEndpoint": "https://management.azure.com",
+        "storageAuthority": "https://login.microsoftonline.com/",
+        "storageResourceGroup": "dqservice-prod-rg-jpe",
+        "storageSubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
+        "storageTenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+        "storageSuffix": "core.windows.net",
+        "notificationListenerQueueName": "backgroundjobsqueue",
+        "storageTableName": "backgroundjobsworktable",
+        "storageQueueNamePrefix": "backgroundjobsqueue",
+        "location": "japaneast",
+        "BackgroundJobConnectionString": ""
+     },
+     "DQStorageAccountConfiguration": {
+        "StorageAccountName": "dqserviceprodstoragejpe",
+        "StorageAccountSubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
+        "StorageAccountResourceGroupName": "dqservice-prod-rg-jpe",
+        "StorageAccountAuthority": "https://login.microsoftonline.com/",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.Storage/storageAccounts/dqserviceprodstoragejpe",
+        "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
+        "Resource": "https://management.azure.com"
+     },
+     "InsightsEventHubConfiguration": {
+        "IsEnabled": True,
+        "EventHubNamespace": "dg-prod-hub-jpe.servicebus.windows.net",
+        "EventHubName": "dataqualityeventv2"
+     },
+     "CatalogEventHubConfiguration": {
+        "ProcessingStorageAccountName": "dqserviceprodstoragejpe",
+        "IsEnabled": True,
+        "EventHubNamespace": "dg-prod-hub-jpe.servicebus.windows.net",
+        "EventHubName": "catalogevent"
+     },
+     "OnlineMLServiceConfiguration": {
+        "AuthMIObjectId":"e9e4300e-b402-453d-8a1a-a2dad20ef4b2",
+        "Host":"endp-rulesug-dqml-jpe.centralus.inference.ml.azure.com",
+        "EndpointName":"endp-rulesug-dqml-jpe",
+        "Subscription":"a3f438c0-30ef-4caa-a9e5-d3d3584005c1",
+        "ResourceGroup":"dqservice-ml-prod-rg-cus",
+        "Workspace":"mlwdqmlcus",
+        "AiSafetyEndpointName":"https://japaneast.api.cognitive.microsoft.com/",
+        "AiSafetyEndpointRegionLoc":"jpe"
+     },
+    "GenevaLog": {
+        "Environment": "Prod"
+    },
+    "GenevaMetrics": {
+        "StatsDHost": "geneva-services",
+        "Port": 8125,
+        "MdmAccountName": "BabylonProd",
+        "MdmNamespace": "DQSProd",
+        "ShoeboxMdmAccountName": "DQServiceProdShoebox",
+        "ShoeboxMdmNamespace": "BabylonProdShoebox",
+        "DefaultDimensions": { "Environment": "Prod" }
+    },
+    "ClientCertificates": {
+        "RefreshRate": "1.00:00:00",
+        "Certificates": {
+            "ArtifactStoreClient": {
+                "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+                "SecretName": "dqs-client-prod-cert"
+            }
+        }
+    },
+    "ClientCertificate": {
+        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "SecretName": "dqs-client-prod-cert",
+        "RefreshRate": "1.00:00:00"
+    },
+    "ArtifactStore": {
+        "BaseManagementUri": "https://prod.jpe.artifactstore.purview-service.azure.com"
+    },
+    "ConnectivityConfiguration": {
+        "BaseManagementUri": "https://wus.connectivity.azure-test.com"
+    },
+    "PolicyServiceConfiguration": {
+        "BaseManagementUri": "$https://purview-policystore-prod-{GetCompactLocation(environment)}.babylon-service.azure-test.com"
+    },
+    "ParserConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-prod-japaneast.babylon-service.azure.com"
+    },
+    "ExecutionConfiguration": {
+        "BaseManagementUri": "https://purview-dqservice-prod-japaneast.babylon-service.azure.com"
+    },
+    "LogicAppSchedulerConfiguration": {
+        "SubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
+        "ResourceGroup": "dqservice-prod-rg-jpe",
+        "LogicAppLocation": "japaneast",
+        "KeyVaultUri": "https://dqs-lapp-prod-kv-jpe.vault.azure.net/",
+        "LogicAppManagedIdentityId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-prod-managedIdentity-jpe",
+        "KeyVaultClientCertName": "dqs-logicapp-client-prod-cert",
+        "KeyVaultConnectionResourceId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.Web/connections/dqs-logicApp-prod-keyVaultConnection-jpe",
+        "KeyVaultConnectorApiId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/providers/Microsoft.Web/locations/japaneast/managedApis/keyvault"
+    },
+    "AzureEnvironment": {
+        "ManagementEndpoint": "https://management.core.windows.net/",
+        "ResourceManagerEndpoint" : "https://management.azure.com/"
+    },
+    "MicrosoftEmailServiceConfiguration": {
+        "MEOAppId": "73c2949e-da2d-457a-9607-fcc665198967",
+        "MEOEndpoint": "https://eur.comms.azure.net/api/v2/",
+        "MEOAudience": "https://emailorchestrator.onmicrosoft.com/11c28534-b7e2-4e0b-ba01-54777bea593e",
+        "MEOAuthority": "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "CertificateName": "MEOClientCertificate"
+    },
+    "ActionPublisherConfiguration": {
+        "BaseManagementUri": "https://prod-japaneast-health.purview-dg.azure.com",
+        "CertificateName": "ClientCertificate"
+    },
+    "SparkJobConfiguration": {
+        "MDQSparkExecutionConfiguration": {
+            "DriverMemory": "28g",
+            "DriverCores": "4",
+            "ExecutorMemory": "28g",
+            "ExecutorCores": "4",
+            "NumExecutors": "1",
+            "NodePoolType": "small"
+        },
+        "DQSparkExecutionConfiguration": {
+            "DriverMemory": "28g",
+            "DriverCores": "4",
+            "ExecutorMemory": "28g",
+            "ExecutorCores": "4",
+            "NumExecutors": "1",
+            "MinDynamicExecutor": "1",
+            "MaxDynamicExecutor": "10",
+            "NodePoolType": "xlarge"
+        }
+    },
+    }

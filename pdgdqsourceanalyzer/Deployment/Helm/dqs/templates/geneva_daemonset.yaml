@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: geneva-services
+  labels:
+    app: geneva-services
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      name: geneva-services
+  template:
+    metadata:
+      labels:
+        name: geneva-services
+        # aadpodidbinding is used by the CSI driver to pair with the identity specified in the pod identity binding that matches the label
+        aadpodidbinding: purview-dqs-aad
+    spec:
+      hostNetwork: true
+      containers:
+        # MDSD
+        - name: mdsd
+          image: {{.Values.mdsd.genevaACR }}:{{ .Values.mdsd.dockerTag }}
+          args: [ "-D", "-A", "-a", "-p", "0", "-f", "0", "-i", "0", "-y", "0" ]
+          env:
+          - name: TENANT
+            value: {{ .Values.gcs_region | quote }}
+          - name: ROLE
+            value: {{ .Values.gcs_account | quote }}
+          - name: ROLEINSTANCE
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MONITORING_GCS_ENVIRONMENT
+            value: {{ .Values.gcs_environment | quote }}
+          - name: MONITORING_GCS_ACCOUNT
+            value: {{ .Values.gcs_account | quote }}
+          - name: MONITORING_GCS_REGION
+            value: {{ .Values.gcs_region | quote }}
+          - name: MONITORING_GCS_NAMESPACE
+            value: {{ .Values.gcs_namespace | quote }}
+          - name: MONITORING_CONFIG_VERSION
+            value: {{ .Values.gcs_config_version | quote }}
+          - name: MDSD_AKV_CERTIFICATE_STORE_PATH
+            value: "/geneva/geneva_auth"
+          - name: MONITORING_GCS_AUTH_ID_TYPE
+            value: AuthKeyVault
+          - name: MONITORING_GCS_AUTH_ID
+            value: {{ .Values.gcs_cert_san | quote }}
+          - name: MONITORING_GCS_CERT_CERTFILE
+            value: /geneva/geneva_auth/gcscert.pem
+          - name: MONITORING_GCS_CERT_KEYFILE
+            value: /geneva/geneva_auth/gcskey.pem
+
+          volumeMounts:
+            - name: mdsd-auth-vol
+              mountPath: /geneva/geneva_auth
+            - name: var-log-vol
+              mountPath: /geneva/geneva_logs
+            - name: mdsd-run-vol
+              mountPath: /var/run/mdsd
+            - name: var-lib-vsanodescan-vol 
+              mountPath: /var/lib/vsanodescan
+        # FluentD
+        - name: fluentd
+          image: {{ .Values.fluentd.genevaACR }}:{{ .Values.fluentd.dockerTag }}
+          args: ["-c", "/etc/fluentd/fluentd.conf", "--log", "/dev/stdout"]
+          env:
+          - name: FLUENTD_CONF
+            value: /etc/fluentd/fluentd.conf
+          volumeMounts:
+            - name: fluentd-conf-vol
+              mountPath: /etc/fluentd
+            - name: fluentd-buffer-vol
+              mountPath: "/var/log/td-agent"
+            - name: mdsd-run-vol
+              mountPath: "/var/run/mdsd"
+            - name: docker-log-vol
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: var-log-vol
+              mountPath: /var/log
+            - name: run-journal-vol
+              mountPath: /run/log/journal
+              readOnly: true
+        # MDM
+        - name: mdm
+          image: {{ .Values.mdm.genevaACR }}:{{ .Values.mdm.dockerTag }}
+          env:
+          - name: MDM_ACCOUNT
+            value: {{ .Values.gcs_account | quote }}
+          {{ if .Values.metricEndpoint }}
+          - name: METRIC_ENDPOINT
+            value: {{ .Values.metricEndpoint | quote }}
+          {{ end }}
+          - name: MDM_INPUT
+            value: statsd_udp,influxdb_udp
+          - name: MDM_LOG_LEVEL
+            value: "Info"
+          - name: CERT_FILE
+            value: /tmp/geneva_mdm/gcscert.pem
+          - name: KEY_FILE
+            value: /tmp/geneva_mdm/gcskey.pem
+          volumeMounts:
+            - name: mdm-azsecpack-auth-vol
+              mountPath: /tmp/geneva_mdm
+      volumes:
+        - name: mdsd-run-vol
+          emptyDir: {}
+        - name: mdsd-auth-vol
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "mdsd-secret"
+        - name: mdm-azsecpack-auth-vol
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "mdm-azsecpack-secrets"
+        - name: fluentd-conf-vol
+          configMap:
+            name: fluentd-conf
+        - name: fluentd-buffer-vol
+          emptyDir: {}
+        - name: azsecpack-host
+          hostPath:
+            path: /
+        - name: docker-log-vol
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: run-journal-vol
+          hostPath:
+            path: /run/log/journal
+        - name: var-log-vol
+          hostPath:
+            path: /var/log
+        - name: etw-vol
+          emptyDir: {}
+        - name: var-lib-vsanodescan-vol
+          hostPath:
+            path: /var/lib/vsanodescan

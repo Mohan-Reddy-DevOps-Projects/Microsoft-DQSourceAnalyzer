@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>633b85bb-b979-42fc-8b4e-c43fecf3add1</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworkIdentifier>Deployment</TargetFrameworkIdentifier>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ManifestPath>$(MSBuildThisFileDirectory)Manifest</ManifestPath>
+    <GeneratedRoot>$(MSBuildThisFileDirectory)</GeneratedRoot>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+  </PropertyGroup>
+  <Import Condition=" Exists('Deployment.targets') " Project="Deployment.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v17.0\TextTemplating\Microsoft.TextTemplating.targets" />
+  <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
+  <ItemGroup>
+      <T4ParameterValues Include="ManifestPath">
+      <Value>$(ManifestPath)</Value>
+    </T4ParameterValues>
+    <T4ParameterValues Include="GeneratedRoot">
+      <Value>$(GeneratedRoot)</Value>
+    </T4ParameterValues>
+    <T4ParameterValues Include="NuGetPackageRoot">
+      <Value>$(NuGetPackageRoot)</Value>
+    </T4ParameterValues>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AKS\**\*" />
+    <None Include="Helm\**\*" />
+    <None Include="Manifest\*" />
+    <None Include="Parameters\**\*" />
+    <None Include="RolloutSpecs\**\*" />
+    <None Include="ServiceModels\**\*" />
+    <None Include="Templates\**\*" />
+    <None Include="Scripts\**\*" />
+    <None Include="Readme.md" />
+    <None Include="buildDocker.sh" />
+    <None Include="build_ver.txt" />
+    <None Include="deployAKS.tar" />
+    <None Include="Deployment.targets">
+      <Visible>False</Visible>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parameters\Parameters.Infra.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Parameters</OutputFilePath>
+    </None>
+    <None Include="Parameters\Parameters.AKS.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Parameters</OutputFilePath>
+    </None>
+    <None Include="Parameters\Parameters.Secrets.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Parameters</OutputFilePath>
+    </None>
+    <None Include="Parameters\Parameters.Service.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Parameters</OutputFilePath>
+    </None>
+	<None Include="Parameters\Parameters.PushImage.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Parameters</OutputFilePath>
+    </None>
+    <None Include="RolloutSpecs\RolloutSpec.Infra.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\RolloutSpecs</OutputFilePath>
+    </None>
+    <None Include="RolloutSpecs\RolloutSpec.AKS.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\RolloutSpecs</OutputFilePath>
+    </None>
+    <None Include="RolloutSpecs\RolloutSpec.Secrets.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\RolloutSpecs</OutputFilePath>
+    </None>
+    <None Include="RolloutSpecs\RolloutSpec.Service.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\RolloutSpecs</OutputFilePath>
+    </None>
+	<None Include="RolloutSpecs\RolloutSpec.PublishImage.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\RolloutSpecs</OutputFilePath>
+    </None>
+    <None Include="ServiceModels\ServiceModel.Infra.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ServiceModels</OutputFilePath>
+    </None>
+    <None Include="ServiceModels\ServiceModel.AKS.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ServiceModels</OutputFilePath>
+    </None>
+    <None Include="ServiceModels\ServiceModel.Secrets.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ServiceModels</OutputFilePath>
+    </None>
+    <None Include="ServiceModels\ServiceModel.Service.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ServiceModels</OutputFilePath>
+    </None>
+	<None Include="ServiceModels\ServiceModel.PushImage.Purview.DQS.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ServiceModels</OutputFilePath>
+    </None>
+    <None Include="Helm\dqs\values_dqs.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\Helm\dqs</OutputFilePath>
+    </None>
+  </ItemGroup>
+  <Target Name="GetReferenceAssemblyPaths" />
+</Project>

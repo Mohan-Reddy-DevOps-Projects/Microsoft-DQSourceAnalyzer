@@ -1,0 +1,32 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+  "ContentVersion": "1.0.0.0",
+  "RolloutMetadata": {
+    "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.PushImage.Purview.DQS.PROD.jpe.json",
+    "Name": "Purview Data Quality AKS Cluster Production Japan East BUILD_NUMBER",
+    "RolloutType": "Major",
+    "BuildSource": {
+      "Parameters": {
+        "ServiceGroupRoot": "ServiceGroupRoot",
+        "VersionFile": "build_ver.txt"
+      }
+    },
+   "Notification": {
+      "incident": {
+        "providerType": "IcM",
+        "properties": {
+          "connectorId": "030be584-96b9-4252-9c26-1c7170db859b",
+          "routingId": "MDM://Purview-DataQualityAlert",
+          "environment": "Prod"
+        }
+      }
+    }
+  },
+  "OrchestratedSteps": [
+  {
+    "Name": "push-dataqualityservice-to-acr",
+    "TargetType": "ServiceResource",
+    "TargetName": "Purview.DQS.PushImages.Cluster",
+    "Actions": [ "Shell/push-dataqualityservice-to-acr" ]
+  }]
+}

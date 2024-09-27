@@ -1,0 +1,50 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+  "ContentVersion": "1.0.0.0",
+  "RolloutMetadata": {
+    "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.AKS.Purview.DQS.<#= GetUpperCaseEnvironmentShortName(environment) #>.<#= environment["shortLocation"] #>.json",
+    "Name": "Purview Data Quality AKS Cluster <#= environment["name"] #> <#= environment["location"] #> BUILD_NUMBER",
+    "RolloutType": "Major",
+    "BuildSource": {
+      "Parameters": {
+        "ServiceGroupRoot": "ServiceGroupRoot",
+        "VersionFile": "build_ver.txt"
+      }
+<#
+if (IsProduction(environment))
+{
+#>
+    },
+   "Notification": {
+      "incident": {
+        "providerType": "IcM",
+        "properties": {
+          "connectorId": "<#= GetConnectorId(environment) #>",
+          "routingId": "MDM://Purview-DataQualityAlert",
+          "environment": "<#= IsProduction(environment) ? "Prod" : "Test" #>"
+        }
+      }
+<#
+}
+#>
+	  }
+  },
+  "OrchestratedSteps": [
+  {
+    "Name": "Rollout_Service",
+    "TargetType": "ServiceResource",
+    "TargetName": "Purview.DQS.AKS.Cluster",
+    "Actions": [ "Deploy" ]
+  }]
+}
+<#
+  string fileName = String.Format("RolloutSpec.AKS.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("RolloutSpecs\\generated", fileName);
+}
+#>
+Unused generated text file

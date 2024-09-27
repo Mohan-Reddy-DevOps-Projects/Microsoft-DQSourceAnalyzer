@@ -1,0 +1,61 @@
+<#@ include file="$(ManifestPath)\\ManifestHelper.ttinclude" once="true" #>
+<#
+foreach (var environment in environments)
+{
+#>
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "ShellExtensions": [
+  {
+    "name": "push-dataqualityservice-to-acr",
+	"type": "push-dataqualityservice-shell-type",
+    "properties": {
+      "maxexecutiontime": "PT30M"
+    },
+    "package": {
+      "reference": {
+        "path": "pushImageToAcr.tar.gz"
+      }
+    },
+    "launch": {
+      "command": [
+        "push_tarball_to_acr.sh"
+      ],
+      "environmentVariables": [
+	  {
+        "name": "DESTINATION_ACR_NAME",
+        "value": "<#= GetAcrName(environment) #>"
+      },
+      {
+        "name": "TARBALL_IMAGE_FILE_NAME",
+        "reference": {
+              "path": "DataQualityServiceImage.tar.gz"
+        },
+        "asSecureValue": "true"
+      },
+      {
+        "name": "IMAGE_METADATA_FILE_NAME",
+        "reference": {
+              "path": "DataQualityServiceImage-metadata.json"
+        },
+        "asSecureValue": "true"
+      }
+    ],
+	  "secretVolumes": [],
+      "fileVolumes": [],
+      "identity": {
+        "type": "UserAssigned",
+        "UserAssignedIdentities": [
+          "<#= GetEv2ExtensionIdentityResourceId(environment) #>"
+        ]
+      }
+    }
+  }]
+}
+<#
+  string fileName = String.Format("Parameters.PushImage.Purview.DQS.{0}.{1}.json", environment["shortName"], environment["shortLocation"]);
+  SaveOutput("Parameters\\generated", fileName);
+}
+#>
+Unused generated text file

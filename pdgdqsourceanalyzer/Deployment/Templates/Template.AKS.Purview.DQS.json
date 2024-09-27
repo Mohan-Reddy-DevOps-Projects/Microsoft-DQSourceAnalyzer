@@ -1,0 +1,634 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the environment in which aks is deploying"
+            }
+        },
+        "deploymentTags": {
+            "type": "object",
+            "defaultValue": {},
+            "metadata": {
+                "description": "User-supplied tags to identify the resource, e.g. environment, branch, build number, etc"
+            }
+        },
+        "deploymentTime": {
+            "type": "object",
+            "defaultValue": {
+                "Deployment UTC time": "[utcNow('o')]"
+            },
+            "metadata": {
+                "description": "Date and time when deployment was performed. Parameter must not be supplied, always uses default value"
+            }
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the log analytics workspace associated to the AKS cluster. Workspace must exist; it is not created by this deployment"
+            }
+        },
+        "clusterName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the AKS cluster."
+            }
+        },
+        "nodeType": {
+            "type": "string",
+            "metadata": {
+                "description": "The VM type of the AKS cluster."
+            }
+        },
+        "numberOfNodesMin": {
+            "type": "int",
+            "metadata": {
+                "description": "The min number of VMs to be created for this AKS cluster."
+            }
+        },
+        "numberOfNodesMax": {
+            "type": "int",
+            "metadata": {
+                "description": "The max number of VMs to be created for this AKS cluster."
+            }
+        },
+        "clusterUmiIdentityName": {
+            "type": "string",
+            "metadata": {
+                "description": "he name of the user-assigned managed identity for the kubelet on the AKS cluster."
+            }
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "The Kubernetes version for this AKS cluster. Should be set to the latest non-preview version."
+            }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the keyvault containing the client and server certificates and other application secrets."
+            }
+        },
+        "publicIpDNS": {
+            "type": "string",
+            "metadata": {
+                "description": "The DNS prefix of the public IP assigned to this AKS."
+            }
+        },
+        "dnsApis": {
+            "type": "array",
+            "metadata": {
+                "description": "List of API names reflected as DNS entries"
+            }
+        },
+        "dnsServiceZone": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the internal service-specific DNS zone to add records to"
+            }
+        },
+        "dnsZoneSubscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "The subscription Id where the DNS zone resource is defined. Assuming both zones are in the same subscription and resource group"
+            }
+        },
+        "dnsZoneResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource group where the DNS zone resource is defined. Assuming both zones are in the same subscription and resource group"
+            }
+        },
+        "ev2ExtensionIdentityObjectId": {
+            "type": "string",
+            "metadata": {
+                "description": "The object id of the user-assigned managed identity that runs the EV2 shell extension. There is one of those for Dogfood/Dev and one for Prod, regardless of regions"
+            }
+        },
+        "podIdentityName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the user-assigned managed identity for pods on the AKS cluster."
+            }
+        },
+        "podIdentitySubscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "The subscription Id for user-assigned managed identity for pods on the AKS cluster."
+            }
+        },
+        "podIdentityPrincipalId": {
+            "type": "string",
+            "metadata": {
+                "description": "The principal Id for user-assigned managed identity for pods on the AKS cluster."
+            }
+        },
+        "podIdentityResourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource Id for user-assigned managed identity for pods on the AKS cluster."
+            }
+        },
+        "regionShortName": {
+            "type": "string",
+            "metadata": {
+                "description": "Short name of the region."
+            }
+        },
+        "regionFullName": {
+            "type": "string",
+            "metadata": {
+                "description": "Full name of the region."
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the storage account"
+            }
+        },
+        "userAssignedIdentities_dqsprod_resourceid": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "userAssignedIdentities_akspod_resourceid": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "userAssignedIdentities_dqsprod_clientid": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "userAssignedIdentities_dqsprod_objectid": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "availabilityZones": {
+            "type": "array",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "logicAppManagedIdentityName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the user assigned managed identity used by scheduler logic apps"
+            }
+        },
+        "aksRegionCompactLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Compact location of the AKS region."
+            }
+        }
+    },
+  "variables": {
+    "nodeResourceGroup": "[concat('MC_', resourceGroup().name, '_', parameters('clusterName'))]",
+    "publicIpName": "[concat(parameters('publicIpDNS'),'-',parameters('environmentName'),'-public-ip-',parameters('regionShortName'))]",
+    "egressIpName": "[concat(parameters('publicIpDNS'),'-',parameters('environmentName'),'-egress-ip-',parameters('regionShortName'))]",
+    "publicIpFqdn": "[concat(parameters('publicIpDNS'),'-',parameters('environmentName'),'.', resourceGroup().location, '.cloudapp.azure.com')]",
+    "contributorRole": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "storageBlobDataContributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+    "storageTableDataContributor": "974c5e8b-45b9-4653-ba55-5f855dd0fb88",
+    "storageQueueDataContributor": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3",
+    "managedIdentityOperatorRoleId": "f1a07417-d97a-45cb-824c-7a7467783830",
+    "readerRole": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+    "logicAppContributorRole": "87a39d53-fc1b-424a-814c-f7e04687dc9e",
+    "managedIdentityOperatorRole":  "f1a07417-d97a-45cb-824c-7a7467783830",
+    "upgradeChannel": "node-image",
+    "managedClusterAPIVersion": "2023-03-01",
+    "msiAPIVersion": "2018-11-30"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2023-03-01",
+      "name": "[parameters('clusterName')]",
+      "location": "[parameters('aksRegionCompactLocation')]",
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "identity": {
+        "type": "userAssigned",
+        "userAssignedIdentities": {
+          "[resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName'))]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('egressIpName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName'))]"
+      ],
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "autoUpgradeProfile": {
+          "upgradeChannel": "[variables('upgradeChannel')]"
+        },
+        "identityProfile": {
+          "kubeletidentity": {
+            "resourceId": "[resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName'))]",
+            "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName')), variables('msiAPIVersion'),'Full').properties.clientId]",
+            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName')), variables('msiAPIVersion'),'Full').properties.principalId]"
+          }
+        },
+        "dnsPrefix": "[concat(parameters('clusterName'), '-dns')]",
+        "agentPoolProfiles": [
+            {
+                "name": "systempool",
+                "mode": "System",
+                "count": 1,
+                "vmSize": "[parameters('nodeType')]",
+                "osDiskSizeGB": 1024,
+                "maxPods": 110,
+                "type": "VirtualMachineScaleSets",
+                "minCount": 1,
+                "maxCount": 2,
+                "enableAutoScaling": true,
+                "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                "enableNodePublicIP": false,
+                "availabilityZones": "[parameters('availabilityZones')]",
+                "osType": "Linux",
+                "osSKU": "AzureLinux"
+            },
+            {
+                "name": "dqspool",
+                "mode": "User",
+                "count": "[parameters('numberOfNodesMin')]",
+                "vmSize": "[parameters('nodeType')]",
+                "osDiskSizeGB": 1024,
+                "maxPods": 110,
+                "type": "VirtualMachineScaleSets",
+                "minCount": "[parameters('numberOfNodesMin')]",
+                "maxCount": "[parameters('numberOfNodesMax')]",
+                "enableAutoScaling": true,
+                "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                "enableNodePublicIP": false,
+                "availabilityZones": "[parameters('availabilityZones')]",
+                "osType": "Linux",
+                "osSKU": "AzureLinux"
+            }
+        ],
+        "addonProfiles": {
+          "omsagent": {
+            "enabled": true,
+            "config": {
+              "loganalyticsworkspaceresourceid": "[resourceId(resourceGroup().name, 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+            }
+          }
+        },
+        "nodeResourceGroup": "[variables('nodeResourceGroup')]",
+        "enableRBAC": true,
+        "networkProfile": {
+          "networkPlugin": "kubenet",
+          "loadBalancerSku": "Standard",
+          "podCidr": "10.244.0.0/16",
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16",
+          "outboundType": "loadBalancer",
+          "loadBalancerProfile": {
+            "outboundIPs": {
+              "publicIPs": [
+                {
+                  "id": "[resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.Network/publicIPAddresses', variables('egressIpName'))]"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "[variables('msiAPIVersion')]",
+      "name": "[parameters('clusterUmiIdentityName')]",
+      "location": "[parameters('aksRegionCompactLocation')]",
+      "comments": "User-assigned managed identity to be used as AKS managed identity",
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "properties": {
+        "tenantId": "[subscription().tenantId]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIpName')]",
+      "apiVersion": "2019-09-01",
+      "location": "[parameters('aksRegionCompactLocation')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "properties": {
+        "publicIPAddressVersion": "IPv4",
+        "publicIPAllocationMethod": "Static",
+        "idleTimeoutInMinutes": 4,
+        "dnsSettings": {
+          "domainNameLabel": "[concat(parameters('publicIpDNS'),'-',parameters('environmentName'))]",
+          "fqdn": "[variables('publicIpFqdn')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('egressIpName')]",
+      "apiVersion": "2019-09-01",
+      "location": "[parameters('aksRegionCompactLocation')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "tags": "[union(parameters('deploymentTags'), parameters('deploymentTime'))]",
+      "properties": {
+        "publicIPAddressVersion": "IPv4",
+        "publicIPAllocationMethod": "Static",
+        "idleTimeoutInMinutes": 4
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deployAKVGroup",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[resourceGroup().name]",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "apiVersion": "2016-10-01",
+              "name": "[concat(parameters('keyVaultName'), '/add')]",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "[parameters('ev2ExtensionIdentityObjectId')]",
+                    "permissions": {
+                      "keys": [],
+                      "secrets": [
+                        "Get", "Set"
+                      ],
+                      "certificates": [
+                        "Get", "List"
+                      ]
+                    }
+                  },
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[parameters('podIdentityPrincipalId')]",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get"
+                            ],
+                            "certificates": [
+                                "Get",
+                                "List"
+                            ]
+                        }
+                    }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deployAKVGroupForTest",
+      "type": "Microsoft.Resources/deployments",
+      "condition": "[equals(parameters('environmentName'), 'dev')]",
+      "resourceGroup": "[resourceGroup().name]",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "apiVersion": "2016-10-01",
+              "name": "[concat(parameters('keyVaultName'), '/add')]",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "de4e49f9-ed23-496d-b711-3eb29bd1ee25",
+                    "permissions": {
+                      "keys": [],
+                      "secrets": [
+                        "Get"
+                      ],
+                      "certificates": [
+                        "Get", "List"
+                      ]
+                    }
+                  },
+                  {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "7b44c893-93aa-4352-9202-fcc6e90b01c9",
+                    "permissions": {
+                      "keys": [],
+                      "secrets": [
+                        "Get"
+                      ],
+                      "certificates": [
+                        "Get", "List"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[guid(resourceGroup().id, parameters('clusterUmiIdentityName'))]",
+      "comments": "Add cluster identity MSI to Contributor role for resource group so it can access Public IP",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUmiIdentityName')), variables('msiAPIVersion'),'Full').properties.principalId]",
+        "scope": "[resourceGroup().id]"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('clusterName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('clusterName'), parameters('ev2ExtensionIdentityObjectId')))]",
+      "comments": "Add managed identity that runs the Ev2 script to the 'Azure Kubernetes Service Cluster User' role for the AKS cluster.",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4abbcc35-e782-43d8-92c5-2d3f1bd2253f')]",
+        "principalId": "[parameters('ev2ExtensionIdentityObjectId')]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[guid(resourceGroup().id, parameters('podIdentityName'), 'readerRole')]",
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('readerRole'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]",
+            "scope": "[resourceGroup().id]"
+        },
+      "dependsOn": [
+      ]
+    },
+    {
+        "type": "Microsoft.Authorization/roleAssignments",
+        "apiVersion": "2018-09-01-preview",
+        "name": "[guid(resourceGroup().id, parameters('podIdentityName'), 'logicAppContributorRole')]",
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('logicAppContributorRole'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]",
+            "scope": "[resourceGroup().id]"
+        },
+        "dependsOn": [
+        ]
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('logicAppManagedIdentityName'), '/Microsoft.Authorization/', guid(parameters('logicAppManagedIdentityName'), 'ManagedIdentityOperatorRole'))]",
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('managedIdentityOperatorRole'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]",
+            "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('logicAppManagedIdentityName'))]"
+        },
+      "dependsOn": [
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat('deployDnsRecords', copyIndex())]",
+      "apiVersion": "2019-05-10",
+      "resourceGroup": "[parameters('dnsZoneResourceGroup')]",
+      "subscriptionId": "[parameters('dnsZoneSubscriptionId')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
+      ],
+      "copy": {
+        "name": "dnsCnameCopy",
+        "count": "[length(parameters('dnsApis'))]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones/CNAME",
+              "name": "[concat(parameters('dnsServiceZone'), '/', parameters('dnsApis')[copyIndex()], '-', parameters('regionFullName'))]",
+              "comments": "Create DNS CNAME record in the service zone to use later instead of cloudapp.azure.com which is under Azure's control",
+              "apiVersion": "2018-05-01",
+              "properties": {
+                "TTL": 300,
+                "CNAMERecord": {
+                  "cname": "[variables('publicIpFqdn')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(variables('publicIpName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, variables('publicIpName'), parameters('ev2ExtensionIdentityObjectId')))]",
+      "comments": "Add managed identity that runs the Ev2 script to the 'Reader' role for the public IP.",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('readerRole'))]",
+        "principalId": "[parameters('ev2ExtensionIdentityObjectId')]"
+      }
+    },
+    // Role: pod identity -> storage account 'Contributor' role
+    {
+      "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('storageAccountName'),  parameters('podIdentityName'), 'contributor'))]",
+      "apiVersion": "2018-09-01-preview",
+      "comments": "Add pod identity to the 'Contributor' role for storage account",
+      "dependsOn": [
+      ],
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('contributorRole'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]"
+        }
+    },
+    // role: pod identity -> storage account to 'Storage Blob Data Contributor' role
+    {
+      "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('storageAccountName'), parameters('podIdentityName'), 'blobContributor'))]",
+      "apiVersion": "2018-09-01-preview",
+      "comments": "Add pod identity to the 'Storage Blob Data Contributor' role for storage account",
+      "dependsOn": [
+      ],
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('storageBlobDataContributor'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]"
+        }
+    },
+    // role: pod identity -> storage account to 'Storage Queue Data Contributor' role
+    {
+      "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('storageAccountName'), parameters('podIdentityName'), 'queueContributor'))]",
+      "apiVersion": "2018-09-01-preview",
+      "comments": "Add pod identity to the 'Storage Queue Data Contributor' role for storage account",
+      "dependsOn": [
+      ],
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('storageQueueDataContributor'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]"
+        }
+    },
+    // role: pod identity -> storage account to 'Storage Table (Table store) Data Contributor' role
+    {
+      "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('storageAccountName'), parameters('podIdentityName'), 'tableContributor'))]",
+      "apiVersion": "2018-09-01-preview",
+      "comments": "Add pod identity to the 'Storage Table (Table store) Data Contributor' role for storage account",
+      "dependsOn": [
+      ],
+        "properties": {
+            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('storageTableDataContributor'))]",
+            "principalId": "[parameters('podIdentityPrincipalId')]"
+        }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('logAnalyticsWorkspaceName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('logAnalyticsWorkspaceName'), parameters('ev2ExtensionIdentityObjectId')))]",
+      "comments": "Add managed identity that runs the Ev2 script to the 'Log Analytics Contributor' role for the workspace.",
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+        "principalId": "[parameters('ev2ExtensionIdentityObjectId')]"
+      }
+    },
+  ]
+  }

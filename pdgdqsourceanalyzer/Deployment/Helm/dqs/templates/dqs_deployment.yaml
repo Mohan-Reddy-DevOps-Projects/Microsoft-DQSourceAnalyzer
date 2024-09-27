@@ -1,0 +1,60 @@
+# encoding: utf-8    
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purview-dqs
+spec:
+  replicas: {{ .Values.dqs.instances }}
+  selector:
+    matchLabels:
+      app: purview-dqs
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 15
+  template:
+    metadata:
+      labels:
+        app: purview-dqs
+        role: purview-dqs
+        aadpodidbinding: purview-dqs-aad
+    spec:
+      nodeSelector:
+        agentpool: dqspool
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - purview-dqs
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: purview-dqs-config
+      - name: mdsd-run-vol
+        hostPath:
+          path: /var/run/mdsd
+      - name: mdsd-asa-run-vol
+        hostPath:
+          path: /var/run/mdsd/asa
+      containers:
+      - image: {{ .Values.dqs.imagePath }}
+        name: purview-dqs
+        # args: ["Environment={{ .Values.dqs.environment }}"]
+        imagePullPolicy: Always
+        ports:
+        - name: https
+          containerPort: 443
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config-volume
+        - name: mdsd-run-vol
+          mountPath: /var/run/mdsd
+        - name: mdsd-asa-run-vol
+          mountPath: /var/run/mdsd/asa
