@@ -1,0 +1,40 @@
+#################################################################################
+#                         OneBranch Pipelines - Official                        #
+# This pipeline was created by EasyStart from a sample located at:              #
+#   https://aka.ms/obpipelines/easystart/samples                                #
+# Documentation:  https://aka.ms/obpipelines                                    #
+# Yaml Schema:    https://aka.ms/obpipelines/yaml/schema                        #
+# Retail Tasks:   https://aka.ms/obpipelines/tasks                              #
+# Support:        https://aka.ms/onebranchsup                                   #
+#################################################################################
+
+stages:
+  - stage: docker
+    dependsOn: linux_build_stage
+    jobs:
+    - job: linuxContainers # build linux images
+      pool:
+        type: docker
+        os: linux
+      steps:
+        - task: DownloadPipelineArtifact@2
+          displayName: '📥 Download and Explode artifacts from previous stage'
+          inputs:
+            artifactName: 'drop_linux_build_stage_linux_job'
+            targetPath: '$(Build.SourcesDirectory)/dst'
+            artifact: drop_linux_build_stage_linux_job
+                
+        - task: onebranch.pipeline.imagebuildinfo@1
+          displayName: '🏗 Build DataQualityService Docker Image'
+          inputs:
+            repositoryName: dataqualityservice
+            dockerFileRelPath: DataQualityServiceDockerFiles/Dockerfile
+            dockerFileContextPath: DataQualityServiceDockerFiles
+            registry: dataqualityacr.azurecr.io
+            addPipelineData: false
+            push: false
+            saveImageToPath: DataQualityServiceImage.tar.gz
+            buildkit: 1
+            enable_network: true # Disable it once dotnet performance tools are available in nuget feed
+            build_tag: $(Build.BuildNumber) # Docker image tag
+            compress: true

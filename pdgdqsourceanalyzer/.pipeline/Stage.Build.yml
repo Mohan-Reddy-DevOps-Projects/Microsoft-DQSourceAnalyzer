@@ -1,0 +1,46 @@
+#################################################################################
+#                         OneBranch Pipelines - Official                        #
+# This pipeline was created by EasyStart from a sample located at:              #
+#   https://aka.ms/obpipelines/easystart/samples                                #
+# Documentation:  https://aka.ms/obpipelines                                    #
+# Yaml Schema:    https://aka.ms/obpipelines/yaml/schema                        #
+# Retail Tasks:   https://aka.ms/obpipelines/tasks                              #
+# Support:        https://aka.ms/onebranchsup                                   #
+#################################################################################
+
+stages:
+  - stage: linux_build_stage
+    jobs:
+    - job: linux_job
+      pool:
+        type: linux
+      
+      variables: # More settings at https://aka.ms/obpipelines/yaml/jobs
+        ob_outputDirectory: '$(Build.SourcesDirectory)/out' # this directory is uploaded to pipeline artifacts, reddog and cloudvault. More info at https://aka.ms/obpipelines/artifacts
+        # https://aka.ms/obpipelines/sdl
+
+      steps: # These steps will be run in unrestricted container's network        
+          - task: CopyFiles@2
+            displayName: 'Copy EV2 files'
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/src/Deployment'
+              Contents: '**'
+              TargetFolder: '$(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/'
+
+          - task: CmdLine@2
+            displayName: "📄 Create Docker Image Version file"
+            inputs:
+              script: |
+                echo  "{\"unique_image_name\": \"dataqualityacr.azurecr.io/dataqualityservice:$(Build.BuildNumber)\",\"ame_unique_image_name\": \"dataqualityacrprod.azurecr.io/dqsourceamalyzer:$(Build.BuildNumber)\"}" > $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/Helm/DataQualityServiceImage-metadata.json
+                
+          - task: CmdLine@2
+            displayName: '📦 Package Ev2 tar archive for Data Quality service'
+            inputs:
+              script: |
+                cd $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/Helm && tar cvfz $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/deployAKS.tar.gz ./*
+
+          - task: CmdLine@2
+            displayName: '📦 Package Script folder for ACR push'
+            inputs:
+              script: |
+                cd $(Build.SourcesDirectory)/src/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
