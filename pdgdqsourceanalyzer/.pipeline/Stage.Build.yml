@@ -23,7 +23,7 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy EV2 files'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/src/Deployment'
+              SourceFolder: '$(Build.SourcesDirectory)/Deployment'
               Contents: '**'
               TargetFolder: '$(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/'
 
@@ -43,4 +43,4 @@ stages:
             displayName: '📦 Package Script folder for ACR push'
             inputs:
               script: |
-                cd $(Build.SourcesDirectory)/src/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
+                cd $(Build.SourcesDirectory)/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/pushImageToAcr.tar.gz ./*

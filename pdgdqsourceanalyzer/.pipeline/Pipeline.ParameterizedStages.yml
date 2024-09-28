@@ -51,7 +51,7 @@ extends:
         enabled: true # Can be disabled for non-official builds.
 
     stages:
-      - template: Stage.Build.yml
+      - template: Stage.Build.yml 
         parameters:
           runBinSkim: ${{parameters.enableSdlTools}}
 
