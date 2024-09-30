@@ -25,7 +25,7 @@ stages:
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/Deployment'
               Contents: '**'
-              TargetFolder: '$(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/'
+              TargetFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/out/DataQualityService/ServiceGroupRoot/'
 
           - task: CmdLine@2
             displayName: "📄 Create Docker Image Version file"
@@ -37,7 +37,7 @@ stages:
             displayName: '📦 Package Ev2 tar archive for Data Quality service'
             inputs:
               script: |
-                cd $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/Helm && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/deployAKS.tar.gz ./*
+                cd $(Build.SourcesDirectory)/pdgdqsourceanalyzer/out/PdgDqsourceAnalyzer/ServiceGroupRoot/Helm && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/deployAKS.tar.gz ./*
 
           - task: CmdLine@2
             displayName: '📦 Package Script folder for ACR push'
