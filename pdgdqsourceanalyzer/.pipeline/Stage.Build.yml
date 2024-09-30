@@ -19,6 +19,7 @@ stages:
         ob_outputDirectory: '$(Build.SourcesDirectory)/out' # this directory is uploaded to pipeline artifacts, reddog and cloudvault. More info at https://aka.ms/obpipelines/artifacts
         # https://aka.ms/obpipelines/sdl
 
+      
       steps: # These steps will be run in unrestricted container's network        
           - task: CopyFiles@2
             displayName: 'Copy EV2 files'
@@ -27,6 +28,25 @@ stages:
               Contents: '**'
               TargetFolder: '$(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/'
 
+          - task: CopyFiles@2
+            displayName: 'Copy Source files'
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/src'
+              Contents: |
+                  **/publish/**
+                  Dockerfile
+                  **/Certificates/**
+                  !**/publish/runtimes/win*/**/*tensorflow*
+                  !**/publish/runtimes/win*/**/*onnx*
+                  !**/publish/runtimes/win*/**/*hdf5*
+                  !**/publish/runtimes/win*/**/*Torch*
+                  !**/publish/runtimes/win*/**/*Skia*
+                  !**/publish/runtimes/osx*/**/*
+                  !**/publish/runtimes/ios*/**/**/*
+                  !**/publish/runtimes/android/**/*
+                  !**/publish/runtimes/linux/native/*tensorflow*
+              TargetFolder: '$(Build.SourcesDirectory)/out/PdgDqsourceAnalyzerDockerFiles/'
+          
           - task: CmdLine@2
             displayName: "📄 Create Docker Image Version file"
             inputs:
