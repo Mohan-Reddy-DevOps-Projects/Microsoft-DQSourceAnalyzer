@@ -25,7 +25,7 @@ stages:
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/Deployment'
               Contents: '**'
-              TargetFolder: '$(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/'
+              TargetFolder: '$(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/'
 
           - task: CmdLine@2
             displayName: "📄 Create Docker Image Version file"
