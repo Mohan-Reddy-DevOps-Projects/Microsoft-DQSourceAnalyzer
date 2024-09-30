@@ -23,7 +23,7 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy EV2 files'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/Deployment'
+              SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/Deployment'
               Contents: '**'
               TargetFolder: '$(Build.SourcesDirectory)/out/DataQualityService/ServiceGroupRoot/'
 
