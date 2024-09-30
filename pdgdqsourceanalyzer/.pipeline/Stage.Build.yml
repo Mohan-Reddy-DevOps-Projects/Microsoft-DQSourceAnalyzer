@@ -43,4 +43,4 @@ stages:
             displayName: '📦 Package Script folder for ACR push'
             inputs:
               script: |
-                cd $(Build.SourcesDirectory)/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
+                cd $(Build.SourcesDirectory)/pdgdqsourceanalyzer/Deployment/Scripts/ && tar cvfz $(Build.SourcesDirectory)/pdgdqsourceanalyzer/out/PdgDqsourceAnalyzer/ServiceGroupRoot/pushImageToAcr.tar.gz ./*
