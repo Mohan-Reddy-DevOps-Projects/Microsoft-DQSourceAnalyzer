@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 from typing import List, Dict
 from adlfs import AzureBlobFileSystem
@@ -117,9 +117,6 @@ class ADLSGen2FormatDetector(BaseModel):
         """
         try:
             credential = DefaultAzureCredential()
-            handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
-            fs = pyarrow.fs.PyFileSystem(handler)
-
             full_path = f"{file_system_name}/{directory_path}"
             
             # Try to detect Delta format
@@ -134,6 +131,8 @@ class ADLSGen2FormatDetector(BaseModel):
             # Try to detect Parquet format
             try:
                 # Attempt to read the directory as a Parquet dataset
+                handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
+                fs = pyarrow.fs.PyFileSystem(handler)
                 dataset = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive")
                 parquet_schema = dataset.schema
                 schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in parquet_schema]
@@ -147,5 +146,30 @@ class ADLSGen2FormatDetector(BaseModel):
                 pass
             # If neither format is detected
             return {"status": "success", "format": "unsupportedFormat" }
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def detect_partitions(account_name, file_system_name, directory_path) -> str:
+        """
+        Detect if the (Delta or Parquet) directory on ADLS Gen2 is partitioned.
+        Returns:
+            - "isPartitioned": True - if partitioned else False
+            - "partitionedColumns": Returns Partitioned Columns, else []
+        """
+        try:
+            isPartitioned = False
+            credential = DefaultAzureCredential()
+            full_path = f"{file_system_name}/{directory_path}"
+            handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
+            fs = pyarrow.fs.PyFileSystem(handler)
+            parquet_schema = ds.dataset(full_path, filesystem=fs, format="parquet", partitioning=None).schema
+            partitioning = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive").partitioning
+            # Extract the partitioned columns (only if partitioning exists and is valid)
+            partition_columns = []
+            if partitioning is not None and hasattr(partitioning, 'schema'):
+                partition_columns = [{"column_name": col.name, "dtype": str(col.type)} for col in partitioning.schema if col.name not in parquet_schema.names]
+                if partition_columns:
+                    isPartitioned = True
+            return {"status": "success", "isPartitioned": isPartitioned,"partition_columns":partition_columns}
         except Exception as e:
             return {"status": "error", "message": str(e)}
