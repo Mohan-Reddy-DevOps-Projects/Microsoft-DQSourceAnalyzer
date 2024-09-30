@@ -31,7 +31,7 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy Source files'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/src'
+              SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer'
               Contents: |
                   **/publish/**
                   **/*
