@@ -34,6 +34,7 @@ stages:
               SourceFolder: '$(Build.SourcesDirectory)/pdgdqsourceanalyzer/src'
               Contents: |
                   **/publish/**
+                  **/*
                   Dockerfile
                   **/Certificates/**
                   !**/publish/runtimes/win*/**/*tensorflow*
