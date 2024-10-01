@@ -205,6 +205,23 @@ async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
+@app.post("/adlsgen2/getPartitionColumns")
+async def get_adlsgen2_getPartitionColumns(schema_request: ADLSGen2FormatDetector):
+    try:
+        result = ADLSGen2FormatDetector.detect_partitions(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+
 # Azure SQL Database endpoints
 @app.post("/azuresql/testconnection")
 async def test_azure_sql_connection(connection_request: AzureSQLRequest):
