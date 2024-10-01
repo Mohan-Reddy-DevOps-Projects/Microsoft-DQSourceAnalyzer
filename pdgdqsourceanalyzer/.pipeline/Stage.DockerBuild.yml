@@ -28,8 +28,8 @@ stages:
           displayName: '🏗 Build DataQualityService Docker Image'
           inputs:
             repositoryName: dataqualityservice
-            dockerFileRelPath: Deployment/Dockerfile
-            dockerFileContextPath: Deployment
+            dockerFileRelPath: PdgDqsourceAnalyzerDockerFiles/Dockerfile
+            dockerFileContextPath: PdgDqsourceAnalyzerDockerFiles
             registry: dataqualityacr.azurecr.io
             addPipelineData: false
             push: false
