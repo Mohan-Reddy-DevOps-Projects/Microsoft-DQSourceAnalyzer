@@ -37,3 +37,17 @@ extends:
   parameters:
     OneBranchTemplate: ${{ variables.OneBranchTemplate }}
     enableSdlTools: ${{parameters.enableSdlTools}}
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+  displayName: 'Use Python 3.x'
+
+- script: |
+    python -m pip install --upgrade pip setuptools --trusted-host pypi.org --trusted-host files.pythonhosted.org
+  displayName: 'Upgrade pip and setuptools with trusted hosts'
+
+- script: |
+    pip install <your-packages-here> --trusted-host pypi.org --trusted-host files.pythonhosted.org
+  displayName: 'Install packages with trusted hosts'
