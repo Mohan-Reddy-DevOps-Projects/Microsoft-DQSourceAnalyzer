@@ -37,6 +37,8 @@ extends:
   parameters:
     OneBranchTemplate: ${{ variables.OneBranchTemplate }}
     enableSdlTools: ${{parameters.enableSdlTools}}
+
+# Add the configuration below to handle SSL issues
 steps:
 - task: UsePythonVersion@0
   inputs:
