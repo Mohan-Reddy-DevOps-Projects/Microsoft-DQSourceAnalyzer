@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
+ENV PIP_NO_SSL=True
 
 WORKDIR /app
 
@@ -20,7 +21,7 @@ RUN tdnf install -y \
     ca-certificates
 
 #RUN pip3 install -r requirements.txt
-RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
+RUN pip3 install --no-cache-dir --trusted-host pypi.org -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
