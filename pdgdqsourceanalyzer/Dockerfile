@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
+
 ENV PIP_INDEX_URL=https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/
 
 WORKDIR /app
@@ -11,6 +12,7 @@ RUN mkdir -p ~/.pip && \
     echo "index-url = https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/" >> ~/.pip/pip.conf
 
 COPY requirements.txt requirements.txt
+
 ARG VSS_NUGET_EXTERNAL_FEED_ENDPOINTS
 
 COPY . /app
