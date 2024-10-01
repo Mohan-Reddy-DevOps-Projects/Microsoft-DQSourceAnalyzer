@@ -2,13 +2,15 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
+ARG INDEX_URL
+
+ENV PIP_EXTRA_INDEX_URL=$INDEX_URL
+
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
 COPY . /app
-
-ARG VSS_NUGET_EXTERNAL_FEED_ENDPOINTS
 
 # Install required dependencies and utilities
 RUN tdnf install -y \
@@ -22,9 +24,7 @@ RUN tdnf install -y \
     openssl-devel \
     ca-certificates
 
-RUN pip3 install pyodbc==5.1.0
-#RUN pip3 install -r requirements.txt
-#RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
