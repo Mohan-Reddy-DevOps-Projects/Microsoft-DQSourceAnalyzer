@@ -23,6 +23,7 @@ steps:
       repository: $(imageName)
       command: build
       Dockerfile: pdgdqsourceanalyzer/Dockerfile
+      arguments: '--build-arg ''INDEX_URL=$(PIP_EXTRA_INDEX_URL)'''
       tags: |
         $(tag)
 
