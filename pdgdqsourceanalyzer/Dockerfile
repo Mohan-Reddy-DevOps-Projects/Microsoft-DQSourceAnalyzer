@@ -5,6 +5,11 @@ ENV PIP_INDEX_URL=https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a
 
 WORKDIR /app
 
+# Create a pip config file to point to your custom feed
+RUN mkdir -p ~/.pip && \
+    echo "[global]" > ~/.pip/pip.conf && \
+    echo "index-url = https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/" >> ~/.pip/pip.conf
+
 COPY requirements.txt requirements.txt
 
 COPY . /app
