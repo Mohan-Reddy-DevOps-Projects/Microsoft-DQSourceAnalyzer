@@ -6,9 +6,8 @@ WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
-RUN pip3 install --upgrade pip
 #RUN pip3 install -r requirements.txt
-RUN pip3 install --no-cache-dir --trusted-host pypi.org -r requirements.txt
+RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
 
 COPY . /app
 
