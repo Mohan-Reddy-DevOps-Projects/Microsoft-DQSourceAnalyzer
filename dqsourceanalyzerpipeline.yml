@@ -14,7 +14,7 @@ steps:
   - task: PipAuthenticate@1
     displayName: 'Pip Authenticate'
     inputs:
-      artifactFeeds: 'DQSourceAnalyzer/PurviewDataGov'
+      artifactFeeds: 'PurviewDataGov'
 
   - task: Docker@2
     displayName: Build an image
