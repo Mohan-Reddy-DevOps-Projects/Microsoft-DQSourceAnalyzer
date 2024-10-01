@@ -5,7 +5,6 @@ ENV ENVIRONMENT=DEV
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
 
 COPY . /app
 
@@ -19,6 +18,8 @@ RUN tdnf install -y \
     cyrus-sasl-gssapi \
     openssl  \
     ca-certificates
+
+RUN pip3 install -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
