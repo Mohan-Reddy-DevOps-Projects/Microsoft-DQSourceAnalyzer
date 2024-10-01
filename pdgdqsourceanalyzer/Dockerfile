@@ -2,8 +2,6 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
-ENV PIP_INDEX_URL=https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/
-
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
