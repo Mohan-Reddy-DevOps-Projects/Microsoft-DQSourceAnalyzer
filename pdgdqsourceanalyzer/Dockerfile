@@ -20,7 +20,7 @@ RUN tdnf install -y \
     ca-certificates
 
 #RUN pip3 install -r requirements.txt
-RUN pip3 install --extra-index-url=https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/ --trusted-host=msdata.pkgs.visualstudio.com -r requirements.txt
+RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
