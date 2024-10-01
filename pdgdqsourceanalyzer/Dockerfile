@@ -16,8 +16,8 @@ RUN tdnf install -y \
     unixODBC \
     unixODBC-devel \
     cyrus-sasl-gssapi \
-    openssl11  \
-    openssl11-devel \
+    openssl  \
+    openssl-devel \
     ca-certificates
 
 #RUN pip3 install -r requirements.txt
