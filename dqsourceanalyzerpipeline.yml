@@ -11,6 +11,11 @@ variables:
 steps:
   - checkout: self
 
+  - task: PipAuthenticate@1
+    displayName: 'Pip Authenticate'
+    inputs:
+      artifactFeeds: 'DQSourceAnalyzer/PurviewDataGov'
+
   - task: Docker@2
     displayName: Build an image
     inputs:
