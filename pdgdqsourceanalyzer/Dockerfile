@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
+ENV PIP_INDEX_URL=https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/
 
 WORKDIR /app
 
@@ -20,8 +21,8 @@ RUN tdnf install -y \
     openssl-devel \
     ca-certificates
 
-#RUN pip3 install -r requirements.txt
-RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
+RUN pip3 install -r requirements.txt
+#RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
