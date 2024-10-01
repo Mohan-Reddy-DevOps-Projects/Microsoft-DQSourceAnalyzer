@@ -6,9 +6,6 @@ WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
-#RUN pip3 install -r requirements.txt
-RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
-
 COPY . /app
 
 # Install required dependencies and utilities
@@ -19,8 +16,12 @@ RUN tdnf install -y \
     unixODBC \
     unixODBC-devel \
     cyrus-sasl-gssapi \
-    openssl  \
+    openssl11  \
+    openssl11-devel \
     ca-certificates
+
+#RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r requirements.txt
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
