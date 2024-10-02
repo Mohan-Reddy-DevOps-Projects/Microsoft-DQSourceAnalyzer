@@ -11,11 +11,10 @@ variables:
 steps:
   - checkout: self
 
-  - task: PipAuthenticate@1
+  - task: PipAuthenticate@0
     displayName: 'Pip Authenticate'
     inputs:
       artifactFeeds: 'PurviewDataGov'
-      onlyAddExtraIndex: True
 
   - task: Docker@2
     displayName: Build an image
