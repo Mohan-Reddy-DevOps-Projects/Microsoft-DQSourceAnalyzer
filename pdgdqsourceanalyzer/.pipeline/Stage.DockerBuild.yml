@@ -23,7 +23,10 @@ stages:
             artifactName: 'drop_linux_build_stage_linux_job'
             targetPath: '$(Build.SourcesDirectory)/dst'
             artifact: drop_linux_build_stage_linux_job
-                
+        - task: PipAuthenticate@1
+          displayName: 'Pip Authenticate'
+          inputs:
+            artifactFeeds: '4031b34e-6354-4257-94de-a85346a777ae/PurviewDataGov'
         - task: onebranch.pipeline.imagebuildinfo@1
           displayName: '🏗 Build DataQualityService Docker Image'
           inputs:
@@ -31,6 +34,7 @@ stages:
             dockerFileRelPath: PdgDqsourceAnalyzerDockerFiles/Dockerfile
             dockerFileContextPath: PdgDqsourceAnalyzerDockerFiles
             registry: dataqualityacr.azurecr.io
+            arguments: --build-arg PIP_INDEX_URL=$(PIP_INDEX_URL)
             addPipelineData: false
             push: false
             saveImageToPath: PdgDqsourceAnalyzerImage.tar.gz
@@ -38,3 +42,4 @@ stages:
             enable_network: true # Disable it once dotnet performance tools are available in nuget feed
             build_tag: $(Build.BuildNumber) # Docker image tag
             compress: true
+            
