@@ -31,7 +31,7 @@ stages:
             dockerFileRelPath: PdgDqsourceAnalyzerDockerFiles/Dockerfile
             dockerFileContextPath: PdgDqsourceAnalyzerDockerFiles
             registry: dataqualityacr.azurecr.io
-            arguments: '--secret id=PIP_INDEX_URL,env=PIP_INDEX_URL'
+            arguments: '--secret id=pip_index_url,env=PIP_INDEX_URL'
             addPipelineData: false
             push: false
             saveImageToPath: PdgDqsourceAnalyzerImage.tar.gz
