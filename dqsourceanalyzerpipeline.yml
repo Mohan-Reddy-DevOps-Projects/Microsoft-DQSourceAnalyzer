@@ -18,7 +18,7 @@ steps:
       artifactFeeds: 'PurviewDataGov'
 
   - bash: |
-      pip3 search pyodbc==5.1.0 --extra-index-url https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/
+      pip3 install pyodbc==5.1.0 --extra-index-url https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/
       echo "##vso[task.setvariable variable=artifactoryUrl;]$PIP_EXTRA_INDEX_URL"
       echo "Artifactory URL is: $PIP_EXTRA_INDEX_URL"
     displayName: Export Artifactory URL
