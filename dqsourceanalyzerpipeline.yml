@@ -7,6 +7,7 @@ pool:
 variables:
   imageName: 'dqsourceanalyzer'
   tag: 'latest'
+  PIP_EXTRA_INDEX_URL: 'https://msdata.pkgs.visualstudio.com/4031b34e-6354-4257-94de-a85346a777ae/_packaging/PurviewDataGov/pypi/simple/'
 
 steps:
   - checkout: self
