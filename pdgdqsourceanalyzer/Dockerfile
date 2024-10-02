@@ -28,7 +28,7 @@ RUN tdnf install -y \
 
 #RUN pip3 install -r requirements.txt --extra-index-url https://$PIP_USERNAME:$PIP_PASSWORD@msdata.pkgs.visualstudio.com/_packaging/PurviewDataGov/pypi/simple
 
-RUN pip3 install -r requirements.txt --extra-index-url $PIP_INDEX_URL
+RUN pip3 install -r requirements.txt --index-url $PIP_INDEX_URL
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
