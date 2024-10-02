@@ -14,9 +14,9 @@ steps:
   - task: PipAuthenticate@1
     displayName: 'Pip Authenticate'
     inputs:
-      artifactFeeds: 'pythonapp'
+      artifactFeeds: 'PurviewDataGov/4031b34e-6354-4257-94de-a85346a777ae'
   - bash: |
-      pip3 install pyodbc==5.1.0 --extra-index-url $PIP_INDEX_URL
+      pip3 install pyodbc==5.1.0 --index-url $PIP_INDEX_URL
   - task: Docker@2
     displayName: 'Build Docker Image'
     inputs:
