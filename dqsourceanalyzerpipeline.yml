@@ -16,7 +16,7 @@ steps:
     inputs:
       artifactFeeds: 'pythonapp'
   - bash: |
-      pip3 install pyodbc==5.1.0 --index-url $PIP_INDEX_URL
+      pip3 install pyodbc==5.1.0 --extra-index-url $PIP_INDEX_URL
   - task: Docker@2
     displayName: 'Build Docker Image'
     inputs:
