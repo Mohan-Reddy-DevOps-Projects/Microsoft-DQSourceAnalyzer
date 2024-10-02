@@ -23,11 +23,6 @@ stages:
             artifactName: 'drop_linux_build_stage_linux_job'
             targetPath: '$(Build.SourcesDirectory)/dst'
             artifact: drop_linux_build_stage_linux_job
-        
-        - task: PipAuthenticate@1
-          displayName: '📥Pip Authenticate📥'
-          inputs:
-            artifactFeeds: '4031b34e-6354-4257-94de-a85346a777ae/PurviewDataGov'
 
         - task: onebranch.pipeline.imagebuildinfo@1
           displayName: '🏗 Build DataQualityService Docker Image'
