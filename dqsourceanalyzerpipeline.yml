@@ -22,8 +22,6 @@ steps:
       containerRegistry: 'dq-source-analyzer-testing'
       repository: $(imageName)
       arguments: 
-        --build-arg PIP_USERNAME=$(pipUsername)
-        --build-arg PIP_PASSWORD=$(pipPassword)
         --build-arg PIP_INDEX_URL=$(PIP_INDEX_URL)
       Dockerfile: pdgdqsourceanalyzer/Dockerfile
       tags: |
