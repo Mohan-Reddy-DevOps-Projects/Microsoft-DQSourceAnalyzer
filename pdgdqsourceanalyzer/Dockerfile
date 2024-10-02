@@ -2,9 +2,9 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
-ARG PIP_INDEX_URL
+#ARG PIP_INDEX_URL
 
-ENV PIP_INDEX_URL=$PIP_INDEX_URL
+#ENV PIP_INDEX_URL=$PIP_INDEX_URL
 
 WORKDIR /app
 
@@ -24,7 +24,8 @@ RUN tdnf install -y \
     openssl-devel \
     ca-certificates
 
-RUN pip3 install -r requirements.txt --index-url $PIP_INDEX_URL
+RUN --mount=type=secret,id=pip_index_url,target=/run/secrets/pip_index_url pip install --index-url $(cat /run/secrets/pip_index_url) -r requirements.txt
+#RUN pip3 install -r requirements.txt --index-url $PIP_INDEX_URL
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
