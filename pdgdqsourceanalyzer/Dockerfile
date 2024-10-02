@@ -2,8 +2,6 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
-#ARG PIP_EXTRA_INDEX_URL
-
 ARG PIP_INDEX_URL
 
 ENV PIP_INDEX_URL=$PIP_INDEX_URL
@@ -25,8 +23,6 @@ RUN tdnf install -y \
     openssl  \
     openssl-devel \
     ca-certificates
-
-#RUN pip3 install -r requirements.txt --extra-index-url https://$PIP_USERNAME:$PIP_PASSWORD@msdata.pkgs.visualstudio.com/_packaging/PurviewDataGov/pypi/simple
 
 RUN pip3 install -r requirements.txt --index-url $PIP_INDEX_URL
 
