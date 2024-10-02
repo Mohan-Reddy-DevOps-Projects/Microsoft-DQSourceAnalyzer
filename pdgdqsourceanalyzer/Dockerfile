@@ -2,9 +2,9 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
-ARG INDEX_URL
+ARG PIP_EXTRA_URL
 
-ENV PIP_EXTRA_INDEX_URL=$INDEX_URL
+#ENV PIP_EXTRA_INDEX_URL=$INDEX_URL
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN tdnf install -y \
     openssl-devel \
     ca-certificates
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt --extra-index-url $PIP_EXTRA_URL
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
