@@ -18,15 +18,17 @@ stages:
         os: linux
       steps:
         - task: DownloadPipelineArtifact@2
-          displayName: '📥 Download and Explode artifacts from previous stage'
+          displayName: '📥 Download and Explode artifacts from Linux previous stage'
           inputs:
             artifactName: 'drop_linux_build_stage_linux_job'
             targetPath: '$(Build.SourcesDirectory)/dst'
             artifact: drop_linux_build_stage_linux_job
+        
         - task: PipAuthenticate@1
-          displayName: 'Pip Authenticate'
+          displayName: '📥Pip Authenticate📥'
           inputs:
             artifactFeeds: '4031b34e-6354-4257-94de-a85346a777ae/PurviewDataGov'
+
         - task: onebranch.pipeline.imagebuildinfo@1
           displayName: '🏗 Build DataQualityService Docker Image'
           inputs:
@@ -34,7 +36,7 @@ stages:
             dockerFileRelPath: PdgDqsourceAnalyzerDockerFiles/Dockerfile
             dockerFileContextPath: PdgDqsourceAnalyzerDockerFiles
             registry: dataqualityacr.azurecr.io
-            arguments: --build-arg PIP_INDEX_URL=$(PIP_INDEX_URL)
+            arguments: '--secret id=PIP_INDEX_URL,env=PIP_INDEX_URL'
             addPipelineData: false
             push: false
             saveImageToPath: PdgDqsourceAnalyzerImage.tar.gz
