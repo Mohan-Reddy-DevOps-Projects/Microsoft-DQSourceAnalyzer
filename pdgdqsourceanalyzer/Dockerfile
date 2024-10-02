@@ -2,13 +2,11 @@ FROM mcr.microsoft.com/cbl-mariner/base/python:3
 
 ENV ENVIRONMENT=DEV
 
-ARG PIP_USERNAME
+#ARG PIP_EXTRA_INDEX_URL
 
-ARG PIP_PASSWORD
+ARG PIP_INDEX_URL
 
-ARG PIP_EXTRA_INDEX_URL
-
-#ENV PIP_EXTRA_INDEX_URL=$INDEX_URL
+ENV PIP_INDEX_URL=$PIP_INDEX_URL
 
 WORKDIR /app
 
@@ -30,7 +28,7 @@ RUN tdnf install -y \
 
 #RUN pip3 install -r requirements.txt --extra-index-url https://$PIP_USERNAME:$PIP_PASSWORD@msdata.pkgs.visualstudio.com/_packaging/PurviewDataGov/pypi/simple
 
-RUN pip3 install -r requirements.txt --extra-index-url $PIP_EXTRA_INDEX_URL
+RUN pip3 install -r requirements.txt --extra-index-url $PIP_INDEX_URL
 
 RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
     yum clean all
