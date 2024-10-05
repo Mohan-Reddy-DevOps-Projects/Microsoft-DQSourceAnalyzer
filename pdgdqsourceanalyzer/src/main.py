@@ -13,7 +13,7 @@ import pyodbc
 from src.DatabricksUnityCatalog import DatabricksUnityCatalogSchemaRequest, DatabricksUnityCatalogRequest
 from src.Snowflakedw import SnowflakeDWRequest, SnowflakeDWSchemaRequest
 from src.GoogleBigQuery import GoogleBigQueryRequest, GoogleBigQuerySchemaRequest
-from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest,ADLSGen2FormatDetector
+from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest,ADLSGen2IcebergSchemaRequest,ADLSGen2FormatDetector
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 
 # Load the environment variables from the .env file into the application
@@ -177,6 +177,22 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
 async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
     try:
         result = ADLSGen2ParquetSchemaRequest.get_table_schema(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/adlsgen2/geticebergschema")
+async def get_adlsgen2_schema(schema_request: ADLSGen2IcebergSchemaRequest):
+    try:
+        result = ADLSGen2IcebergSchemaRequest.get_table_schema(
             schema_request.account_name,
             schema_request.file_system_name,
             schema_request.directory_path
