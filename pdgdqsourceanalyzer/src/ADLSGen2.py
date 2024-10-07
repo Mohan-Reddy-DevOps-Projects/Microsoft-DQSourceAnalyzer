@@ -93,7 +93,7 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
                 with fs.open(latest_metadata_path, 'rb') as metadata_file:
                     metadata_json = json.load(metadata_file)
                 # Step 3: Inspect the schema and partitions
-                schema = metadata_json.get('schema', {})
+                schema = metadata_json.get('schemas', [])[0] if isinstance(metadata_json.get('schemas', []), list) and metadata_json['schemas'] else {}
                 schema_list = [{"column_name": field.get('name'), "dtype":field.get('type')} for field in schema.get('fields', [])]
             # Fetch schema
             return {"status": "success", "schema": schema_list}
@@ -235,20 +235,21 @@ class ADLSGen2FormatDetector(BaseModel):
                         with fs.open(latest_metadata_path, 'rb') as metadata_file:
                             metadata_json = json.load(metadata_file)
                         # Step 3: Inspect the schema and partitions
-                        schema = metadata_json.get('schema', {})
-                        partitions = metadata_json.get('partition-spec', [])
-                        if partitions:
+                        schema = metadata_json.get('schemas', [])[0] if isinstance(metadata_json.get('schemas', []), list) and metadata_json['schemas'] else {}
+                        partitions = metadata_json.get('partition-specs', [])[0] if isinstance(metadata_json.get('partition-specs', []), list) else {}
+
+                        if partitions and partitions.get('fields', []):
                             isPartitioned = True
                             partition_columns = [
                                                     {
                                                         "column_name": field.get('name'),
                                                         "dtype": next(
-                                                            (schema_field['type'] for schema_field in schema.get('fields', []) 
-                                                            if schema_field['name'] == field.get('name')), 
+                                                            (schema_field['type'] for schema_field in schema.get('fields', [])
+                                                            if schema_field['name'] == field.get('name')),
                                                             None
                                                         )
-                                                    } 
-                                                    for field in partitions
+                                                    }
+                                                    for field in partitions.get('fields', [])
                                                 ]
                     return {"status": "success", "isPartitioned": isPartitioned,"partition_columns":partition_columns}
             ##Get Partition Columns for Delta and Parquet formats.
