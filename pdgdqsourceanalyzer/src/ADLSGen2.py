@@ -11,6 +11,8 @@ from azure.identity import DefaultAzureCredential
 import pyarrowfs_adlgen2
 import pyarrow
 import pyarrow.dataset as ds
+import duckdb
+from fsspec import filesystem
 
 class ADLSGen2Request(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
@@ -79,22 +81,11 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
         try:
-
             credential = DefaultAzureCredential()
-            fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-            table_metadata_root_path = f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}/metadata"
-            metadata_files = fs.ls(table_metadata_root_path)
-            # Find the latest metadata file, assuming they are named "v1.metadata.json", "v2.metadata.json", etc.
-            # Sort the files to ensure we pick the latest version
-            metadata_files = sorted([f for f in metadata_files if f.endswith(".metadata.json")], reverse=True)
-            latest_metadata_path = metadata_files[0] if metadata_files else None
-            if latest_metadata_path:
-                # Step 2: Read the latest metadata file
-                with fs.open(latest_metadata_path, 'rb') as metadata_file:
-                    metadata_json = json.load(metadata_file)
-                # Step 3: Inspect the schema and partitions
-                schema = metadata_json.get('schemas', [])[0] if isinstance(metadata_json.get('schemas', []), list) and metadata_json['schemas'] else {}
-                schema_list = [{"column_name": field.get('name'), "dtype":field.get('type')} for field in schema.get('fields', [])]
+            duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
+            duckdb.sql("INSTALL iceberg; LOAD iceberg")
+            schema_result = duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)").fetchall()
+            schema_list = [{"column_name": schema[0], "dtype": schema[1]} for schema in schema_result]
             # Fetch schema
             return {"status": "success", "schema": schema_list}
         except Exception as e:
@@ -155,24 +146,17 @@ class ADLSGen2FormatDetector(BaseModel):
             credential = DefaultAzureCredential()
             full_path = f"{file_system_name}/{directory_path}"
             # Try to detect Iceberg format
-            metadata_dir = f"{full_path}/metadata"
-            data_dir = f"{full_path}/data"
-            fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
             try:
-                # Check if the metadata and data directory exists
-                if fs.exists(metadata_dir) and fs.exists(data_dir):
-                    # List metadata files in the directory
-                    metadata_files = fs.ls(metadata_dir)
-                    # Check for Iceberg metadata files (v1.metadata.json, v2.metadata.json, etc.)
-                    iceberg_metadata_files = [f for f in metadata_files if f.endswith(".metadata.json")]
-                    if iceberg_metadata_files:
-                        print(f"Iceberg metadata files found: {iceberg_metadata_files}")
-                        return {"status": "success", "format": "iceberg" }
+                duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
+                duckdb.sql("INSTALL iceberg; LOAD iceberg")
+                duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)")
+                return {"status": "success", "format": "iceberg" }
             except Exception:
                 # Not a Iceberg format, proceed to check for Delta Format
                 pass
             # Try to detect Delta format
             try:
+                fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
                 delta_table = DeltaTable(full_path, file_system=fs)
                 # If no error, it's a Delta format
                 return {"status": "success", "format": "delta" }
@@ -202,56 +186,16 @@ class ADLSGen2FormatDetector(BaseModel):
 
     def detect_partitions(account_name, file_system_name, directory_path) -> str:
         """
-        Detect if the (Iceberg or Delta or Parquet) directory on ADLS Gen2 is partitioned.
+        Detect if the (Parquet) directory on ADLS Gen2 is partitioned. Applies to only PARQUET
         Returns:
             - "isPartitioned": True - if partitioned else False
             - "partitionedColumns": Returns Partitioned Columns, else []
         """
         try:
-            
             isPartitioned = False
             partition_columns = []
             credential = DefaultAzureCredential()
             full_path = f"{file_system_name}/{directory_path}"
-            # Try to detect Iceberg format
-            metadata_dir = f"{full_path}/metadata"
-            data_dir = f"{full_path}/data"
-            fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-            # Check if the metadata and data directory exists
-            if fs.exists(metadata_dir) and fs.exists(data_dir):
-                # List metadata files in the directory
-                metadata_files = fs.ls(metadata_dir)
-                # Check for Iceberg metadata files (v1.metadata.json, v2.metadata.json, etc.)
-                iceberg_metadata_files = [f for f in metadata_files if f.endswith(".metadata.json")]
-                if iceberg_metadata_files:
-                    table_metadata_root_path = f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}/metadata"
-                    metadata_files = fs.ls(table_metadata_root_path)
-                    # Find the latest metadata file, assuming they are named "v1.metadata.json", "v2.metadata.json", etc.
-                    # Sort the files to ensure we pick the latest version
-                    metadata_files = sorted([f for f in metadata_files if f.endswith(".metadata.json")], reverse=True)
-                    latest_metadata_path = metadata_files[0] if metadata_files else None
-                    if latest_metadata_path:
-                        # Step 2: Read the latest metadata file
-                        with fs.open(latest_metadata_path, 'rb') as metadata_file:
-                            metadata_json = json.load(metadata_file)
-                        # Step 3: Inspect the schema and partitions
-                        schema = metadata_json.get('schemas', [])[0] if isinstance(metadata_json.get('schemas', []), list) and metadata_json['schemas'] else {}
-                        partitions = metadata_json.get('partition-specs', [])[0] if isinstance(metadata_json.get('partition-specs', []), list) else {}
-
-                        if partitions and partitions.get('fields', []):
-                            isPartitioned = True
-                            partition_columns = [
-                                                    {
-                                                        "column_name": field.get('name'),
-                                                        "dtype": next(
-                                                            (schema_field['type'] for schema_field in schema.get('fields', [])
-                                                            if schema_field['name'] == field.get('name')),
-                                                            None
-                                                        )
-                                                    }
-                                                    for field in partitions.get('fields', [])
-                                                ]
-                    return {"status": "success", "isPartitioned": isPartitioned,"partition_columns":partition_columns}
             ##Get Partition Columns for Delta and Parquet formats.
             handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
             fs = pyarrow.fs.PyFileSystem(handler)
