@@ -147,7 +147,8 @@ async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
         result = ADLSGen2Request.test_connection(
             connection_request.account_name,
             connection_request.file_system_name,
-            connection_request.directory_path
+            connection_request.directory_path,
+            connection_request.storage_type
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -157,7 +158,7 @@ async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
-@app.post("/adlsgen2/getschema")
+@app.post("/adlsgen2/getdeltaschema")
 async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
     try:
         result = ADLSGen2DeltaSchemaRequest.get_table_schema(
@@ -205,7 +206,7 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2IcebergSchemaRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
-@app.post("/adlsgen2/getFormat")
+@app.post("/adlsgen2/getformat")
 async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
     try:
         result = ADLSGen2FormatDetector.detect_format(
@@ -221,7 +222,7 @@ async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
-@app.post("/adlsgen2/getPartitionColumns")
+@app.post("/adlsgen2/getparquetpartitioncolumns")
 async def get_adlsgen2_getPartitionColumns(schema_request: ADLSGen2FormatDetector):
     try:
         result = ADLSGen2FormatDetector.detect_partitions(

@@ -18,18 +18,23 @@ class ADLSGen2Request(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
     file_system_name: str = Field(..., description="File System Name must be provided")
     directory_path: str = Field(..., description="Directory Path must be provided")
+    storage_type: str = Field('adlsgen2', description="Expected value 'fabric' or 'adlsgen2' (default: 'adlsgen2')")
     
-    @field_validator('account_name', 'file_system_name', 'directory_path')
+    @field_validator('account_name', 'file_system_name', 'directory_path','storage_type')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, str]:
+    def test_connection(account_name: str, file_system_name: str, directory_path: str,storage_type: str = 'adlsgen2') -> Dict[str, str]:
         try:
             # Initialize ADLS client
             credential = DefaultAzureCredential()
-            account_url = f"https://{account_name}.dfs.core.windows.net"
+            if storage_type == 'fabric':
+                account_url = f"https://{account_name}.dfs.fabric.microsoft.com"
+            else:
+                account_url = f"https://{account_name}.dfs.core.windows.net"
+                
             service_client = DataLakeServiceClient(account_url=account_url, credential=credential)
 
             # Check if the directory exists
