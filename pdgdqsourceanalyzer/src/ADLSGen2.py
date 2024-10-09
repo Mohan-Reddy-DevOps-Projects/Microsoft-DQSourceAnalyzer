@@ -11,6 +11,8 @@ from azure.identity import DefaultAzureCredential
 import pyarrowfs_adlgen2
 import pyarrow
 import pyarrow.dataset as ds
+import duckdb
+from fsspec import filesystem
 
 class ADLSGen2Request(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
@@ -53,13 +55,37 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
         try:
-            fs = AzureBlobFileSystem(account_name=account_name, credential=DefaultAzureCredential())
+            credential = DefaultAzureCredential()
+            fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
             # Use delta-lake-reader to access the table schema
             arrow_table = DeltaTable(
                 f"{file_system_name}/{directory_path}",
                 file_system=fs
             ).schema
             schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in arrow_table]
+            # Fetch schema
+            return {"status": "success", "schema": schema_list}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+class ADLSGen2IcebergSchemaRequest(BaseModel):
+    account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
+    file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
+    directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    
+    @field_validator('account_name', 'file_system_name', 'directory_path')
+    def field_not_empty(cls, value):
+        if not value:
+            raise ValueError('Field cannot be empty')
+        return value
+
+    def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
+        try:
+            credential = DefaultAzureCredential()
+            duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
+            duckdb.sql("INSTALL iceberg; LOAD iceberg")
+            schema_result = duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)").fetchall()
+            schema_list = [{"column_name": schema[0], "dtype": schema[1]} for schema in schema_result]
             # Fetch schema
             return {"status": "success", "schema": schema_list}
         except Exception as e:
@@ -111,6 +137,7 @@ class ADLSGen2FormatDetector(BaseModel):
         """
         Detect the format of the directory (Delta or Parquet) on ADLS Gen2.
         Returns:
+            - "iceberg":If the directory is in Iceberg format.
             - "delta": If the directory is in Delta format.
             - "parquet": If the directory is in Parquet format.
             - "unsupportedFormat": If neither format is detected.
@@ -118,7 +145,15 @@ class ADLSGen2FormatDetector(BaseModel):
         try:
             credential = DefaultAzureCredential()
             full_path = f"{file_system_name}/{directory_path}"
-            
+            # Try to detect Iceberg format
+            try:
+                duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
+                duckdb.sql("INSTALL iceberg; LOAD iceberg")
+                duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)")
+                return {"status": "success", "format": "iceberg" }
+            except Exception:
+                # Not a Iceberg format, proceed to check for Delta Format
+                pass
             # Try to detect Delta format
             try:
                 fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
@@ -151,21 +186,22 @@ class ADLSGen2FormatDetector(BaseModel):
 
     def detect_partitions(account_name, file_system_name, directory_path) -> str:
         """
-        Detect if the (Delta or Parquet) directory on ADLS Gen2 is partitioned.
+        Detect if the (Parquet) directory on ADLS Gen2 is partitioned. Applies to only PARQUET
         Returns:
             - "isPartitioned": True - if partitioned else False
             - "partitionedColumns": Returns Partitioned Columns, else []
         """
         try:
             isPartitioned = False
+            partition_columns = []
             credential = DefaultAzureCredential()
             full_path = f"{file_system_name}/{directory_path}"
+            ##Get Partition Columns for Delta and Parquet formats.
             handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
             fs = pyarrow.fs.PyFileSystem(handler)
             parquet_schema = ds.dataset(full_path, filesystem=fs, format="parquet", partitioning=None).schema
             partitioning = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive").partitioning
             # Extract the partitioned columns (only if partitioning exists and is valid)
-            partition_columns = []
             if partitioning is not None and hasattr(partitioning, 'schema'):
                 partition_columns = [{"column_name": col.name, "dtype": str(col.type)} for col in partitioning.schema if col.name not in parquet_schema.names]
                 if partition_columns:
