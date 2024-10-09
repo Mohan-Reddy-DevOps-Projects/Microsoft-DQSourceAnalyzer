@@ -1,19 +1,186 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+#################################################################################
+#                        OneBranch Pipelines - Buddy                            #
+# This pipeline was created by EasyStart from a sample located at:              #
+#   https://aka.ms/obpipelines/easystart/samples                                #
+# Documentation:  https://aka.ms/obpipelines                                    #
+# Yaml Schema:    https://aka.ms/obpipelines/yaml/schema                        #
+# Retail Tasks:   https://aka.ms/obpipelines/tasks                              #
+# Support:        https://aka.ms/onebranchsup                                   #
+#################################################################################
 
-trigger:
-- main
+trigger: none
+resources:
+  repositories: 
+  - repository: templates
+    type: git
+    name: OneBranch.Pipelines/GovernedTemplates
+    ref: refs/heads/main
+  pipelines:
+  - pipeline: _DQSourceAnalyzer
+    trigger: none
+    source: DQSourceAnalyzer
+    project: Purview Data Governance
+extends:
+  template: v2/OneBranch.Official.CrossPlat.yml@templates
+  parameters:
+    stages:
+    - stage: Prod__Approval_service
+      displayName: 'Prod: Approval service'
+#      dependsOn: []
+      variables:
+      - name: ob_release_environment
+        value: Production
+      jobs:
+      - job: manualtrigger_approval
+        displayName: 'Production Approval Manual Trigger'
+        timeoutInMinutes: 7200
+        pool:
+          type: agentless
+        
+        steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 7200
+          inputs:
+            notifyUsers:
+              redmond\crg-appurviewdat-bax4-approver-mcsu
+    - stage: Prod_Deploy_Infra_DQ_Source_Analyzer
+      displayName: Deploy the Infra for DQ Source Analyzer
+      variables:
+      - name: ob_release_environment
+        value: Production
+#      dependsOn: []
+      jobs:
+      - job: agent_job
+        displayName: 'Ev2: Creating the Infra for DQ Source Analyzer service'
+        pool:
+          type: release
+        steps:
+        - download: _DQSourceAnalyzer
+        - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+          inputs:
+            UseServerMonitorTask: false
+            EnableStrictValidation: false
+            ValidateOnly: false
+            EndpointProviderType: ApprovalService
+            ServiceRootLocation: LinkedArtifact
+            RolloutSpecType: RSPath
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.Infra.Purview.DQS.Prod.cus.json
+    - stage: Prod_Secret_Creation_DQ_Source_Analyzer
+      displayName: Secret Creation for DQ Source Analyzer
+      variables:
+      - name: ob_release_environment
+        value: Production
+      dependsOn: Prod_Deploy_Infra_DQ_Source_Analyzer
+      jobs:
+      - job: agent_job
+        displayName: 'Ev2: Create secret for DQ Source Analyzer Service'
+        pool:
+          type: release
+        steps:
+        - download: _DQSourceAnalyzer
+        - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+          inputs:
+            UseServerMonitorTask: false
+            EnableStrictValidation: false
+            ValidateOnly: false
+            EndpointProviderType: ApprovalService
+            ServiceRootLocation: LinkedArtifact
+            RolloutSpecType: RSPath
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.Secrets.Purview.DQS.Prod.cus.json
+    - stage: Prod_Deploy_AKSCluster_DQ_Source_Analyzer
+      displayName: Deploy AKS Cluster DQ Source Analyzer Service
+      variables:
+      - name: ob_release_environment
+        value: Production
+      dependsOn: Prod_Secret_Creation_DQ_Source_Analyzer
+      jobs:
+      - job: agent_job
+        displayName: 'Ev2_Create Secret'
+        pool:
+          type: release
+        steps:
+        - download: _DQSourceAnalyzer
+        - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+          inputs:
+            UseServerMonitorTask: false
+            EnableStrictValidation: false
+            ValidateOnly: false
+            EndpointProviderType: ApprovalService
+            ServiceRootLocation: LinkedArtifact
+            RolloutSpecType: RSPath
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cus.json
+    - stage: Prod_Deploy_DQ_Source_Analyzer_PublishImage
+      displayName: Publish DQ Source Analyzer Service Image
+      dependsOn: Prod_Deploy_AKSCluster_DQ_Source_Analyzer
+      variables:
+      - name: ob_release_environment
+        value: Production
+      jobs:
+      - job: agent_job
+        displayName: 'Ev2: Publish DQ Source Analyzer Service Image'
+        pool:
+          type: release
+        steps:
+        - download: _DQSourceAnalyzer
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_docker_linuxContainers
+            Contents: '**'
+            TargetFolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot
+            CleanTargetFolder: false
+            OverWrite: false
+            flattenFolders: false
+            preserveTimestamp: false
+            retryCount: 0
+            delayBetweenRetries: 1000
+            ignoreMakeDirErrors: false 
+        - task: copyfiles@2
+          inputs:
+            sourcefolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/DataQualityService
+            contents: '**'
+            targetfolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/
+            cleantargetfolder: false
+            overwrite: false
+            flattenfolders: false
+            preservetimestamp: false
+            retrycount: 0
+            delaybetweenretries: 1000
+            ignoremakedirerrors: false
 
-pool:
-  vmImage: ubuntu-latest
+        - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+          inputs:
+            UseServerMonitorTask: false
+            EnableStrictValidation: false
+            ValidateOnly: false
+            EndpointProviderType: ApprovalService
+            ServiceRootLocation: LinkedArtifact
+            RolloutSpecType: RSPath
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.PublishImage.Purview.DQS.Prod.cus.json
+    - stage: Prod_Deploy_DQ_Source_Analyzer_Service_on_AKS
+      displayName: Deploy DQ Source Analyzer Service to AKS
+      dependsOn: Prod_Deploy_DQ_Source_Analyzer_PublishImage
+      variables:
+      - name: ob_release_environment
+        value: Production
+      jobs:
+      - job: agent_job
+        displayName: 'Ev2: Deploy DQ Source Analyzer Service on AKS Cluster'
+        pool:
+          type: release
+        steps:
+        - download: _DQSourceAnalyzer
+        - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+          inputs:
+            UseServerMonitorTask: false
+            EnableStrictValidation: false
+            ValidateOnly: false
+            EndpointProviderType: ApprovalService
+            ServiceRootLocation: LinkedArtifact
+            RolloutSpecType: RSPath
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.Service.Purview.DQS.Prod.cus.json
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
