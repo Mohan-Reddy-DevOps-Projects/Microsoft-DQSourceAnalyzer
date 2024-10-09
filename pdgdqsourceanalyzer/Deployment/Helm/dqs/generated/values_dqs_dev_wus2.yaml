@@ -5,7 +5,7 @@ gcs_account: BabylonNonProd
 gcs_region: westus2
 gcs_namespace: DQSNonProd 
 gcs_config_version: 3.21        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
-gcs_keyvault_name: dqs-dev-kv-wus2
+gcs_keyvault_name: dqsa-dev-kv-wus2
 gcs_keyvault_tenant: 72f988bf-86f1-41af-91ab-2d7cd011db47
 gcs_cert_name: dqs-geneva-dev-cert
 gcs_cert_san: TEST-AME.WUS.GENEVA.KEYVAULT.BABYLON.AZURE-TEST.COM                      
@@ -103,12 +103,12 @@ dqs:
       },
       "ServerConfig": {
         "Port": 443,
-        "KeyVaultUri": "https://dqs-dev-kv-wus2.vault.azure.net/",
-        "SecretName": "dqs-server-dev-cert",
+        "KeyVaultUri": "https://dqsa-dev-kv-wus2.vault.azure.net/",
+        "SecretName": "dqsa-server-dev-cert",
         "RefreshRate": "1.00:00:00"
       },
       "SecretsConfiguration": {
-        "KeyVaultUri": "https://dqs-dev-kv-wus2.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-dev-kv-wus2.vault.azure.net/",
         "SecretNamesList": [
           "blobConnectionString",
           "sparkexternalcomputekey",
@@ -117,10 +117,10 @@ dqs:
         ]
       },
       "CertificatesConfiguration": {
-        "KeyVaultUri": "https://dqs-dev-kv-wus2.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-dev-kv-wus2.vault.azure.net/",
         "RefreshRate": "1.00:00:00",
         "CertificateList": [
-          "ClientCertificate:dqs-client-dev-cert",
+          "ClientCertificate:dqsa-client-dev-cert",
           "MEOClientCertificate:meo-client-cert"
         ]
       },
@@ -187,7 +187,7 @@ dqs:
         "RegionConfig": {"westus2":"https://purview-dqjm-ppe-westus2.babylon-service.azure-test.com"},
       },
       "JobCompletionQueueConfiguration": {
-        "AccountName": "dqservicedevstoragewus2",
+        "AccountName": "dqsaservicedevstoragewus2",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -204,10 +204,10 @@ dqs:
         "Uri": "https://purview-dqv-df-westus2.babylon-service.azure-test.com"
       },
       "JobManagementConfig": {
-        "storageAccountName": "dqservicedevstoragewus2",
+        "storageAccountName": "dqsaservicedevstoragewus2",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
-        "storageResourceGroup": "dqservice-dev-rg-wus2",
+        "storageResourceGroup": "dqsa-dev-rg-wus2",
         "storageSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
         "storageTenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
         "storageSuffix": "core.windows.net",
@@ -218,11 +218,11 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
-        "StorageAccountName": "dqservicedevstoragewus2",
+        "StorageAccountName": "dqsaservicedevstoragewus2",
         "StorageAccountSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
-        "StorageAccountResourceGroupName": "dqservice-dev-rg-wus2",
+        "StorageAccountResourceGroupName": "dqsa-dev-rg-wus2",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
-        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-dev-rg-wus2/providers/Microsoft.Storage/storageAccounts/dqservicedevstoragewus2",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.Storage/storageAccounts/dqsaservicedevstoragewus2",
         "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
         "Resource": "https://management.azure.com"
      },
@@ -232,7 +232,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
-        "ProcessingStorageAccountName": "dqservicedevstoragewus2",
+        "ProcessingStorageAccountName": "dqsaservicedevstoragewus2",
         "IsEnabled": True,
         "EventHubNamespace": "dg-dev-hub-wus2.servicebus.windows.net",
         "EventHubName": "catalogevent"
@@ -263,14 +263,14 @@ dqs:
         "RefreshRate": "1.00:00:00",
         "Certificates": {
             "ArtifactStoreClient": {
-                "KeyVaultUri": "https://dqs-dev-kv-wus2.vault.azure.net/",
-                "SecretName": "dqs-client-dev-cert"
+                "KeyVaultUri": "https://dqsa-dev-kv-wus2.vault.azure.net/",
+                "SecretName": "dqsa-client-dev-cert"
             }
         }
     },
     "ClientCertificate": {
-        "KeyVaultUri": "https://dqs-dev-kv-wus2.vault.azure.net/",
-        "SecretName": "dqs-client-dev-cert",
+        "KeyVaultUri": "https://dqsa-dev-kv-wus2.vault.azure.net/",
+        "SecretName": "dqsa-client-dev-cert",
         "RefreshRate": "1.00:00:00"
     },
     "ArtifactStore": {
@@ -290,12 +290,12 @@ dqs:
     },
     "LogicAppSchedulerConfiguration": {
         "SubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
-        "ResourceGroup": "dqservice-dev-rg-wus2",
+        "ResourceGroup": "dqsa-dev-rg-wus2",
         "LogicAppLocation": "westus2",
         "KeyVaultUri": "https://dqs-lapp-dev-kv-wus2.vault.azure.net/",
-        "LogicAppManagedIdentityId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-dev-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-dev-managedIdentity-wus2",
-        "KeyVaultClientCertName": "dqs-logicapp-client-dev-cert",
-        "KeyVaultConnectionResourceId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-dev-rg-wus2/providers/Microsoft.Web/connections/dqs-logicApp-dev-keyVaultConnection-wus2",
+        "LogicAppManagedIdentityId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsa-logicApp-dev-managedIdentity-wus2",
+        "KeyVaultClientCertName": "dqsa-logicapp-client-dev-cert",
+        "KeyVaultConnectionResourceId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.Web/connections/dqsa-logicApp-dev-keyVaultConnection-wus2",
         "KeyVaultConnectorApiId": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/providers/Microsoft.Web/locations/westus2/managedApis/keyvault"
     },
     "AzureEnvironment": {

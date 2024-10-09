@@ -5,7 +5,7 @@ gcs_account: BabylonProd
 gcs_region: eastus2euap
 gcs_namespace: DQSProd 
 gcs_config_version: 1.7        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
-gcs_keyvault_name: dqs-cnry-kv-eus2
+gcs_keyvault_name: dqsa-cnry-kv-eus2
 gcs_keyvault_tenant: 33e01921-4d64-4f8c-a055-5bdaffd5e33d
 gcs_cert_name: dqs-geneva-cnry-cert
 gcs_cert_san: CNRY-AME.EUS2.GENEVA.KEYVAULT.BABYLON.AZURE.COM                      
@@ -103,12 +103,12 @@ dqs:
       },
       "ServerConfig": {
         "Port": 443,
-        "KeyVaultUri": "https://dqs-cnry-kv-eus2.vault.azure.net/",
-        "SecretName": "dqs-server-cnry-cert",
+        "KeyVaultUri": "https://dqsa-cnry-kv-eus2.vault.azure.net/",
+        "SecretName": "dqsa-server-cnry-cert",
         "RefreshRate": "1.00:00:00"
       },
       "SecretsConfiguration": {
-        "KeyVaultUri": "https://dqs-cnry-kv-eus2.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-cnry-kv-eus2.vault.azure.net/",
         "SecretNamesList": [
           "blobConnectionString",
           "sparkexternalcomputekey",
@@ -117,11 +117,11 @@ dqs:
         ]
       },
       "CertificatesConfiguration": {
-        "KeyVaultUri": "https://dqs-cnry-kv-eus2.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-cnry-kv-eus2.vault.azure.net/",
         "RefreshRate": "1.00:00:00",
         "CertificateList": [
-          "ClientCertificate:dqs-client-cnry-cert",
-          "MEOClientCertificate:dqs-client-cnry-cert"
+          "ClientCertificate:dqsa-client-cnry-cert",
+          "MEOClientCertificate:dqsa-client-cnry-cert"
         ]
       },
       "GenevaMetricConfig": {
@@ -187,7 +187,7 @@ dqs:
         "RegionConfig": {"eastus2euap":"https://purview-dqjm-prod-eastus2euap.babylon-service.azure.com","eastus2":"https://purview-dqjm-prod-eastus2.babylon-service.azure.com","westeurope":"https://purview-dqjm-prod-westeurope.babylon-service.azure.com","westus2":"https://purview-dqjm-prod-westus2.babylon-service.azure.com","southcentralus":"https://purview-dqjm-prod-southcentralus.babylon-service.azure.com","japaneast":"https://purview-dqjm-prod-japaneast.babylon-service.azure.com","canadacentral":"https://purview-dqjm-prod-canadacentral.babylon-service.azure.com","northeurope":"https://purview-dqjm-prod-northeurope.babylon-service.azure.com","centralus":"https://purview-dqjm-prod-centralus.babylon-service.azure.com","australiaeast":"https://purview-dqjm-prod-australiaeast.babylon-service.azure.com","brazilsouth":"https://purview-dqjm-prod-brazilsouth.babylon-service.azure.com","francecentral":"https://purview-dqjm-prod-francecentral.babylon-service.azure.com","uaenorth":"https://purview-dqjm-prod-uaenorth.babylon-service.azure.com","southeastasia":"https://purview-dqjm-prod-southeastasia.babylon-service.azure.com","uksouth":"https://purview-dqjm-prod-uksouth.babylon-service.azure.com","centralindia":"https://purview-dqjm-prod-centralindia.babylon-service.azure.com","westus":"https://purview-dqjm-prod-westus.babylon-service.azure.com","westcentralus":"https://purview-dqjm-prod-westcentralus.babylon-service.azure.com","eastus":"https://purview-dqjm-prod-eastus.babylon-service.azure.com"},
       },
       "JobCompletionQueueConfiguration": {
-        "AccountName": "dqservicecnrystorageeus2",
+        "AccountName": "dqsaservicecnrystorageeus2",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -204,10 +204,10 @@ dqs:
         "Uri": "https://purview-dqv-prod-eastus2euap.babylon-service.azure.com"
       },
       "JobManagementConfig": {
-        "storageAccountName": "dqservicecnrystorageeus2",
+        "storageAccountName": "dqsaservicecnrystorageeus2",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
-        "storageResourceGroup": "dqservice-cnry-rg-eus2",
+        "storageResourceGroup": "dqsa-cnry-rg-eus2",
         "storageSubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",
         "storageTenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "storageSuffix": "core.windows.net",
@@ -218,11 +218,11 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
-        "StorageAccountName": "dqservicecnrystorageeus2",
+        "StorageAccountName": "dqsaservicecnrystorageeus2",
         "StorageAccountSubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",
-        "StorageAccountResourceGroupName": "dqservice-cnry-rg-eus2",
+        "StorageAccountResourceGroupName": "dqsa-cnry-rg-eus2",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
-        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqservice-cnry-rg-eus2/providers/Microsoft.Storage/storageAccounts/dqservicecnrystorageeus2",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqsa-cnry-rg-eus2/providers/Microsoft.Storage/storageAccounts/dqsaservicecnrystorageeus2",
         "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "Resource": "https://management.azure.com"
      },
@@ -232,7 +232,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
-        "ProcessingStorageAccountName": "dqservicecnrystorageeus2",
+        "ProcessingStorageAccountName": "dqsaservicecnrystorageeus2",
         "IsEnabled": True,
         "EventHubNamespace": "dg-cnry-hub-eus2.servicebus.windows.net",
         "EventHubName": "catalogevent"
@@ -263,14 +263,14 @@ dqs:
         "RefreshRate": "1.00:00:00",
         "Certificates": {
             "ArtifactStoreClient": {
-                "KeyVaultUri": "https://dqs-cnry-kv-eus2.vault.azure.net/",
-                "SecretName": "dqs-client-cnry-cert"
+                "KeyVaultUri": "https://dqsa-cnry-kv-eus2.vault.azure.net/",
+                "SecretName": "dqsa-client-cnry-cert"
             }
         }
     },
     "ClientCertificate": {
-        "KeyVaultUri": "https://dqs-cnry-kv-eus2.vault.azure.net/",
-        "SecretName": "dqs-client-cnry-cert",
+        "KeyVaultUri": "https://dqsa-cnry-kv-eus2.vault.azure.net/",
+        "SecretName": "dqsa-client-cnry-cert",
         "RefreshRate": "1.00:00:00"
     },
     "ArtifactStore": {
@@ -290,12 +290,12 @@ dqs:
     },
     "LogicAppSchedulerConfiguration": {
         "SubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",
-        "ResourceGroup": "dqservice-cnry-rg-eus2",
+        "ResourceGroup": "dqsa-cnry-rg-eus2",
         "LogicAppLocation": "eastus2euap",
         "KeyVaultUri": "https://dqs-lapp-cnry-kv-eus2.vault.azure.net/",
-        "LogicAppManagedIdentityId": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqservice-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-cnry-managedIdentity-eus2",
-        "KeyVaultClientCertName": "dqs-logicapp-client-cnry-cert",
-        "KeyVaultConnectionResourceId": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqservice-cnry-rg-eus2/providers/Microsoft.Web/connections/dqs-logicApp-cnry-keyVaultConnection-eus2",
+        "LogicAppManagedIdentityId": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqsa-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsa-logicApp-cnry-managedIdentity-eus2",
+        "KeyVaultClientCertName": "dqsa-logicapp-client-cnry-cert",
+        "KeyVaultConnectionResourceId": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqsa-cnry-rg-eus2/providers/Microsoft.Web/connections/dqsa-logicApp-cnry-keyVaultConnection-eus2",
         "KeyVaultConnectorApiId": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/providers/Microsoft.Web/locations/eastus2euap/managedApis/keyvault"
     },
     "AzureEnvironment": {

@@ -34,14 +34,14 @@
         "value": "1.29.2"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-wus"
+      "value": "dqsa-prod-kv-wus"
     },
     "publicIpDns": {
         "value": "dqservice"
     },
     "dnsApis": {
       "value": [
-        "purview-dqservice-prod"
+        "purview-dqsaservice-prod"
       ]
     },
     "dnsServiceZone": {
@@ -57,7 +57,7 @@
       "value": "b6d8ea13-1c91-4df5-a306-3ce6d97599b9"
     },
     "podIdentityName":{
-      "value": "PurviewDQS_ManagedIdentity_Prod"
+      "value": "PurviewDQSA_ManagedIdentity_Prod"
     },
      "podIdentitySubscriptionId":{
       "value": "4058cc89-e218-48c1-8a0a-9855f708296b"
@@ -66,7 +66,7 @@
       "value": "ea534029-ff81-4f74-af63-91e8938e7595"
     },
     "podIdentityResourceId":{
-      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqsa-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
     },
     "regionShortName": {
       "value": "wus"
@@ -75,10 +75,10 @@
       "value": "westus"
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragewus"
+      "value": "dqsaserviceprodstoragewus"
     },
     "userAssignedIdentities_akspod_resourceid": {
-      "value": "/subscriptions/2b1e6710-bcde-4c79-aed5-0fc478a955d5/resourceGroups/dqservice-prod-rg-wus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+      "value": "/subscriptions/2b1e6710-bcde-4c79-aed5-0fc478a955d5/resourceGroups/dqsa-prod-rg-wus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
     },
     "userAssignedIdentities_dqsprod_resourceid": {
       "value": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/aks-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsprod"
@@ -93,7 +93,7 @@
       "value": []
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-wus"
+      "value": "dqsa-logicApp-prod-managedIdentity-wus"
     },
     "aksRegionCompactLocation": {
       "value": "westus"

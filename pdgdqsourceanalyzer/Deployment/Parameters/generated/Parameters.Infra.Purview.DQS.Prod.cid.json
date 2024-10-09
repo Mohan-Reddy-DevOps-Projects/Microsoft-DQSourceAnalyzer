@@ -16,7 +16,7 @@
       "value": "centralindia"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-cid"
+      "value": "dqsa-prod-kv-cid"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-cid"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragecid"
+      "value": "dqsaserviceprodstoragecid"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-cid"
+      "value": "dqsa-logicApp-prod-managedIdentity-cid"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-cid"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-cid"
     },
   }
 }

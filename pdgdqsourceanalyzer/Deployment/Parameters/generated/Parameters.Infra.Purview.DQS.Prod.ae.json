@@ -16,7 +16,7 @@
       "value": "australiaeast"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-ae"
+      "value": "dqsa-prod-kv-ae"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-ae"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstorageae"
+      "value": "dqsaserviceprodstorageae"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-ae"
+      "value": "dqsa-logicApp-prod-managedIdentity-ae"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-ae"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-ae"
     },
   }
 }

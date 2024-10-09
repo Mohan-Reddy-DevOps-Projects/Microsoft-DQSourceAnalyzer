@@ -16,7 +16,7 @@
       "value": "canadacentral"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-cc"
+      "value": "dqsa-prod-kv-cc"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-cc"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragecc"
+      "value": "dqsaserviceprodstoragecc"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-cc"
+      "value": "dqsa-logicApp-prod-managedIdentity-cc"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-cc"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-cc"
     },
   }
 }

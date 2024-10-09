@@ -29,7 +29,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-dev-rg-wus2",
+    "AzureResourceGroupName": "dqsa-dev-rg-wus2",
     "Location": "West US 2",
     "InstanceOf": "Purview.DQS.PushImage.Group",
     "AzureSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",

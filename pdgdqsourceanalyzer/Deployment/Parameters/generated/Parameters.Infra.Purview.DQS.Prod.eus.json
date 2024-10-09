@@ -16,7 +16,7 @@
       "value": "eastus"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-eus"
+      "value": "dqsa-prod-kv-eus"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-eus"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstorageeus"
+      "value": "dqsaserviceprodstorageeus"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-eus"
+      "value": "dqsa-logicApp-prod-managedIdentity-eus"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-eus"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-eus"
     },
   }
 }

@@ -34,14 +34,14 @@
         "value": "1.29.2"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-wcus"
+      "value": "dqsa-prod-kv-wcus"
     },
     "publicIpDns": {
         "value": "dqservice"
     },
     "dnsApis": {
       "value": [
-        "purview-dqservice-prod"
+        "purview-dqsaservice-prod"
       ]
     },
     "dnsServiceZone": {
@@ -57,7 +57,7 @@
       "value": "b6d8ea13-1c91-4df5-a306-3ce6d97599b9"
     },
     "podIdentityName":{
-      "value": "PurviewDQS_ManagedIdentity_Prod"
+      "value": "PurviewDQSA_ManagedIdentity_Prod"
     },
      "podIdentitySubscriptionId":{
       "value": "4058cc89-e218-48c1-8a0a-9855f708296b"
@@ -66,7 +66,7 @@
       "value": "ea534029-ff81-4f74-af63-91e8938e7595"
     },
     "podIdentityResourceId":{
-      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqsa-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
     },
     "regionShortName": {
       "value": "wcus"
@@ -75,10 +75,10 @@
       "value": "westcentralus"
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragewcus"
+      "value": "dqsaserviceprodstoragewcus"
     },
     "userAssignedIdentities_akspod_resourceid": {
-      "value": "/subscriptions/c41a5a27-c6e8-4933-962b-14d94ea429bb/resourceGroups/dqservice-prod-rg-wcus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+      "value": "/subscriptions/c41a5a27-c6e8-4933-962b-14d94ea429bb/resourceGroups/dqsa-prod-rg-wcus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
     },
     "userAssignedIdentities_dqsprod_resourceid": {
       "value": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/aks-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsprod"
@@ -97,7 +97,7 @@
 ]
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-wcus"
+      "value": "dqsa-logicApp-prod-managedIdentity-wcus"
     },
     "aksRegionCompactLocation": {
       "value": "westcentralus"

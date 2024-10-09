@@ -27,7 +27,7 @@
   }],
   "ServiceResourceGroups": [
   {
-      "AzureResourceGroupName": "dqservice-prod-rg-cus",
+      "AzureResourceGroupName": "dqsa-prod-rg-cus",
       "Location": "Central US",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "a3f438c0-30ef-4caa-a9e5-d3d3584005c1",

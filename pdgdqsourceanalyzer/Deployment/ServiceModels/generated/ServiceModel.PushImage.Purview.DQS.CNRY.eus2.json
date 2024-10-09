@@ -29,7 +29,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-cnry-rg-eus2",
+    "AzureResourceGroupName": "dqsa-cnry-rg-eus2",
     "Location": "East US 2 EUAP",
     "InstanceOf": "Purview.DQS.PushImage.Group",
     "AzureSubscriptionId": "37fce4be-a3d5-44dc-8c2c-975cf08d1af4",

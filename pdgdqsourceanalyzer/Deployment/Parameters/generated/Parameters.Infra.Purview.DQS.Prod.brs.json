@@ -16,7 +16,7 @@
       "value": "brazilsouth"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-brs"
+      "value": "dqsa-prod-kv-brs"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-brs"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragebrs"
+      "value": "dqsaserviceprodstoragebrs"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-brs"
+      "value": "dqsa-logicApp-prod-managedIdentity-brs"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-brs"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-brs"
     },
   }
 }

@@ -1,1 +1,2 @@
 C:\Users\souvikdas\source\repos\DataQuality2\src\Deployment\obj\Debug\Deployment.deployproj.CoreCompileInputs.cache
+C:\Users\souvikdas\source\repos\DQSourceAnalyzer\pdgdqsourceanalyzer\Deployment\obj\Debug\Deployment.deployproj.CoreCompileInputs.cache

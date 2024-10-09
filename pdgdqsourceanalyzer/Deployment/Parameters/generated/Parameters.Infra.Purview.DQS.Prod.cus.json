@@ -16,7 +16,7 @@
       "value": "centralus"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-cus"
+      "value": "dqsa-prod-kv-cus"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-cus"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragecus"
+      "value": "dqsaserviceprodstoragecus"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-cus"
+      "value": "dqsa-logicApp-prod-managedIdentity-cus"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-cus"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-cus"
     },
   }
 }

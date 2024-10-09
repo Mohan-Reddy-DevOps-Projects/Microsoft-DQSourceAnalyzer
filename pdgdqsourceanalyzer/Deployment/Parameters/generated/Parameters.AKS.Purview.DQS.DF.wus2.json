@@ -34,14 +34,14 @@
         "value": "1.29.2"
     },
     "keyVaultName": {
-      "value": "dqs-df-kv-wus2"
+      "value": "dqsa-df-kv-wus2"
     },
     "publicIpDns": {
         "value": "dqservice"
     },
     "dnsApis": {
       "value": [
-        "purview-dqservice-df"
+        "purview-dqsaservice-df"
       ]
     },
     "dnsServiceZone": {
@@ -57,7 +57,7 @@
       "value": "7dcedb92-9cc9-4d05-8779-8275510a112d"
     },
     "podIdentityName":{
-      "value": "PurviewDQS_ManagedIdentity_NonProd"
+      "value": "PurviewDQSA_ManagedIdentity_NonProd"
     },
      "podIdentitySubscriptionId":{
       "value": "d0542b74-5839-4ee0-8ec4-74e91468eaa7"
@@ -66,7 +66,7 @@
       "value": "452d4c91-7096-4336-a5f6-678d2d7b5e5b"
     },
     "podIdentityResourceId":{
-      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd"
+      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqsaservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd"
     },
     "regionShortName": {
       "value": "wus2"
@@ -75,10 +75,10 @@
       "value": "westus2"
     },
     "storageAccountName": {
-      "value": "dqservicedfstoragewus2"
+      "value": "dqsaservicedfstoragewus2"
     },
     "userAssignedIdentities_akspod_resourceid": {
-      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqservice-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd"
+      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd"
     },
     "userAssignedIdentities_dqsprod_resourceid": {
       "value": "/subscriptions/16ec6df3-9d0b-4d9e-a7a4-76c9582fd9f6/resourceGroups/dqs-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsdf"
@@ -95,7 +95,7 @@
 ]
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-df-managedIdentity-wus2"
+      "value": "dqsa-logicApp-df-managedIdentity-wus2"
     },
     "aksRegionCompactLocation": {
       "value": "westus2"

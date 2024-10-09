@@ -16,7 +16,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-prod-rg-fc",
+    "AzureResourceGroupName": "dqsa-prod-rg-fc",
     "Location": "France Central",
     "InstanceOf": "Purview.DQS.AKS.Group",
     "AzureSubscriptionId": "289aa4dc-2681-4996-b380-b6393ec4db71",

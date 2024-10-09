@@ -16,7 +16,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-prod-rg-ae",
+    "AzureResourceGroupName": "dqsa-prod-rg-ae",
     "Location": "Australia East",
     "InstanceOf": "Purview.DQS.AKS.Group",
     "AzureSubscriptionId": "50ddeb7f-afa3-44b3-8253-3c9fd69835c4",

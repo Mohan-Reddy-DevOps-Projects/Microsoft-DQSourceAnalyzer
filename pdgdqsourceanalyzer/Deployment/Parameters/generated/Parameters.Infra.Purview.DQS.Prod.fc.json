@@ -16,7 +16,7 @@
       "value": "francecentral"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-fc"
+      "value": "dqsa-prod-kv-fc"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-fc"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragefc"
+      "value": "dqsaserviceprodstoragefc"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-fc"
+      "value": "dqsa-logicApp-prod-managedIdentity-fc"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-fc"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-fc"
     },
   }
 }

@@ -16,7 +16,7 @@
       "value": "uaenorth"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-uaen"
+      "value": "dqsa-prod-kv-uaen"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-uaen"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstorageuaen"
+      "value": "dqsaserviceprodstorageuaen"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-uaen"
+      "value": "dqsa-logicApp-prod-managedIdentity-uaen"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-uaen"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-uaen"
     },
   }
 }

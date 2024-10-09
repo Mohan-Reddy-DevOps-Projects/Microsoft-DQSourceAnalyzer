@@ -5,7 +5,7 @@ gcs_account: BabylonProd
 gcs_region: japaneast
 gcs_namespace: DQSProd 
 gcs_config_version: 1.7        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
-gcs_keyvault_name: dqs-prod-kv-jpe
+gcs_keyvault_name: dqsa-prod-kv-jpe
 gcs_keyvault_tenant: 33e01921-4d64-4f8c-a055-5bdaffd5e33d
 gcs_cert_name: dqs-geneva-prod-cert
 gcs_cert_san: PROD-AME.JPE.GENEVA.KEYVAULT.BABYLON.AZURE.COM                      
@@ -103,12 +103,12 @@ dqs:
       },
       "ServerConfig": {
         "Port": 443,
-        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
-        "SecretName": "dqs-server-prod-cert",
+        "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
+        "SecretName": "dqsa-server-prod-cert",
         "RefreshRate": "1.00:00:00"
       },
       "SecretsConfiguration": {
-        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
         "SecretNamesList": [
           "blobConnectionString",
           "sparkexternalcomputekey",
@@ -117,11 +117,11 @@ dqs:
         ]
       },
       "CertificatesConfiguration": {
-        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
+        "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
         "RefreshRate": "1.00:00:00",
         "CertificateList": [
-          "ClientCertificate:dqs-client-prod-cert",
-          "MEOClientCertificate:dqs-client-prod-cert"
+          "ClientCertificate:dqsa-client-prod-cert",
+          "MEOClientCertificate:dqsa-client-prod-cert"
         ]
       },
       "GenevaMetricConfig": {
@@ -187,7 +187,7 @@ dqs:
         "RegionConfig": {"eastus2euap":"https://purview-dqjm-prod-eastus2euap.babylon-service.azure.com","eastus2":"https://purview-dqjm-prod-eastus2.babylon-service.azure.com","westeurope":"https://purview-dqjm-prod-westeurope.babylon-service.azure.com","westus2":"https://purview-dqjm-prod-westus2.babylon-service.azure.com","southcentralus":"https://purview-dqjm-prod-southcentralus.babylon-service.azure.com","japaneast":"https://purview-dqjm-prod-japaneast.babylon-service.azure.com","canadacentral":"https://purview-dqjm-prod-canadacentral.babylon-service.azure.com","northeurope":"https://purview-dqjm-prod-northeurope.babylon-service.azure.com","centralus":"https://purview-dqjm-prod-centralus.babylon-service.azure.com","australiaeast":"https://purview-dqjm-prod-australiaeast.babylon-service.azure.com","brazilsouth":"https://purview-dqjm-prod-brazilsouth.babylon-service.azure.com","francecentral":"https://purview-dqjm-prod-francecentral.babylon-service.azure.com","uaenorth":"https://purview-dqjm-prod-uaenorth.babylon-service.azure.com","southeastasia":"https://purview-dqjm-prod-southeastasia.babylon-service.azure.com","uksouth":"https://purview-dqjm-prod-uksouth.babylon-service.azure.com","centralindia":"https://purview-dqjm-prod-centralindia.babylon-service.azure.com","westus":"https://purview-dqjm-prod-westus.babylon-service.azure.com","westcentralus":"https://purview-dqjm-prod-westcentralus.babylon-service.azure.com","eastus":"https://purview-dqjm-prod-eastus.babylon-service.azure.com"},
       },
       "JobCompletionQueueConfiguration": {
-        "AccountName": "dqserviceprodstoragejpe",
+        "AccountName": "dqsaserviceprodstoragejpe",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -204,10 +204,10 @@ dqs:
         "Uri": "https://purview-dqv-prod-japaneast.babylon-service.azure.com"
       },
       "JobManagementConfig": {
-        "storageAccountName": "dqserviceprodstoragejpe",
+        "storageAccountName": "dqsaserviceprodstoragejpe",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
-        "storageResourceGroup": "dqservice-prod-rg-jpe",
+        "storageResourceGroup": "dqsa-prod-rg-jpe",
         "storageSubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
         "storageTenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "storageSuffix": "core.windows.net",
@@ -218,11 +218,11 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
-        "StorageAccountName": "dqserviceprodstoragejpe",
+        "StorageAccountName": "dqsaserviceprodstoragejpe",
         "StorageAccountSubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
-        "StorageAccountResourceGroupName": "dqservice-prod-rg-jpe",
+        "StorageAccountResourceGroupName": "dqsa-prod-rg-jpe",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
-        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.Storage/storageAccounts/dqserviceprodstoragejpe",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqsa-prod-rg-jpe/providers/Microsoft.Storage/storageAccounts/dqsaserviceprodstoragejpe",
         "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "Resource": "https://management.azure.com"
      },
@@ -232,7 +232,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
-        "ProcessingStorageAccountName": "dqserviceprodstoragejpe",
+        "ProcessingStorageAccountName": "dqsaserviceprodstoragejpe",
         "IsEnabled": True,
         "EventHubNamespace": "dg-prod-hub-jpe.servicebus.windows.net",
         "EventHubName": "catalogevent"
@@ -263,14 +263,14 @@ dqs:
         "RefreshRate": "1.00:00:00",
         "Certificates": {
             "ArtifactStoreClient": {
-                "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
-                "SecretName": "dqs-client-prod-cert"
+                "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
+                "SecretName": "dqsa-client-prod-cert"
             }
         }
     },
     "ClientCertificate": {
-        "KeyVaultUri": "https://dqs-prod-kv-jpe.vault.azure.net/",
-        "SecretName": "dqs-client-prod-cert",
+        "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
+        "SecretName": "dqsa-client-prod-cert",
         "RefreshRate": "1.00:00:00"
     },
     "ArtifactStore": {
@@ -290,12 +290,12 @@ dqs:
     },
     "LogicAppSchedulerConfiguration": {
         "SubscriptionId": "48091e78-f1f8-4bf3-bd81-ccb14aa7c21b",
-        "ResourceGroup": "dqservice-prod-rg-jpe",
+        "ResourceGroup": "dqsa-prod-rg-jpe",
         "LogicAppLocation": "japaneast",
         "KeyVaultUri": "https://dqs-lapp-prod-kv-jpe.vault.azure.net/",
-        "LogicAppManagedIdentityId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-prod-managedIdentity-jpe",
-        "KeyVaultClientCertName": "dqs-logicapp-client-prod-cert",
-        "KeyVaultConnectionResourceId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqservice-prod-rg-jpe/providers/Microsoft.Web/connections/dqs-logicApp-prod-keyVaultConnection-jpe",
+        "LogicAppManagedIdentityId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqsa-prod-rg-jpe/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsa-logicApp-prod-managedIdentity-jpe",
+        "KeyVaultClientCertName": "dqsa-logicapp-client-prod-cert",
+        "KeyVaultConnectionResourceId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqsa-prod-rg-jpe/providers/Microsoft.Web/connections/dqsa-logicApp-prod-keyVaultConnection-jpe",
         "KeyVaultConnectorApiId": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/providers/Microsoft.Web/locations/japaneast/managedApis/keyvault"
     },
     "AzureEnvironment": {

@@ -16,7 +16,7 @@
       "value": "uksouth"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-uks"
+      "value": "dqsa-prod-kv-uks"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-uks"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstorageuks"
+      "value": "dqsaserviceprodstorageuks"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-uks"
+      "value": "dqsa-logicApp-prod-managedIdentity-uks"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-uks"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-uks"
     },
   }
 }

@@ -16,7 +16,7 @@
       "value": "eastus2"
     },
     "keyVaultName": {
-      "value": "dqs-cnry-kv-eus2"
+      "value": "dqsa-cnry-kv-eus2"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-cnry-kv-eus2"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqservicecnrystorageeus2"
+      "value": "dqsaservicecnrystorageeus2"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-cnry-managedIdentity-eus2"
+      "value": "dqsa-logicApp-cnry-managedIdentity-eus2"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-cnry-keyVaultConnection-eus2"
+      "value": "dqsa-logicApp-cnry-keyVaultConnection-eus2"
     },
   }
 }

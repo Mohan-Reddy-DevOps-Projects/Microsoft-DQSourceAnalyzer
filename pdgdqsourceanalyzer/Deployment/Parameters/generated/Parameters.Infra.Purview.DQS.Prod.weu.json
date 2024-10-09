@@ -16,7 +16,7 @@
       "value": "westeurope"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-weu"
+      "value": "dqsa-prod-kv-weu"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-weu"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstorageweu"
+      "value": "dqsaserviceprodstorageweu"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-weu"
+      "value": "dqsa-logicApp-prod-managedIdentity-weu"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-weu"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-weu"
     },
   }
 }

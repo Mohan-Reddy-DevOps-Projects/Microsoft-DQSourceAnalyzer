@@ -16,7 +16,7 @@
     }],
     "ServiceResourceGroups": [
     {
-      "AzureResourceGroupName": "dqservice-prod-rg-sea", 
+      "AzureResourceGroupName": "dqsa-prod-rg-sea", 
       "Location": "Southeast Asia",
       "InstanceOf": "Purview.DQS.Infra.Group",
       "AzureSubscriptionId": "924d44d7-48e6-46a4-9be2-1ce2872f6e4f",

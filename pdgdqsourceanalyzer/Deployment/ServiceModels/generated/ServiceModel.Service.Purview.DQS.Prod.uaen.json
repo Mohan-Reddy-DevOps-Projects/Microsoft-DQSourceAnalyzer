@@ -27,7 +27,7 @@
   }],
   "ServiceResourceGroups": [
   {
-      "AzureResourceGroupName": "dqservice-prod-rg-uaen",
+      "AzureResourceGroupName": "dqsa-prod-rg-uaen",
       "Location": "UAE North",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "30bfa56c-d3e6-41cb-93e6-b13c4477045e",

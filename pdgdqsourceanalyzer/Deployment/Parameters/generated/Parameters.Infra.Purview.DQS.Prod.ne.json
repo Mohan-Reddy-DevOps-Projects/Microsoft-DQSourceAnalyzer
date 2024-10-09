@@ -16,7 +16,7 @@
       "value": "northeurope"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-ne"
+      "value": "dqsa-prod-kv-ne"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-ne"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragene"
+      "value": "dqsaserviceprodstoragene"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-ne"
+      "value": "dqsa-logicApp-prod-managedIdentity-ne"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-ne"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-ne"
     },
   }
 }

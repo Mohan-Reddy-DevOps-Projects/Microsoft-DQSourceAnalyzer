@@ -16,7 +16,7 @@
       "value": "westcentralus"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-wcus"
+      "value": "dqsa-prod-kv-wcus"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-wcus"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragewcus"
+      "value": "dqsaserviceprodstoragewcus"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-wcus"
+      "value": "dqsa-logicApp-prod-managedIdentity-wcus"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-wcus"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-wcus"
     },
   }
 }

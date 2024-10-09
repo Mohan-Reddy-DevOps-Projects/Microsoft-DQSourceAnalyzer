@@ -29,7 +29,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-prod-rg-cc",
+    "AzureResourceGroupName": "dqsa-prod-rg-cc",
     "Location": "Canada Central",
     "InstanceOf": "Purview.DQS.PushImage.Group",
     "AzureSubscriptionId": "128130b6-216f-481f-ab67-d9514d6df8f0",

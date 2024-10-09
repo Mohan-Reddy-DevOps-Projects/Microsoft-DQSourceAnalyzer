@@ -24,7 +24,7 @@
       },
       {
         "name": "aksGroupName",
-        "value": "dqservice-prod-rg-wus"
+        "value": "dqsa-prod-rg-wus"
       },
       {
         "name": "publicIpName",
@@ -32,19 +32,19 @@
       },
       {
         "name": "publicIpGroup",
-        "value": "dqservice-prod-rg-wus"
+        "value": "dqsa-prod-rg-wus"
       },
       {
         "name": "keyVaultName",
-        "value": "dqs-prod-kv-wus"
+        "value": "dqsa-prod-kv-wus"
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqs-prod"
+        "value": "release-dqsa-prod"
       },
       {
         "name": "helmValueFile",
-        "value": "values_dqs_prod_wus.yaml"
+        "value": "values_dqsa_prod_wus.yaml"
       },
       {
         "name": "subId",
@@ -56,11 +56,11 @@
       },
       {
         "name": "podIdentityName",
-        "value": "PurviewDQS_ManagedIdentity_Prod"
+        "value": "PurviewDQSA_ManagedIdentity_Prod"
       },
       {
         "name": "podIdentityGroup",
-        "value": "dqs-prod-shared-resources"
+        "value": "dqsa-prod-shared-resources"
       },
       {
         "name": "podIdentitySubscriptionId",
@@ -72,7 +72,7 @@
       },
       {
         "name": "tlsCertName",
-        "value": "dqs-server-prod-cert"
+        "value": "dqsa-server-prod-cert"
       },
       {
         "name": "tlsDNS",

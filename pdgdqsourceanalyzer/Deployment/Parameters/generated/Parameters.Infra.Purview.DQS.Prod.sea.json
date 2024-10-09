@@ -16,7 +16,7 @@
       "value": "southeastasia"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-sea"
+      "value": "dqsa-prod-kv-sea"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-sea"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragesea"
+      "value": "dqsaserviceprodstoragesea"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-sea"
+      "value": "dqsa-logicApp-prod-managedIdentity-sea"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-sea"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-sea"
     },
   }
 }

@@ -16,7 +16,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-prod-rg-weu",
+    "AzureResourceGroupName": "dqsa-prod-rg-weu",
     "Location": "West Europe",
     "InstanceOf": "Purview.DQS.AKS.Group",
     "AzureSubscriptionId": "1e63d3c1-be40-4e8c-aff2-254f652cefdb",

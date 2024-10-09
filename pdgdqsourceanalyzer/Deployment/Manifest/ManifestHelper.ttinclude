@@ -58,13 +58,13 @@ bool GetBool(JToken token, string propertyName, bool defaultValue = false)
 // Get the name of the infrastructure resource group
 string GetInfraResourceGroup(JToken environment)
 {
-  return $"dqservice-{ToLower(environment["shortName"])}-rg-{ToLower(environment["shortLocation"])}";
+  return $"dqsa-{ToLower(environment["shortName"])}-rg-{ToLower(environment["shortLocation"])}";
 }
 
 // Get the name of the shared infrastructure resource group
 string GetSharedInfraResourceGroup(JToken environment)
 {
-  return IsProduction(environment) ? "dqs-prod-shared-resources" : "dqservice-shared-resources";
+  return IsProduction(environment) ? "dqsa-prod-shared-resources" : "dqsaservice-shared-resources";
 }
 
 // Get the Blob Connection key name
@@ -139,7 +139,7 @@ string GetClientObjId(JToken environment)
 
 string GetStorageAccountName(JToken environment)
 {
-  return $"dqservice{ToLower(environment["shortName"])}storage{ToLower(environment["shortLocation"])}";
+  return $"dqsaservice{ToLower(environment["shortName"])}storage{ToLower(environment["shortLocation"])}";
 }
 
 string GetStorageAccountReplicationType(JToken environment)
@@ -235,7 +235,7 @@ string GetAksDeploymentCompactLocation(JToken environment)
 // Get the name of the pod identity
 string GetPodIdentityName(JToken environment)
 {
-  return IsProduction(environment) ? "PurviewDQS_ManagedIdentity_Prod" : "PurviewDQS_ManagedIdentity_NonProd";
+  return IsProduction(environment) ? "PurviewDQSA_ManagedIdentity_Prod" : "PurviewDQSA_ManagedIdentity_NonProd";
 }
 
 // Get the subscription Id of the pod identity
@@ -254,8 +254,8 @@ string GetPodIdentityPrincipalId(JToken environment)
 string GetPodIdentityResourceId(JToken environment)
 {
   return IsProduction(environment) ? 
-    "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod" :
-    "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd";
+    "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqsa-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod" :
+    "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqsaservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd";
 }
 
 // Get the name of dns api
@@ -263,15 +263,15 @@ string GetDnsApi(JToken environment)
 {
   if (environment["isTempEnv"] != null)
   {
-    return $"purview-dqservice-{ToLower(environment["shortName"])}";
+    return $"purview-dqsaservice-{ToLower(environment["shortName"])}";
   }
-  return $"purview-dqservice-{ToLower(GetEffectiveEnvShortName(environment))}";
+  return $"purview-dqsaservice-{ToLower(GetEffectiveEnvShortName(environment))}";
 }
 
 // Get the name of the key vault for the current environment. Should be <= 24 chars.
 string GetKeyVaultName(JToken environment)
 {
-  return $"dqs-{ToLower(environment["shortName"])}-kv-{ToLower(environment["shortLocation"])}";
+  return $"dqsa-{ToLower(environment["shortName"])}-kv-{ToLower(environment["shortLocation"])}";
 }
 
 // Get the name of the key vault used by logic apps for the current environment. Should be <= 24 chars.
@@ -283,13 +283,13 @@ string GetKeyVaultLogicAppName(JToken environment)
 // Get the name of the user-assigned managed identity used by scheduler logic apps for the current environment.
 string GetLogicAppManagedIdentityName(JToken environment)
 {
-  return $"dqs-logicApp-{ToLower(environment["shortName"])}-managedIdentity-{ToLower(environment["shortLocation"])}";
+  return $"dqsa-logicApp-{ToLower(environment["shortName"])}-managedIdentity-{ToLower(environment["shortLocation"])}";
 }
 
 // Get the name of the keyvault API connection used by scheduler logic apps for the current environment.
 string GetLogicAppKeyVaultConnectionName(JToken environment)
 {
-  return $"dqs-logicApp-{ToLower(environment["shortName"])}-keyVaultConnection-{ToLower(environment["shortLocation"])}";
+  return $"dqsa-logicApp-{ToLower(environment["shortName"])}-keyVaultConnection-{ToLower(environment["shortLocation"])}";
 }
 
 string GetLogicAppManagedIdentityId(JToken environment)
@@ -376,19 +376,19 @@ string GetEv2ExtensionIdentityResourceId(JToken environment)
 // Get the name of the key vault secret that stores the service's server certificate
 string GetServerCertSecretName(JToken environment)
 {
-  return $"dqs-server-{ToLower(environment["shortName"])}-cert";  
+  return $"dqsa-server-{ToLower(environment["shortName"])}-cert";  
 }
 
 // Get the name of the key vault secret that stores the service's client certificate
 string GetClientCertSecretName(JToken environment)
 {
-  return $"dqs-client-{ToLower(environment["shortName"])}-cert";  
+  return $"dqsa-client-{ToLower(environment["shortName"])}-cert";  
 }
 
 // Get the name of the key vault secret that stores the client certificate used by logic apps to authenticate to DQS
 string GetLogicAppClientCertSecretName(JToken environment)
 {
-  return $"dqs-logicapp-client-{ToLower(environment["shortName"])}-cert";
+  return $"dqsa-logicapp-client-{ToLower(environment["shortName"])}-cert";
 }
 
 // Get the name of the geneva certificate
@@ -415,7 +415,7 @@ void SaveOutput(string folder, string outputFileName)
 // The name of the helm value file
 string GetHelmValueFile(JToken environment)
 {
-  return $"values_dqs_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
+  return $"values_dqsa_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
 }
 
 // Get the pod number for AKS deployment
@@ -427,7 +427,7 @@ int GetPodNumber(JToken environment)
 // The name of the helm release
 string GetHelmReleaseName(JToken environment)
 {
-  return $"release-dqs-{ToLower(environment["shortName"])}";
+  return $"release-dqsa-{ToLower(environment["shortName"])}";
 }
 
 // Get the name of the dqs server certificate subject name

@@ -16,7 +16,7 @@
       "value": "westus2"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-wus2"
+      "value": "dqsa-prod-kv-wus2"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-wus2"
@@ -80,16 +80,16 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragewus2"
+      "value": "dqsaserviceprodstoragewus2"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
     },
     "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-wus2"
+      "value": "dqsa-logicApp-prod-managedIdentity-wus2"
     },
     "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-wus2"
+      "value": "dqsa-logicApp-prod-keyVaultConnection-wus2"
     },
   }
 }
