@@ -80,7 +80,7 @@
       }
     },
     "storageAccountName": {
-      "value": "dqsaservicedevstoragewus2"
+      "value": "dqsadevstoragewus2"
     },
     "storageAccountReplicationType": {
       "value": "Standard_LRS"

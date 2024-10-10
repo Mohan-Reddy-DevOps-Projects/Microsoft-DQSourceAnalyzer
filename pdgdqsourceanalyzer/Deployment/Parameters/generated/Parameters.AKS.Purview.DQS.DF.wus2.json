@@ -75,7 +75,7 @@
       "value": "westus2"
     },
     "storageAccountName": {
-      "value": "dqsaservicedfstoragewus2"
+      "value": "dqsadfstoragewus2"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd"

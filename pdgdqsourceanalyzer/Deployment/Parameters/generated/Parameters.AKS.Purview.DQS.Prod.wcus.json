@@ -75,7 +75,7 @@
       "value": "westcentralus"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragewcus"
+      "value": "dqsaprodstoragewcus"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/c41a5a27-c6e8-4933-962b-14d94ea429bb/resourceGroups/dqsa-prod-rg-wcus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

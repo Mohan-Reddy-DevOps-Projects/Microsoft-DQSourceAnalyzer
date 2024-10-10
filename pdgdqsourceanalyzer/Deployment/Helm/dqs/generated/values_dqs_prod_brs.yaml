@@ -187,7 +187,7 @@ dqs:
         "RegionConfig": {"eastus2euap":"https://purview-dqjm-prod-eastus2euap.babylon-service.azure.com","eastus2":"https://purview-dqjm-prod-eastus2.babylon-service.azure.com","westeurope":"https://purview-dqjm-prod-westeurope.babylon-service.azure.com","westus2":"https://purview-dqjm-prod-westus2.babylon-service.azure.com","southcentralus":"https://purview-dqjm-prod-southcentralus.babylon-service.azure.com","japaneast":"https://purview-dqjm-prod-japaneast.babylon-service.azure.com","canadacentral":"https://purview-dqjm-prod-canadacentral.babylon-service.azure.com","northeurope":"https://purview-dqjm-prod-northeurope.babylon-service.azure.com","centralus":"https://purview-dqjm-prod-centralus.babylon-service.azure.com","australiaeast":"https://purview-dqjm-prod-australiaeast.babylon-service.azure.com","brazilsouth":"https://purview-dqjm-prod-brazilsouth.babylon-service.azure.com","francecentral":"https://purview-dqjm-prod-francecentral.babylon-service.azure.com","uaenorth":"https://purview-dqjm-prod-uaenorth.babylon-service.azure.com","southeastasia":"https://purview-dqjm-prod-southeastasia.babylon-service.azure.com","uksouth":"https://purview-dqjm-prod-uksouth.babylon-service.azure.com","centralindia":"https://purview-dqjm-prod-centralindia.babylon-service.azure.com","westus":"https://purview-dqjm-prod-westus.babylon-service.azure.com","westcentralus":"https://purview-dqjm-prod-westcentralus.babylon-service.azure.com","eastus":"https://purview-dqjm-prod-eastus.babylon-service.azure.com"},
       },
       "JobCompletionQueueConfiguration": {
-        "AccountName": "dqsaserviceprodstoragebrs",
+        "AccountName": "dqsaprodstoragebrs",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -204,7 +204,7 @@ dqs:
         "Uri": "https://purview-dqv-prod-brazilsouth.babylon-service.azure.com"
       },
       "JobManagementConfig": {
-        "storageAccountName": "dqsaserviceprodstoragebrs",
+        "storageAccountName": "dqsaprodstoragebrs",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
         "storageResourceGroup": "dqsa-prod-rg-brs",
@@ -218,11 +218,11 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
-        "StorageAccountName": "dqsaserviceprodstoragebrs",
+        "StorageAccountName": "dqsaprodstoragebrs",
         "StorageAccountSubscriptionId": "821eff2c-3cef-46d9-8484-16c4161f1b45",
         "StorageAccountResourceGroupName": "dqsa-prod-rg-brs",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
-        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/821eff2c-3cef-46d9-8484-16c4161f1b45/resourceGroups/dqsa-prod-rg-brs/providers/Microsoft.Storage/storageAccounts/dqsaserviceprodstoragebrs",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/821eff2c-3cef-46d9-8484-16c4161f1b45/resourceGroups/dqsa-prod-rg-brs/providers/Microsoft.Storage/storageAccounts/dqsaprodstoragebrs",
         "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "Resource": "https://management.azure.com"
      },
@@ -232,7 +232,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
-        "ProcessingStorageAccountName": "dqsaserviceprodstoragebrs",
+        "ProcessingStorageAccountName": "dqsaprodstoragebrs",
         "IsEnabled": True,
         "EventHubNamespace": "dg-prod-hub-brs.servicebus.windows.net",
         "EventHubName": "catalogevent"

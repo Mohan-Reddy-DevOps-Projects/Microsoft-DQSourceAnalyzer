@@ -80,7 +80,7 @@
       }
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageeus"
+      "value": "dqsaprodstorageeus"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"

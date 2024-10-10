@@ -75,7 +75,7 @@
       "value": "australiaeast"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageae"
+      "value": "dqsaprodstorageae"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/50ddeb7f-afa3-44b3-8253-3c9fd69835c4/resourceGroups/dqsa-prod-rg-ae/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

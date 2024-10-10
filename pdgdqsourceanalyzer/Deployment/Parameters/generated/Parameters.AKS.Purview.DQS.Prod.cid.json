@@ -75,7 +75,7 @@
       "value": "centralindia"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragecid"
+      "value": "dqsaprodstoragecid"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/f368b219-4e24-4853-b954-56a2db42e501/resourceGroups/dqsa-prod-rg-cid/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

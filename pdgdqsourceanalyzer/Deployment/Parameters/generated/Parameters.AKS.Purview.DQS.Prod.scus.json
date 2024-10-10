@@ -75,7 +75,7 @@
       "value": "southcentralus"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragescus"
+      "value": "dqsaprodstoragescus"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/7bebfd8b-c0ba-4dee-8b6e-1ebc1f22a847/resourceGroups/dqsa-prod-rg-scus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

@@ -187,7 +187,7 @@ dqs:
         "RegionConfig": {"westus2":"https://purview-dqjm-ppe-westus2.babylon-service.azure-test.com"},
       },
       "JobCompletionQueueConfiguration": {
-        "AccountName": "dqsaservicedevstoragewus2",
+        "AccountName": "dqsadevstoragewus2",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -204,7 +204,7 @@ dqs:
         "Uri": "https://purview-dqv-df-westus2.babylon-service.azure-test.com"
       },
       "JobManagementConfig": {
-        "storageAccountName": "dqsaservicedevstoragewus2",
+        "storageAccountName": "dqsadevstoragewus2",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
         "storageResourceGroup": "dqsa-dev-rg-wus2",
@@ -218,11 +218,11 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
-        "StorageAccountName": "dqsaservicedevstoragewus2",
+        "StorageAccountName": "dqsadevstoragewus2",
         "StorageAccountSubscriptionId": "d0542b74-5839-4ee0-8ec4-74e91468eaa7",
         "StorageAccountResourceGroupName": "dqsa-dev-rg-wus2",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
-        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.Storage/storageAccounts/dqsaservicedevstoragewus2",
+        "StorageAccountResourceUri": "https://management.azure.com/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.Storage/storageAccounts/dqsadevstoragewus2",
         "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
         "Resource": "https://management.azure.com"
      },
@@ -232,7 +232,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
-        "ProcessingStorageAccountName": "dqsaservicedevstoragewus2",
+        "ProcessingStorageAccountName": "dqsadevstoragewus2",
         "IsEnabled": True,
         "EventHubNamespace": "dg-dev-hub-wus2.servicebus.windows.net",
         "EventHubName": "catalogevent"

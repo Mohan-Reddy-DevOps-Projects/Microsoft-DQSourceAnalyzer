@@ -75,7 +75,7 @@
       "value": "uksouth"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageuks"
+      "value": "dqsaprodstorageuks"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/4a360e11-d437-4dfe-9517-dee9d26633a2/resourceGroups/dqsa-prod-rg-uks/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

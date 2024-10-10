@@ -75,7 +75,7 @@
       "value": "brazilsouth"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragebrs"
+      "value": "dqsaprodstoragebrs"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/821eff2c-3cef-46d9-8484-16c4161f1b45/resourceGroups/dqsa-prod-rg-brs/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

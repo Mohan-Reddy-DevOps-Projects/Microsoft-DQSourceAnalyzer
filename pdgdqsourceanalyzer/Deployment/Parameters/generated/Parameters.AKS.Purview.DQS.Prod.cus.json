@@ -75,7 +75,7 @@
       "value": "centralus"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragecus"
+      "value": "dqsaprodstoragecus"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/a3f438c0-30ef-4caa-a9e5-d3d3584005c1/resourceGroups/dqsa-prod-rg-cus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

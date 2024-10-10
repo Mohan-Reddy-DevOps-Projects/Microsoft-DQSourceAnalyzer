@@ -75,7 +75,7 @@
       "value": "francecentral"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragefc"
+      "value": "dqsaprodstoragefc"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/289aa4dc-2681-4996-b380-b6393ec4db71/resourceGroups/dqsa-prod-rg-fc/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

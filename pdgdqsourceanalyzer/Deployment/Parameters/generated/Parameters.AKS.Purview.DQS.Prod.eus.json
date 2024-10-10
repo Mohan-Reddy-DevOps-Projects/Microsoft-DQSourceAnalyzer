@@ -75,7 +75,7 @@
       "value": "eastus"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageeus"
+      "value": "dqsaprodstorageeus"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/61cbac03-bf18-46da-add4-05880355ed9a/resourceGroups/dqsa-prod-rg-eus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

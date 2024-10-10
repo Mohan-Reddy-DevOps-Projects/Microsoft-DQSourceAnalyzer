@@ -75,7 +75,7 @@
       "value": "eastus2euap"
     },
     "storageAccountName": {
-      "value": "dqsaservicecnrystorageeus2"
+      "value": "dqsacnrystorageeus2"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/dqsa-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

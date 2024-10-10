@@ -139,7 +139,7 @@ string GetClientObjId(JToken environment)
 
 string GetStorageAccountName(JToken environment)
 {
-  return $"dqsaservice{ToLower(environment["shortName"])}storage{ToLower(environment["shortLocation"])}";
+  return $"dqsa{ToLower(environment["shortName"])}storage{ToLower(environment["shortLocation"])}";
 }
 
 string GetStorageAccountReplicationType(JToken environment)

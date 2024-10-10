@@ -75,7 +75,7 @@
       "value": "japaneast"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragejpe"
+      "value": "dqsaprodstoragejpe"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/48091e78-f1f8-4bf3-bd81-ccb14aa7c21b/resourceGroups/dqsa-prod-rg-jpe/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

@@ -75,7 +75,7 @@
       "value": "westeurope"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageweu"
+      "value": "dqsaprodstorageweu"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/1e63d3c1-be40-4e8c-aff2-254f652cefdb/resourceGroups/dqsa-prod-rg-weu/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

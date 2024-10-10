@@ -75,7 +75,7 @@
       "value": "uaenorth"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstorageuaen"
+      "value": "dqsaprodstorageuaen"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/30bfa56c-d3e6-41cb-93e6-b13c4477045e/resourceGroups/dqsa-prod-rg-uaen/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"

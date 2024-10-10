@@ -75,7 +75,7 @@
       "value": "canadacentral"
     },
     "storageAccountName": {
-      "value": "dqsaserviceprodstoragecc"
+      "value": "dqsaprodstoragecc"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/128130b6-216f-481f-ab67-d9514d6df8f0/resourceGroups/dqsa-prod-rg-cc/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
