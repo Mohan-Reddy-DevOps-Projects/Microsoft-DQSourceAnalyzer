@@ -13,7 +13,7 @@
       }
     },
     "clusterName": {
-      "value": "dqs-dg-prod-aks-wus"
+      "value": "dqsa-dg-prod-aks-wus"
     },
     "nodeType": {
       "value": "Standard_D4s_v3"
@@ -63,7 +63,7 @@
       "value": "ea534029-ff81-4f74-af63-91e8938e7595"
     },
     "podIdentityResourceId":{
-      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqsa-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod"
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
     },
     "regionShortName": {
       "value": "wus"

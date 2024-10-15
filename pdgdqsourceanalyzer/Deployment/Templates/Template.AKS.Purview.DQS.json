@@ -120,12 +120,6 @@
                 "description": "The principal Id for user-assigned managed identity for pods on the AKS cluster."
             }
         },
-        "podIdentityResourceId": {
-            "type": "string",
-            "metadata": {
-                "description": "The resource Id for user-assigned managed identity for pods on the AKS cluster."
-            }
-        },
         "regionShortName": {
             "type": "string",
             "metadata": {

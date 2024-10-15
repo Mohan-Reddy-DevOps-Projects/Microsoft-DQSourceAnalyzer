@@ -20,7 +20,7 @@
       "environmentVariables": [
       {
         "name": "aksClusterName",
-        "value": "dqs-dg-prod-aks-jpe"
+        "value": "dqsa-dg-prod-aks-jpe"
       },
       {
         "name": "aksGroupName",

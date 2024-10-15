@@ -254,8 +254,8 @@ string GetPodIdentityPrincipalId(JToken environment)
 string GetPodIdentityResourceId(JToken environment)
 {
   return IsProduction(environment) ? 
-    "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqsa-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_Prod" :
-    "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqsaservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd";
+    "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod" :
+    "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourcegroups/dqservice-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd";
 }
 
 // Get the name of dns api
@@ -316,7 +316,7 @@ string GetPublicIpDns(JToken environment)
 // Get the name of the AKS cluster
 string GetClusterName(JToken environment)
 {
-  return $"dqs-dg-{ToLower(environment["shortName"])}-aks-{ToLower(environment["shortLocation"])}";
+  return $"dqsa-dg-{ToLower(environment["shortName"])}-aks-{ToLower(environment["shortLocation"])}";
 }
 
 // Get the client Id of the cluster manager application
