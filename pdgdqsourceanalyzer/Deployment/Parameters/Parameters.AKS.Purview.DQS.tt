@@ -17,9 +17,6 @@ foreach (var environment in environments)
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "<#= GetLogAnalyticsWorkspaceName(environment) #>"
-    },
     "clusterName": {
       "value": "<#= GetClusterName(environment) #>"
     },
@@ -96,9 +93,6 @@ foreach (var environment in environments)
     },
     "availabilityZones": {
       "value": <#= GetAvailabilityZones(environment) #>
-    },
-    "logicAppManagedIdentityName": {
-      "value": "<#= GetLogicAppManagedIdentityName(environment) #>"
     },
     "aksRegionCompactLocation": {
       "value": "<#= GetAksDeploymentCompactLocation(environment) #>"

@@ -24,12 +24,6 @@
                 "description": "Date and time when deployment was performed. Parameter must not be supplied, always uses default value"
             }
         },
-        "logAnalyticsWorkspaceName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the log analytics workspace associated to the AKS cluster. Workspace must exist; it is not created by this deployment"
-            }
-        },
         "clusterName": {
             "type": "string",
             "metadata": {
@@ -180,12 +174,6 @@
                 "description": ""
             }
         },
-        "logicAppManagedIdentityName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the user assigned managed identity used by scheduler logic apps"
-            }
-        },
         "aksRegionCompactLocation": {
             "type": "string",
             "metadata": {
@@ -276,14 +264,6 @@
                 "osSKU": "AzureLinux"
             }
         ],
-        "addonProfiles": {
-          "omsagent": {
-            "enabled": true,
-            "config": {
-              "loganalyticsworkspaceresourceid": "[resourceId(resourceGroup().name, 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
-            }
-          }
-        },
         "nodeResourceGroup": "[variables('nodeResourceGroup')]",
         "enableRBAC": true,
         "networkProfile": {
@@ -497,30 +477,6 @@
       ]
     },
     {
-        "type": "Microsoft.Authorization/roleAssignments",
-        "apiVersion": "2018-09-01-preview",
-        "name": "[guid(resourceGroup().id, parameters('podIdentityName'), 'logicAppContributorRole')]",
-        "properties": {
-            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('logicAppContributorRole'))]",
-            "principalId": "[parameters('podIdentityPrincipalId')]",
-            "scope": "[resourceGroup().id]"
-        },
-        "dependsOn": [
-        ]
-    },
-    {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/providers/roleAssignments",
-      "apiVersion": "2018-09-01-preview",
-      "name": "[concat(parameters('logicAppManagedIdentityName'), '/Microsoft.Authorization/', guid(parameters('logicAppManagedIdentityName'), 'ManagedIdentityOperatorRole'))]",
-        "properties": {
-            "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('managedIdentityOperatorRole'))]",
-            "principalId": "[parameters('podIdentityPrincipalId')]",
-            "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('logicAppManagedIdentityName'))]"
-        },
-      "dependsOn": [
-      ]
-    },
-    {
       "type": "Microsoft.Resources/deployments",
       "name": "[concat('deployDnsRecords', copyIndex())]",
       "apiVersion": "2019-05-10",
@@ -619,16 +575,6 @@
             "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', variables('storageTableDataContributor'))]",
             "principalId": "[parameters('podIdentityPrincipalId')]"
         }
-    },
-    {
-      "type": "Microsoft.OperationalInsights/workspaces/providers/roleAssignments",
-      "apiVersion": "2018-09-01-preview",
-      "name": "[concat(parameters('logAnalyticsWorkspaceName'), '/Microsoft.Authorization/', guid(subscription().subscriptionId, parameters('logAnalyticsWorkspaceName'), parameters('ev2ExtensionIdentityObjectId')))]",
-      "comments": "Add managed identity that runs the Ev2 script to the 'Log Analytics Contributor' role for the workspace.",
-      "properties": {
-        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-        "principalId": "[parameters('ev2ExtensionIdentityObjectId')]"
-      }
-    },
+    }
   ]
   }

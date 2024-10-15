@@ -28,7 +28,7 @@
       "value": 3
     },
     "clusterUmiIdentityName": {
-      "value": "PurviewDQS_UMIManagedIdentity_dev_wus2"
+      "value": "PurviewDQSA_UMIManagedIdentity_dev_wus2"
     },
     "kubernetesVersion": {
         "value": "1.29.2"

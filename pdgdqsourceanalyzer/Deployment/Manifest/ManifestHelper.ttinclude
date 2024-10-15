@@ -967,7 +967,7 @@ string GetMEOAppId(JToken environment)
 // The name of the managed identity for pods
 string GetClusterIdentityName(JToken environment)
 {
-      return $"PurviewDQS_UMIManagedIdentity_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}";
+      return $"PurviewDQSA_UMIManagedIdentity_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}";
 }
 
 string GetMDQSparkDriverMemory(JToken environment)

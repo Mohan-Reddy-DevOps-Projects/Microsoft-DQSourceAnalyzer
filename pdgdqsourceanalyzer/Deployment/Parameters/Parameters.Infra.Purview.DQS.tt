@@ -14,31 +14,11 @@ foreach (var environment in environments)
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "<#= GetLogAnalyticsWorkspaceName(environment) #>"
-    },
-    "logAnalyticsLocation": {
-      "value": "<#= GetLogAnalyticsLocation(environment) #>"
-    },
     "keyVaultName": {
       "value": "<#= GetKeyVaultName(environment)  #>"
     },
-    "keyVaultLogicAppName": {
-      "value": "<#= GetKeyVaultLogicAppName(environment)  #>"
-    },
     "secretGeneratorAppObjectId": {
       "value": "<#= GetSecretGeneratorAppObjectId(environment) #>"
-    },
-    "aksClusterIdentitySecretName": {
-      "value": "<#= GetEnvironmentTypeName(environment) #>-DQ-AKS-ClusterIdentity-Key"
-    },
-    "aksClusterIdentitySecretKey": {
-      "reference": {
-        "keyVault": {
-          "id": "<#= GetSecretGenerationKeyVaultResourceId(environment) #>"
-        },
-        "secretName": "DQ-AKS-ClusterIdentity-Key"
-      }
     },
     "blobSecretName": {
       "value": "blobConnectionString"
@@ -51,51 +31,12 @@ foreach (var environment in environments)
         "secretName": "<#= GetBlobConnectionKeyName(environment)  #>"
       }
     },
-    "sparkSecretName": {
-      "value": "sparkexternalcomputekey"
-    },
-    "globalSparkSecretKey": {
-      "reference": {
-        "keyVault": {
-          "id": "<#= GetSecretGenerationKeyVaultResourceId(environment) #>"
-        },
-        "secretName": "dq-spark-compute-key"
-      }
-    },
-    "ruleAISafetySecretName": {
-      "value": "dq-aisafety"
-    },
-    "globalRuleAISafetySecretKey": {
-      "reference": {
-        "keyVault": {
-          "id": "<#= GetSecretGenerationKeyVaultResourceId(environment) #>"
-        },
-        "secretName": "dq-aisafety"
-      }
-    },
-    "datastoreCredentialsSecretName": {
-      "value": "datastoreCredentials"
-    },
-    "globalDatastoreCredentialsSecretKey": {
-      "reference": {
-        "keyVault": {
-          "id": "<#= GetSecretGenerationKeyVaultResourceId(environment) #>"
-        },
-        "secretName": "<#= GetDatastoreCredentialsKeyName(environment)  #>"
-      }
-    },
     "storageAccountName": {
       "value": "<#= GetStorageAccountName(environment) #>"
     },
     "storageAccountReplicationType": {
       "value": "<#= GetStorageAccountReplicationType(environment) #>"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "<#= GetLogicAppManagedIdentityName(environment) #>"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "<#= GetLogicAppKeyVaultConnectionName(environment) #>"
-    },
+    },    
   }
 }
 <#
