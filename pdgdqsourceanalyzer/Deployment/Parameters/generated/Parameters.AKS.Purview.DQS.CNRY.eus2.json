@@ -12,9 +12,6 @@
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "dqs-cnry-loganalytics-eus2"
-    },
     "clusterName": {
       "value": "dqs-dg-cnry-aks-eus2"
     },
@@ -95,9 +92,6 @@
   "2",
   "3"
 ]
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqsa-logicApp-cnry-managedIdentity-eus2"
     },
     "aksRegionCompactLocation": {
       "value": "eastus2euap"

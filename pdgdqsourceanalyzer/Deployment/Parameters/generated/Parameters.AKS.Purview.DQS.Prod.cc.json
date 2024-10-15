@@ -12,9 +12,6 @@
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "dqs-prod-loganalytics-cc"
-    },
     "clusterName": {
       "value": "dqs-dg-prod-aks-cc"
     },
@@ -95,9 +92,6 @@
   "2",
   "3"
 ]
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqsa-logicApp-prod-managedIdentity-cc"
     },
     "aksRegionCompactLocation": {
       "value": "canadacentral"

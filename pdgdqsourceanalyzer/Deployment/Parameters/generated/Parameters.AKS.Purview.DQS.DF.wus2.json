@@ -12,9 +12,6 @@
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "dqs-df-loganalytics-wus2"
-    },
     "clusterName": {
       "value": "dqs-dg-df-aks-wus2"
     },
@@ -93,9 +90,6 @@
       "value": [
   "3"
 ]
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqsa-logicApp-df-managedIdentity-wus2"
     },
     "aksRegionCompactLocation": {
       "value": "westus2"
