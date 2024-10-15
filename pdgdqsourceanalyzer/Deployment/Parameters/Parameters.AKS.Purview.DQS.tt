@@ -67,9 +67,6 @@ foreach (var environment in environments)
     "podIdentityPrincipalId":{
       "value": "<#= GetPodIdentityPrincipalId(environment) #>"
     },
-    "podIdentityResourceId":{
-      "value": "<#= GetPodIdentityResourceId(environment) #>"
-    },
     "regionShortName": {
       "value": "<#= ToLower(environment["shortLocation"]) #>"
     },
