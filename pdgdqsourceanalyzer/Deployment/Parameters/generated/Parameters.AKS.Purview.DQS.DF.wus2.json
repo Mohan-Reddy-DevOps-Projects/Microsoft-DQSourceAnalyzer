@@ -37,7 +37,7 @@
       "value": "dqsa-df-kv-wus2"
     },
     "publicIpDns": {
-        "value": "dqservice"
+        "value": "dqsa"
     },
     "dnsApis": {
       "value": [

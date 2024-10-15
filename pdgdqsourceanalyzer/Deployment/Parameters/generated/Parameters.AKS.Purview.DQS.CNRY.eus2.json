@@ -37,7 +37,7 @@
       "value": "dqsa-cnry-kv-eus2"
     },
     "publicIpDns": {
-        "value": "dqservice"
+        "value": "dqsa"
     },
     "dnsApis": {
       "value": [

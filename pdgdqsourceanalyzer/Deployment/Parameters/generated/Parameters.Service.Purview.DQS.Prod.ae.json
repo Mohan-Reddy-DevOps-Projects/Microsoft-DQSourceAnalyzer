@@ -28,7 +28,7 @@
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-prod-public-ip-ae"
+        "value": "dqsa-prod-public-ip-ae"
       },
       {
         "name": "publicIpGroup",

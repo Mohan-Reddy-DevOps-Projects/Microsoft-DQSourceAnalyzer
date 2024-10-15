@@ -28,7 +28,7 @@
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-cnry-public-ip-eus2"
+        "value": "dqsa-cnry-public-ip-eus2"
       },
       {
         "name": "publicIpGroup",

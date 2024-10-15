@@ -310,7 +310,7 @@ string GetKeyVaultConnectorApiId(JToken environment)
 // Get the name of the public ip dns
 string GetPublicIpDns(JToken environment)
 {
-  return $"dqservice";
+  return $"dqsa";
 }
 
 // Get the name of the AKS cluster

@@ -28,7 +28,7 @@
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-df-public-ip-wus2"
+        "value": "dqsa-df-public-ip-wus2"
       },
       {
         "name": "publicIpGroup",

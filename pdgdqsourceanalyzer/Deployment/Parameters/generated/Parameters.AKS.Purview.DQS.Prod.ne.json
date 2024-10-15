@@ -37,7 +37,7 @@
       "value": "dqsa-prod-kv-ne"
     },
     "publicIpDns": {
-        "value": "dqservice"
+        "value": "dqsa"
     },
     "dnsApis": {
       "value": [

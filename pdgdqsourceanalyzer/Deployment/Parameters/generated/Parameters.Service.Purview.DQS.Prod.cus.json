@@ -28,7 +28,7 @@
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-prod-public-ip-cus"
+        "value": "dqsa-prod-public-ip-cus"
       },
       {
         "name": "publicIpGroup",

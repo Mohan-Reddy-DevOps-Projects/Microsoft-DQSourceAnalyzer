@@ -37,7 +37,7 @@
       "value": "dqsa-prod-kv-uaen"
     },
     "publicIpDns": {
-        "value": "dqservice"
+        "value": "dqsa"
     },
     "dnsApis": {
       "value": [
