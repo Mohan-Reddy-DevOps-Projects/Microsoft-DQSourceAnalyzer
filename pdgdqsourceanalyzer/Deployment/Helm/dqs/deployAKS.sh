@@ -245,9 +245,9 @@ allowedServiceTags=${allowedServiceTags//,/\\,}
 
 echo "Parse the image path for release name: $helmReleaseName"
 if [[ "${deploymentType,,}" == *"prod"* ]]; then
-  imagePath=$(jq '.ame_unique_image_name' DataQualityServiceImage-metadata.json)
+  imagePath=$(jq '.ame_unique_image_name' PdgDqsourceAnalyzerImage-metadata.json)
 else
-  imagePath=$(jq '.unique_image_name' DataQualityServiceImage-metadata.json)
+  imagePath=$(jq '.unique_image_name' PdgDqsourceAnalyzerImage-metadata.json)
 fi
 
 imagePath=$(trimQuotes $imagePath)

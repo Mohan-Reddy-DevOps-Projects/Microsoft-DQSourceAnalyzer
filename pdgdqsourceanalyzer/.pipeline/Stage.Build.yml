@@ -52,7 +52,7 @@ stages:
             displayName: "📄 Create Docker Image Version file"
             inputs:
               script: |
-                echo  "{\"unique_image_name\": \"dataqualityacr.azurecr.io/dataqualityservice:$(Build.BuildNumber)\",\"ame_unique_image_name\": \"dataqualityacrprod.azurecr.io/dqsourceamalyzer:$(Build.BuildNumber)\"}" > $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/Helm/DataQualityServiceImage-metadata.json
+                echo  "{\"unique_image_name\": \"dataqualityacr.azurecr.io/dqsourceanalyzer:$(Build.BuildNumber)\",\"ame_unique_image_name\": \"dataqualityacrprod.azurecr.io/dqsourceanalyzer:$(Build.BuildNumber)\"}" > $(Build.SourcesDirectory)/out/PdgDqsourceAnalyzer/ServiceGroupRoot/Helm/PdgDqsourceAnalyzerImage-metadata.json
                 
           - task: CmdLine@2
             displayName: '📦 Package Ev2 tar archive for Data Quality service'

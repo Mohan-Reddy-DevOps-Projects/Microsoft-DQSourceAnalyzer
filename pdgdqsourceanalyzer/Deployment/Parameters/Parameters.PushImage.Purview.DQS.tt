@@ -30,14 +30,14 @@ foreach (var environment in environments)
       {
         "name": "TARBALL_IMAGE_FILE_NAME",
         "reference": {
-              "path": "DataQualityServiceImage.tar.gz"
+              "path": "PdgDqsourceAnalyzerImage.tar.gz"
         },
         "asSecureValue": "true"
       },
       {
         "name": "IMAGE_METADATA_FILE_NAME",
         "reference": {
-              "path": "DataQualityServiceImage-metadata.json"
+              "path": "PdgDqsourceAnalyzerImage-metadata.json"
         },
         "asSecureValue": "true"
       }
