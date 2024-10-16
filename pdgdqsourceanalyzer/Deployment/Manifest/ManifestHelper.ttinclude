@@ -427,7 +427,7 @@ int GetPodNumber(JToken environment)
 // The name of the helm release
 string GetHelmReleaseName(JToken environment)
 {
-  return $"release-dqsa-{ToLower(environment["shortName"])}";
+  return $"release-dqs-{ToLower(environment["shortName"])}";
 }
 
 // Get the name of the dqs server certificate subject name
