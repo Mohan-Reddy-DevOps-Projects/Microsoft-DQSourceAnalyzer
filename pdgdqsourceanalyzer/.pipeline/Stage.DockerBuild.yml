@@ -27,7 +27,7 @@ stages:
         - task: onebranch.pipeline.imagebuildinfo@1
           displayName: '🏗 Build DataQualityService Docker Image'
           inputs:
-            repositoryName: dataqualityservice
+            repositoryName: dqsourceanalyzer
             dockerFileRelPath: PdgDqsourceAnalyzerDockerFiles/Dockerfile
             dockerFileContextPath: PdgDqsourceAnalyzerDockerFiles
             registry: dataqualityacr.azurecr.io

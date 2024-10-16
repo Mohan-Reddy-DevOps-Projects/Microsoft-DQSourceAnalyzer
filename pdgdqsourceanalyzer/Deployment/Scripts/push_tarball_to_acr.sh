@@ -53,6 +53,8 @@ DESTINATION_ACR=$(echo "${TOKEN_QUERY_RES}" | jq -r '.loginServer')
 REPOSITORY_NAME="$(jq -r '.repository_name' img-meta.json)"
 IMAGE_VER_TAG="$(jq -r '.build_tag' img-meta.json)"
 
+echo "repository_name ${REPOSITORY_NAME}"
+echo "IMAGE_VER_TAG ${IMAGE_VER_TAG=}"
 DEST_IMAGE_FULL_NAME="${DESTINATION_ACR}/${REPOSITORY_NAME}:${IMAGE_VER_TAG}"
 
 echo "Pushing file ${TARBALL_IMAGE_FILE} to ${DEST_IMAGE_FULL_NAME}"
