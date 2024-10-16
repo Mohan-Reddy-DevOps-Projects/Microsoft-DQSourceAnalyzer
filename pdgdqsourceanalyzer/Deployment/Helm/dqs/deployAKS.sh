@@ -6,9 +6,9 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "\"${last_command}\" command completed with exit code $?."' EXIT
 
 # Define some global variables
-serviceDeploymentName=purview-dqs
-appLabelName=purview-dqs
-loadBalancerName=purview-dqs-loadbalancer
+serviceDeploymentName=purview-dqsa
+appLabelName=purview-dqsa
+loadBalancerName=purview-dqsa-loadbalancer
 genevaDaemonsetName=geneva-services
 
 # Test whether an AKS application deployment has completed

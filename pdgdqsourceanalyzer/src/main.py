@@ -41,6 +41,16 @@ async def timeout_middleware(request: Request, call_next):
         )
 
 # Create the POST endpoint
+@app.get("/test")
+async def test_hello_world():
+    try:
+        result = {"status": "success", "details": "Hello World"}
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
 @app.post("/databricksunitycatalog/testconnection")
 async def test_databricksUnityCatalog_connection(connection_request: DatabricksUnityCatalogRequest):
     try:

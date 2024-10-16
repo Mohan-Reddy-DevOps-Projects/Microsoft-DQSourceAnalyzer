@@ -129,7 +129,7 @@ extends:
           inputs:
             SourceFolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_docker_linuxContainers
             Contents: '**'
-            TargetFolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot
+            TargetFolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/PdgDqsourceAnalyzer/ServiceGroupRoot
             CleanTargetFolder: false
             OverWrite: false
             flattenFolders: false
@@ -139,9 +139,9 @@ extends:
             ignoreMakeDirErrors: false 
         - task: copyfiles@2
           inputs:
-            sourcefolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/DataQualityService
+            sourcefolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer
             contents: '**'
-            targetfolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/
+            targetfolder: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/PdgDqsourceAnalyzer/
             cleantargetfolder: false
             overwrite: false
             flattenfolders: false
@@ -158,8 +158,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/DataQuality/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.PublishImage.Purview.DQS.Prod.cus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_DQSourceAnalyzer/drop/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.PublishImage.Purview.DQS.Prod.cus.json
     - stage: Prod_Deploy_DQ_Source_Analyzer_Service_on_AKS
       displayName: Deploy DQ Source Analyzer Service to AKS
       dependsOn: Prod_Deploy_DQ_Source_Analyzer_PublishImage
