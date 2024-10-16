@@ -54,7 +54,7 @@
       "value": "7dcedb92-9cc9-4d05-8779-8275510a112d"
     },
     "podIdentityName":{
-      "value": "PurviewDQSA_ManagedIdentity_NonProd"
+      "value": "PurviewDQS_ManagedIdentity_NonProd"
     },
      "podIdentitySubscriptionId":{
       "value": "d0542b74-5839-4ee0-8ec4-74e91468eaa7"
@@ -72,7 +72,7 @@
       "value": "dqsadevstoragewus2"
     },
     "userAssignedIdentities_akspod_resourceid": {
-      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQSA_ManagedIdentity_NonProd"
+      "value": "/subscriptions/d0542b74-5839-4ee0-8ec4-74e91468eaa7/resourceGroups/dqsa-dev-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_NonProd"
     },
     "userAssignedIdentities_dqsprod_resourceid": {
       "value": "/subscriptions/16ec6df3-9d0b-4d9e-a7a4-76c9582fd9f6/resourceGroups/dqs-df-rg-wus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsdf"

@@ -56,11 +56,11 @@
       },
       {
         "name": "podIdentityName",
-        "value": "PurviewDQSA_ManagedIdentity_NonProd"
+        "value": "PurviewDQS_ManagedIdentity_NonProd"
       },
       {
         "name": "podIdentityGroup",
-        "value": "dqsaservice-shared-resources"
+        "value": "dqsservice-shared-resources"
       },
       {
         "name": "podIdentitySubscriptionId",

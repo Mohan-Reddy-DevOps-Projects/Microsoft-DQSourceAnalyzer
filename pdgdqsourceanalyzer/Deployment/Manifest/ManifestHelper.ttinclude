@@ -64,7 +64,7 @@ string GetInfraResourceGroup(JToken environment)
 // Get the name of the shared infrastructure resource group
 string GetSharedInfraResourceGroup(JToken environment)
 {
-  return IsProduction(environment) ? "dqsa-prod-shared-resources" : "dqsaservice-shared-resources";
+  return IsProduction(environment) ? "dqs-prod-shared-resources" : "dqsservice-shared-resources";
 }
 
 // Get the Blob Connection key name
@@ -235,7 +235,7 @@ string GetAksDeploymentCompactLocation(JToken environment)
 // Get the name of the pod identity
 string GetPodIdentityName(JToken environment)
 {
-  return IsProduction(environment) ? "PurviewDQSA_ManagedIdentity_Prod" : "PurviewDQSA_ManagedIdentity_NonProd";
+  return IsProduction(environment) ? "PurviewDQS_ManagedIdentity_Prod" : "PurviewDQS_ManagedIdentity_NonProd";
 }
 
 // Get the subscription Id of the pod identity
