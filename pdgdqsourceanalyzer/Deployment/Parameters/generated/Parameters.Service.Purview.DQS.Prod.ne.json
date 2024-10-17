@@ -40,7 +40,7 @@
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqsa-prod"
+        "value": "release-dqs-prod"
       },
       {
         "name": "helmValueFile",

@@ -40,7 +40,7 @@
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqsa-cnry"
+        "value": "release-dqs-cnry"
       },
       {
         "name": "helmValueFile",
