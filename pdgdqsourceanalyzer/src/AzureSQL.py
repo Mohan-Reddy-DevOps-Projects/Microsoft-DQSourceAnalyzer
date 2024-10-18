@@ -2,10 +2,13 @@ from pydantic import BaseModel, Field, field_validator
 import pyodbc
 from azure.identity import DefaultAzureCredential
 from typing import List, Dict
+from src.CustomTokenCredentialHelper import CustomTokenCredential
 
 class AzureSQLRequest(BaseModel):
     server: str = Field(..., description="Server must be provided")
     database: str = Field(..., description="Database must be provided")
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('server', 'database')
     def field_not_empty(cls, value):
@@ -13,13 +16,18 @@ class AzureSQLRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(server: str, database: str) -> Dict[str, str]:
+    def test_connection(server: str, database: str,token:str,expires_on:int) -> Dict[str, str]:
         port = 1433
 
         try:
             # Obtain a token from MSI
-            credential = DefaultAzureCredential()
-            token = credential.get_token("https://database.windows.net/.default").token
+            #credential = DefaultAzureCredential()
+            #token = credential.get_token("https://database.windows.net/.default").token
+            try:
+                credential = CustomTokenCredential(token=token, expires_on=expires_on)
+                token = credential.get_token().token
+            except Exception as e:
+                return {"status": "error", "message": f"Failed to obtain token: {str(e)}"}
 
             # Create a connection string
             connection_string = (
@@ -45,6 +53,8 @@ class AzureSQLSchemaRequest(BaseModel):
     server: str = Field(..., description="Server must be provided")
     database: str = Field(..., description="Database must be provided")
     table: str = Field(..., description="Table Name must be provided")
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('server', 'database','table')
     def field_not_empty(cls, value):
@@ -52,12 +62,17 @@ class AzureSQLSchemaRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def get_table_schema(server: str, database: str, table: str) -> Dict[str, List[Dict[str, str]]]:
+    def get_table_schema(server: str, database: str, table: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         port = 1433 
 
         try:
-            credential = DefaultAzureCredential()
-            token = credential.get_token("https://database.windows.net/.default").token
+            #credential = DefaultAzureCredential()
+            #token = credential.get_token("https://database.windows.net/.default").token
+            try:
+                credential = CustomTokenCredential(token=token, expires_on=expires_on)
+                token = credential.get_token().token
+            except Exception as e:
+                return {"status": "error", "message": f"Failed to obtain token: {str(e)}"}
 
             connection_string = (
                 f"DRIVER={{ODBC Driver 17 for SQL Server}};"

@@ -13,12 +13,16 @@ import pyarrow
 import pyarrow.dataset as ds
 import duckdb
 from fsspec import filesystem
+from src.CustomTokenCredentialHelper import CustomTokenCredential
 
 class ADLSGen2Request(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
     file_system_name: str = Field(..., description="File System Name must be provided")
     directory_path: str = Field(..., description="Directory Path must be provided")
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")
     storage_type: str = Field('adlsgen2', description="Expected value 'fabric' or 'adlsgen2' (default: 'adlsgen2')")
+    
     
     @field_validator('account_name', 'file_system_name', 'directory_path','storage_type')
     def field_not_empty(cls, value):
@@ -26,10 +30,11 @@ class ADLSGen2Request(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(account_name: str, file_system_name: str, directory_path: str,storage_type: str = 'adlsgen2') -> Dict[str, str]:
+    def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int, storage_type: str = 'adlsgen2') -> Dict[str, str]:
         try:
             # Initialize ADLS client
-            credential = DefaultAzureCredential()
+            #credential = DefaultAzureCredential()
+            credential = CustomTokenCredential(token=token,expires_on=expires_on)
             if storage_type == 'fabric':
                 account_url = f"https://{account_name}.dfs.fabric.microsoft.com"
             else:
@@ -51,6 +56,8 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('account_name', 'file_system_name', 'directory_path')
     def field_not_empty(cls, value):
@@ -58,9 +65,10 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
+    def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
-            credential = DefaultAzureCredential()
+            #credential = DefaultAzureCredential()
+            credential = CustomTokenCredential(token=token,expires_on=expires_on)
             fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
             # Use delta-lake-reader to access the table schema
             arrow_table = DeltaTable(
@@ -77,6 +85,8 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('account_name', 'file_system_name', 'directory_path')
     def field_not_empty(cls, value):
@@ -84,9 +94,10 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def get_table_schema(account_name: str, file_system_name: str, directory_path: str) -> Dict[str, List[Dict[str, str]]]:
+    def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
-            credential = DefaultAzureCredential()
+            #credential = DefaultAzureCredential()
+            credential = CustomTokenCredential(token=token,expires_on=expires_on)
             duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
             duckdb.sql("INSTALL iceberg; LOAD iceberg")
             schema_result = duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)").fetchall()
@@ -100,6 +111,8 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('account_name', 'file_system_name', 'directory_path')
     def field_not_empty(cls, value):
@@ -107,8 +120,9 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
         
-    def get_table_schema(account_name, file_system_name, directory_path):
-        credential = DefaultAzureCredential()
+    def get_table_schema(account_name, file_system_name, directory_path,token:str,expires_on:int):
+        #credential = DefaultAzureCredential()
+        credential = CustomTokenCredential(token=token,expires_on=expires_on)
         try:
             handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
             fs = pyarrow.fs.PyFileSystem(handler)
@@ -131,6 +145,8 @@ class ADLSGen2FormatDetector(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided") #storageaccountname
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
+    token: str = Field(..., description="Token must be provided")
+    expires_on: str = Field(..., description="Token Expiration must be provided")    
     
     @field_validator('account_name', 'file_system_name', 'directory_path')
     def field_not_empty(cls, value):
@@ -138,7 +154,7 @@ class ADLSGen2FormatDetector(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def detect_format(account_name, file_system_name, directory_path) -> str:
+    def detect_format(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
         Detect the format of the directory (Delta or Parquet) on ADLS Gen2.
         Returns:
@@ -148,7 +164,8 @@ class ADLSGen2FormatDetector(BaseModel):
             - "unsupportedFormat": If neither format is detected.
         """
         try:
-            credential = DefaultAzureCredential()
+            #credential = DefaultAzureCredential()
+            credential = CustomTokenCredential(token=token,expires_on=expires_on)
             full_path = f"{file_system_name}/{directory_path}"
             # Try to detect Iceberg format
             try:
@@ -189,7 +206,7 @@ class ADLSGen2FormatDetector(BaseModel):
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-    def detect_partitions(account_name, file_system_name, directory_path) -> str:
+    def detect_partitions(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
         Detect if the (Parquet) directory on ADLS Gen2 is partitioned. Applies to only PARQUET
         Returns:
@@ -199,7 +216,8 @@ class ADLSGen2FormatDetector(BaseModel):
         try:
             isPartitioned = False
             partition_columns = []
-            credential = DefaultAzureCredential()
+            #credential = DefaultAzureCredential()
+            credential = CustomTokenCredential(token=token,expires_on=expires_on)
             full_path = f"{file_system_name}/{directory_path}"
             ##Get Partition Columns for Delta and Parquet formats.
             handler = pyarrowfs_adlgen2.AccountHandler.from_account_name(account_name, credential=credential)
