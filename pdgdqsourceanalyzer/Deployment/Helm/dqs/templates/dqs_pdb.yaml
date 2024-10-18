@@ -1,9 +1,9 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: purview-dqs-pdb
+  name: purview-dqsa-pdb
 spec:
   minAvailable: 50%
   selector:
     matchLabels:
-      app: purview-dqs
+      app: purview-dqsa

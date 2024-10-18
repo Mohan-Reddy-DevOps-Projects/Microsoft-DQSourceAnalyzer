@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: purview-dqs
+  name: purview-dqsa
 spec:
   replicas: {{ .Values.dqs.instances }}
   selector:
     matchLabels:
-      app: purview-dqs
+      app: purview-dqsa
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,9 +17,9 @@ spec:
   template:
     metadata:
       labels:
-        app: purview-dqs
-        role: purview-dqs
-        aadpodidbinding: purview-dqs-aad
+        app: purview-dqsa
+        role: purview-dqsa
+        aadpodidbinding: purview-dqsa-aad
     spec:
       nodeSelector:
         agentpool: dqspool
@@ -31,12 +31,12 @@ spec:
               - key: role
                 operator: In
                 values:
-                - purview-dqs
+                - purview-dqsa
             topologyKey: "kubernetes.io/hostname"
       volumes:
       - name: config-volume
         configMap:
-          name: purview-dqs-config
+          name: purview-dqsa-config
       - name: mdsd-run-vol
         hostPath:
           path: /var/run/mdsd
@@ -45,7 +45,7 @@ spec:
           path: /var/run/mdsd/asa
       containers:
       - image: {{ .Values.dqs.imagePath }}
-        name: purview-dqs
+        name: purview-dqsa
         # args: ["Environment={{ .Values.dqs.environment }}"]
         imagePullPolicy: Always
         ports:

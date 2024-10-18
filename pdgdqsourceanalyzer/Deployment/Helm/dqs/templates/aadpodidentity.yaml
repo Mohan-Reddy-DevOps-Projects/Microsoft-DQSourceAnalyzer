@@ -1,7 +1,7 @@
 apiVersion: "aadpodidentity.k8s.io/v1"
 kind: AzureIdentity
 metadata:
-  name: purview-dqs-aks-managedidentity
+  name: purview-dqsa-aks-managedidentity
 spec:
   type: 0
   resourceID: {{ required "Parameter podIdentityResourceId must be set to the resourceId of the pod MSI" .Values.podIdentityResourceId }}

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dataquality-service
+  name: dqsourceanalyzer-service
   annotations:
     service.beta.kubernetes.io/azure-allowed-service-tags: {{ required "Parameter dqs.allowedServiceTags must be set" .Values.dqs.allowedServiceTags }}
 spec:
   selector:
-    app: purview-dqs
+    app: purview-dqsa
   ports:
     - protocol: TCP
       port: 443

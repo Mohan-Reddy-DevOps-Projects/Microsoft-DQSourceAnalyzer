@@ -15,7 +15,7 @@ spec:
       labels:
         name: geneva-services
         # aadpodidbinding is used by the CSI driver to pair with the identity specified in the pod identity binding that matches the label
-        aadpodidbinding: purview-dqs-aad
+        aadpodidbinding: purview-dqsa-aad
     spec:
       hostNetwork: true
       containers:

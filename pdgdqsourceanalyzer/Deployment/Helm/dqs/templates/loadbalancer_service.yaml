@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: purview-dqs-loadbalancer
+  name: purview-dqsa-loadbalancer
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: {{ required "Parameter dqs.publicIpGroup must be set to the resource group name where the public IP is defined" .Values.dqs.publicIpGroup }}
     service.beta.kubernetes.io/azure-allowed-service-tags: {{ required "Parameter dqs.allowedServiceTags must be defined" .Values.dqs.allowedServiceTags }}
@@ -14,4 +14,4 @@ spec:
     protocol: TCP
     name: https
   selector:
-    app: purview-dqs
+    app: purview-dqsa

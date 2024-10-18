@@ -73,7 +73,7 @@ def cleanup_files():
 # Run Uvicorn with the SSL certificate and key files
 try:
     if __name__ == "__main__":
-        uvicorn.run("src.main:app", host="0.0.0.0", port=8000, ssl_certfile=cert_file_path, ssl_keyfile=key_file_path)
+        uvicorn.run("src.main:app", host="0.0.0.0", port=443, ssl_certfile=cert_file_path, ssl_keyfile=key_file_path)
 finally:
     cleanup_files()
 

@@ -40,11 +40,11 @@
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqs-df"
+        "value": "release-dqsa-df"
       },
       {
         "name": "helmValueFile",
-        "value": "values_dqsa_df_wus2.yaml"
+        "value": "values_dqs_df_wus2.yaml"
       },
       {
         "name": "subId",

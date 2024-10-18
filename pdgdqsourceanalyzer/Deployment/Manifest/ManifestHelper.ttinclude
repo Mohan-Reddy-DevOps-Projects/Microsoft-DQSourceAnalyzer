@@ -415,7 +415,7 @@ void SaveOutput(string folder, string outputFileName)
 // The name of the helm value file
 string GetHelmValueFile(JToken environment)
 {
-  return $"values_dqsa_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
+  return $"values_dqs_{ToLower(environment["shortName"])}_{ToLower(environment["shortLocation"])}.yaml";
 }
 
 // Get the pod number for AKS deployment
@@ -427,7 +427,7 @@ int GetPodNumber(JToken environment)
 // The name of the helm release
 string GetHelmReleaseName(JToken environment)
 {
-  return $"release-dqs-{ToLower(environment["shortName"])}";
+  return $"release-dqsa-{ToLower(environment["shortName"])}";
 }
 
 // Get the name of the dqs server certificate subject name

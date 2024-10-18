@@ -40,11 +40,11 @@
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqs-cnry"
+        "value": "release-dqsa-cnry"
       },
       {
         "name": "helmValueFile",
-        "value": "values_dqsa_cnry_eus2.yaml"
+        "value": "values_dqs_cnry_eus2.yaml"
       },
       {
         "name": "subId",

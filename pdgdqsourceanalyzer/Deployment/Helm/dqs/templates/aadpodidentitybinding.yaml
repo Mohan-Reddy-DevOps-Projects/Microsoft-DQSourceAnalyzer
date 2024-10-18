@@ -3,5 +3,5 @@ kind: AzureIdentityBinding
 metadata:
   name: azure-identity-binding
 spec:
-  azureIdentity: purview-dqs-aks-managedidentity
-  selector: purview-dqs-aad
+  azureIdentity: purview-dqsa-aks-managedidentity
+  selector: purview-dqsa-aad

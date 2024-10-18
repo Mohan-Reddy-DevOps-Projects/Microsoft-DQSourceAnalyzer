@@ -4,7 +4,7 @@ metadata:
   name: metadata-service
 spec:
   selector:
-    app: purview-dqs-metadata
+    app: purview-dqsa-metadata
   ports:
     - protocol: TCP
       port: 443
