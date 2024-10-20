@@ -29,11 +29,11 @@ os.makedirs(client_ca_cert_file_path, exist_ok=True)
 if environment == "DEV":
     key_vault_name = os.getenv('DEV_KEYVAULT_NAME')
     cert_name = os.getenv('DEV_PFX_CERT_NAME')
-    client_cert_name = os.getenv('DEV_CLIENT_PFX_CERT_NAME')
+    client_cert_names = os.getenv('DEV_CLIENT_PFX_CERT_NAMES', '').split(',')
 elif environment == "PROD":
     key_vault_name = os.getenv('PROD_KEYVAULT_NAME')
     cert_name = os.getenv('PROD_PFX_CERT_NAME')
-    client_cert_name = os.getenv('PROD_CLIENT_PFX_CERT_NAME')
+    client_cert_names = os.getenv('PROD_CLIENT_PFX_CERT_NAMES', '').split(',')
 else:
     raise ValueError("Invalid environment specified.")
 
@@ -41,7 +41,6 @@ key_vault_url = f"https://{key_vault_name}.vault.azure.net/"
 
 # Use DefaultAzureCredential for Managed Identity (MSI) authentication
 credential = DefaultAzureCredential()
-
 certificate_client = CertificateClient(vault_url=key_vault_url, credential=credential)
 certificate_operation = certificate_client.get_certificate(cert_name)
 
@@ -67,22 +66,24 @@ with NamedTemporaryFile(delete=False) as cert_file, NamedTemporaryFile(delete=Fa
     cert_file_path = cert_file.name
     key_file_path = key_file.name
 
+## Client Certificate WhiteListing Begins
 # Download client certificate (.pfx) from Key Vault for client authentication (mTLS)
-client_certificate_operation = certificate_client.get_certificate(client_cert_name)
-client_pfx_secret = secret_client.get_secret(client_certificate_operation.name)
+with NamedTemporaryFile(delete=False, dir="/app/certs", suffix=".pem") as client_ca_cert_file:
+    for client_cert_name in client_cert_names:
+        # Fetch the client certificate from Key Vault
+        client_certificate_operation = certificate_client.get_certificate(client_cert_name)
+        client_pfx_secret = secret_client.get_secret(client_certificate_operation.name)
+        # Decode the .pfx data
+        client_pfx_data = base64.b64decode(client_pfx_secret.value)
+        
+        # Extract the certificates (including CA chain) from the PFX file
+        _, _, client_ca_certs = pkcs12.load_key_and_certificates(client_pfx_data, password=None)
 
-# The client .pfx data is base64-encoded, so decode it
-client_pfx_data = base64.b64decode(client_pfx_secret.value)
+        # Write all additional client certificates (CA chain) into the CA cert file
+        for ca_cert in client_ca_certs:
+            client_ca_cert_file.write(ca_cert.public_bytes(Encoding.PEM))
 
-# Parse the PFX file to extract the certificate and additional certificates (CA chain) for the client
-_, client_cert, client_ca_certs = pkcs12.load_key_and_certificates(client_pfx_data, password=None)
-
-# Create temporary client certificate (CA chain) file for client authentication (mTLS)
-#with NamedTemporaryFile(dir=client_ca_cert_file_path,delete=False) as client_ca_cert_file:
-with NamedTemporaryFile(delete=False, dir=client_ca_cert_file_path, suffix=".pem") as client_ca_cert_file:
-    # Write all additional client certificates (CA chain) into the CA cert file
-    for ca_cert in client_ca_certs:
-        client_ca_cert_file.write(ca_cert.public_bytes(Encoding.PEM))
+    # Store the CA cert file path to be used later
     client_ca_cert_file_path = client_ca_cert_file.name
 
 # Clean up temporary files after usage
