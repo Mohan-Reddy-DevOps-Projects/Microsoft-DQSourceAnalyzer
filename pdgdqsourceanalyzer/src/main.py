@@ -40,7 +40,12 @@ async def timeout_middleware(request: Request, call_next):
             content={"message": f"An unexpected error occurred: {str(e)}"}
         )
 
-# Create the POST endpoint
+def verify_client_certificate(request: Request):
+    client_cert = request.scope.get('client_cert')
+    # Raise an HTTP 403 Forbidden error if no valid client certificate is presented
+    if not client_cert:
+        raise HTTPException(status_code=403, detail="Client certificate is required.")
+
 @app.get("/test")
 async def test_hello_world():
     try:
@@ -51,8 +56,10 @@ async def test_hello_world():
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
+# Create the POST endpoint
 @app.post("/databricksunitycatalog/testconnection")
-async def test_databricksUnityCatalog_connection(connection_request: DatabricksUnityCatalogRequest):
+async def test_databricksUnityCatalog_connection(request: Request,connection_request: DatabricksUnityCatalogRequest):
+    verify_client_certificate(request)
     try:
         result = DatabricksUnityCatalogRequest.test_connection(
             connection_request.hostname,
@@ -68,7 +75,8 @@ async def test_databricksUnityCatalog_connection(connection_request: DatabricksU
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/databricksunitycatalog/getschema")
-async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatalogSchemaRequest):
+async def get_databricksUnityCatalog_schema(request: Request,schema_request: DatabricksUnityCatalogSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = DatabricksUnityCatalogSchemaRequest.get_table_schema(
             schema_request.hostname,
@@ -87,7 +95,8 @@ async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatal
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/snowflake/testconnection")
-async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
+async def test_snowflake_connection(request: Request,connection_request: SnowflakeDWRequest):
+    verify_client_certificate(request)
     try:
         result = SnowflakeDWRequest.test_connection(
             connection_request.account,
@@ -106,7 +115,8 @@ async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/snowflake/getschema")
-async def get_snowflake_schema(schema_request: SnowflakeDWSchemaRequest):
+async def get_snowflake_schema(request: Request,schema_request: SnowflakeDWSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = SnowflakeDWSchemaRequest.get_table_schema(
             schema_request.account,
@@ -127,7 +137,8 @@ async def get_snowflake_schema(schema_request: SnowflakeDWSchemaRequest):
 
 # New Google BigQuery endpoints
 @app.post("/googlebigquery/testconnection")
-async def test_googleBigQuery_connection(connection_request: GoogleBigQueryRequest):
+async def test_googleBigQuery_connection(request: Request,connection_request: GoogleBigQueryRequest):
+    verify_client_certificate(request)
     try:
         result = connection_request.test_connection()
         if result["status"] == "error":
@@ -139,7 +150,8 @@ async def test_googleBigQuery_connection(connection_request: GoogleBigQueryReque
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/googlebigquery/getschema")
-async def get_googleBigQuery_schema(schema_request: GoogleBigQuerySchemaRequest):
+async def get_googleBigQuery_schema(request: Request,schema_request: GoogleBigQuerySchemaRequest):
+    verify_client_certificate(request)
     try:
         result = schema_request.get_table_schema()
         if result["status"] == "error":
@@ -152,12 +164,15 @@ async def get_googleBigQuery_schema(schema_request: GoogleBigQuerySchemaRequest)
 
 # ADLS Gen2 endpoints
 @app.post("/adlsgen2/testconnection")
-async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
+async def test_adlsgen2_connection(request: Request,connection_request: ADLSGen2Request):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2Request.test_connection(
             connection_request.account_name,
             connection_request.file_system_name,
             connection_request.directory_path,
+            connection_request.token,
+            connection_request.expires_on,
             connection_request.storage_type
         )
         if result["status"] == "error":
@@ -169,12 +184,15 @@ async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getdeltaschema")
-async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
+async def get_adlsgen2_schema(request: Request,schema_request: ADLSGen2DeltaSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2DeltaSchemaRequest.get_table_schema(
             schema_request.account_name,
             schema_request.file_system_name,
-            schema_request.directory_path
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -185,12 +203,15 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2DeltaSchemaRequest):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getparquetschema")
-async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
+async def get_adlsgen2_schema(request: Request,schema_request: ADLSGen2ParquetSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2ParquetSchemaRequest.get_table_schema(
             schema_request.account_name,
             schema_request.file_system_name,
-            schema_request.directory_path
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -201,12 +222,15 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2ParquetSchemaRequest):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/geticebergschema")
-async def get_adlsgen2_schema(schema_request: ADLSGen2IcebergSchemaRequest):
+async def get_adlsgen2_schema(request: Request,schema_request: ADLSGen2IcebergSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2IcebergSchemaRequest.get_table_schema(
             schema_request.account_name,
             schema_request.file_system_name,
-            schema_request.directory_path
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -217,12 +241,15 @@ async def get_adlsgen2_schema(schema_request: ADLSGen2IcebergSchemaRequest):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getformat")
-async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
+async def get_adlsgen2_format(request: Request,schema_request: ADLSGen2FormatDetector):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2FormatDetector.detect_format(
             schema_request.account_name,
             schema_request.file_system_name,
-            schema_request.directory_path
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -233,12 +260,15 @@ async def get_adlsgen2_format(schema_request: ADLSGen2FormatDetector):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getparquetpartitioncolumns")
-async def get_adlsgen2_getPartitionColumns(schema_request: ADLSGen2FormatDetector):
+async def get_adlsgen2_getPartitionColumns(request: Request,schema_request: ADLSGen2FormatDetector):
+    verify_client_certificate(request)
     try:
         result = ADLSGen2FormatDetector.detect_partitions(
             schema_request.account_name,
             schema_request.file_system_name,
-            schema_request.directory_path
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -251,11 +281,14 @@ async def get_adlsgen2_getPartitionColumns(schema_request: ADLSGen2FormatDetecto
 
 # Azure SQL Database endpoints
 @app.post("/azuresql/testconnection")
-async def test_azure_sql_connection(connection_request: AzureSQLRequest):
+async def test_azure_sql_connection(request: Request,connection_request: AzureSQLRequest):
+    verify_client_certificate(request)
     try:
         result = AzureSQLRequest.test_connection(
             connection_request.server,
-            connection_request.database
+            connection_request.database,
+            connection_request.token,
+            connection_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
@@ -266,12 +299,15 @@ async def test_azure_sql_connection(connection_request: AzureSQLRequest):
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/azuresql/getschema")
-async def get_azure_sql_schema(schema_request: AzureSQLSchemaRequest):
+async def get_azure_sql_schema(request: Request,schema_request: AzureSQLSchemaRequest):
+    verify_client_certificate(request)
     try:
         result = AzureSQLSchemaRequest.get_table_schema(
             schema_request.server,
             schema_request.database,
-            schema_request.table
+            schema_request.table,
+            schema_request.token,
+            schema_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])

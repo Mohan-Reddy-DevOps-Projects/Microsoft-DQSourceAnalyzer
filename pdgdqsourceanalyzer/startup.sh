@@ -22,13 +22,18 @@ from pathlib import Path
 # Determine the environment
 environment = os.getenv('ENVIRONMENT', 'DEV')
 
+client_ca_cert_file_path = "/app/certs"
+os.makedirs(client_ca_cert_file_path, exist_ok=True)
+
 # Fetch Key Vault names based on environment
 if environment == "DEV":
     key_vault_name = os.getenv('DEV_KEYVAULT_NAME')
     cert_name = os.getenv('DEV_PFX_CERT_NAME')
+    client_cert_name = os.getenv('DEV_CLIENT_PFX_CERT_NAME')
 elif environment == "PROD":
     key_vault_name = os.getenv('PROD_KEYVAULT_NAME')
     cert_name = os.getenv('PROD_PFX_CERT_NAME')
+    client_cert_name = os.getenv('PROD_CLIENT_PFX_CERT_NAME')
 else:
     raise ValueError("Invalid environment specified.")
 
@@ -62,21 +67,47 @@ with NamedTemporaryFile(delete=False) as cert_file, NamedTemporaryFile(delete=Fa
     cert_file_path = cert_file.name
     key_file_path = key_file.name
 
+# Download client certificate (.pfx) from Key Vault for client authentication (mTLS)
+client_certificate_operation = certificate_client.get_certificate(client_cert_name)
+client_pfx_secret = secret_client.get_secret(client_certificate_operation.name)
+
+# The client .pfx data is base64-encoded, so decode it
+client_pfx_data = base64.b64decode(client_pfx_secret.value)
+
+# Parse the PFX file to extract the certificate and additional certificates (CA chain) for the client
+_, client_cert, client_ca_certs = pkcs12.load_key_and_certificates(client_pfx_data, password=None)
+
+# Create temporary client certificate (CA chain) file for client authentication (mTLS)
+#with NamedTemporaryFile(dir=client_ca_cert_file_path,delete=False) as client_ca_cert_file:
+with NamedTemporaryFile(delete=False, dir=client_ca_cert_file_path, suffix=".pem") as client_ca_cert_file:
+    # Write all additional client certificates (CA chain) into the CA cert file
+    for ca_cert in client_ca_certs:
+        client_ca_cert_file.write(ca_cert.public_bytes(Encoding.PEM))
+    client_ca_cert_file_path = client_ca_cert_file.name
+
 # Clean up temporary files after usage
 def cleanup_files():
     try:
         Path(cert_file_path).unlink(missing_ok=True)
         Path(key_file_path).unlink(missing_ok=True)
+        Path(client_ca_cert_file_path).unlink(missing_ok=True)
     except Exception as e:
         print(f"Error cleaning up files: {e}")
 
-# Run Uvicorn with the SSL certificate and key files
+# Run Uvicorn with the SSL certificate, key, and client CA certificate for mutual TLS (mTLS)
 try:
     if __name__ == "__main__":
-        uvicorn.run("src.main:app", host="0.0.0.0", port=443, ssl_certfile=cert_file_path, ssl_keyfile=key_file_path)
+        uvicorn.run(
+            "src.main:app", 
+            host="0.0.0.0", 
+            port=443, 
+            ssl_certfile=cert_file_path, 
+            ssl_keyfile=key_file_path,
+            ssl_ca_certs=client_ca_cert_file_path,  # Use client certificate's CA chain for client validation
+            ssl_cert_reqs=ssl.CERT_REQUIRED  # Enforce client certificate authentication (mTLS)
+            )
 finally:
     cleanup_files()
-
 END
 
 #uvicorn src.main:app --host=0.0.0.0 --port=8000

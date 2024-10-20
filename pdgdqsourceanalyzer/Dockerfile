@@ -12,6 +12,8 @@ COPY requirements.txt requirements.txt
 
 COPY . /app
 
+RUN mkdir -p /app/certs
+
 # Install required dependencies and utilities
 RUN tdnf install -y \
     curl \
