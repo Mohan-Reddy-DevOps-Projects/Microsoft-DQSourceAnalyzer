@@ -21,12 +21,12 @@ load_dotenv()
 # Initialize the FastAPI application
 app = FastAPI()
 
-# Middleware to enforce a request timeout of 20 seconds
+# Middleware to enforce a request timeout of 30 seconds
 @app.middleware("http")
 async def timeout_middleware(request: Request, call_next):
     try:
-        # Enforce a timeout of 100 seconds for each request
-        return await asyncio.wait_for(call_next(request), timeout=20)
+        # Enforce a timeout of 30 seconds for each request
+        return await asyncio.wait_for(call_next(request), timeout=30)
     except asyncio.TimeoutError:
         # Return 504 Gateway Timeout for requests exceeding the time limit
         return JSONResponse(
