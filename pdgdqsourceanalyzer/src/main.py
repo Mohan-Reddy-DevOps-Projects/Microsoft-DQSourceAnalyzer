@@ -69,11 +69,7 @@ async def test_hello_world():
 async def test_databricksUnityCatalog_connection(request: Request,connection_request: DatabricksUnityCatalogRequest):
     verify_client_certificate(request)
     try:
-        result = DatabricksUnityCatalogRequest.test_connection(
-            connection_request.hostname,
-            connection_request.http_path,
-            connection_request.access_token
-        )
+        result = DatabricksUnityCatalogRequest.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -86,14 +82,7 @@ async def test_databricksUnityCatalog_connection(request: Request,connection_req
 async def get_databricksUnityCatalog_schema(request: Request,schema_request: DatabricksUnityCatalogSchemaRequest):
     verify_client_certificate(request)
     try:
-        result = DatabricksUnityCatalogSchemaRequest.get_table_schema(
-            schema_request.hostname,
-            schema_request.http_path,
-            schema_request.access_token,
-            schema_request.catalog,
-            schema_request.unitycatalogschema,
-            schema_request.table
-        )
+        result = DatabricksUnityCatalogSchemaRequest.get_table_schema()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -106,14 +95,7 @@ async def get_databricksUnityCatalog_schema(request: Request,schema_request: Dat
 async def test_snowflake_connection(request: Request,connection_request: SnowflakeDWRequest):
     verify_client_certificate(request)
     try:
-        result = SnowflakeDWRequest.test_connection(
-            connection_request.account,
-            connection_request.user,
-            connection_request.password,
-            connection_request.warehouse,
-            connection_request.database,
-            connection_request.snowflakeschema
-        )
+        result = SnowflakeDWRequest.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -126,15 +108,7 @@ async def test_snowflake_connection(request: Request,connection_request: Snowfla
 async def get_snowflake_schema(request: Request,schema_request: SnowflakeDWSchemaRequest):
     verify_client_certificate(request)
     try:
-        result = SnowflakeDWSchemaRequest.get_table_schema(
-            schema_request.account,
-            schema_request.user,
-            schema_request.password,
-            schema_request.warehouse,
-            schema_request.database,
-            schema_request.snowflakeschema,
-            schema_request.table
-        )
+        result = SnowflakeDWSchemaRequest.get_table_schema()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -292,12 +266,7 @@ async def get_adlsgen2_getPartitionColumns(request: Request,schema_request: ADLS
 async def test_azure_sql_connection(request: Request,connection_request: AzureSQLRequest):
     verify_client_certificate(request)
     try:
-        result = AzureSQLRequest.test_connection(
-            connection_request.server,
-            connection_request.database,
-            connection_request.token,
-            connection_request.expires_on
-        )
+        result = AzureSQLRequest.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -310,10 +279,42 @@ async def test_azure_sql_connection(request: Request,connection_request: AzureSQ
 async def get_azure_sql_schema(request: Request,schema_request: AzureSQLSchemaRequest):
     verify_client_certificate(request)
     try:
-        result = AzureSQLSchemaRequest.get_table_schema(
-            schema_request.server,
-            schema_request.database,
-            schema_request.table,
+        result = AzureSQLSchemaRequest.get_table_schema()
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/fabric/testconnection")
+async def test_fabric_connection(request: Request,connection_request: FabricRequest):
+    verify_client_certificate(request)
+    try:
+        result = FabricRequest.test_connection(
+            connection_request.account_name,
+            connection_request.file_system_name,
+            connection_request.directory_path,
+            connection_request.token,
+            connection_request.expires_on
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/fabric/getdeltaschema")
+async def get_fabric_schema(request: Request, schema_request: FabricDeltaSchemaRequest):
+    verify_client_certificate(request)
+    try:
+        result = FabricDeltaSchemaRequest.get_table_schema(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path,
             schema_request.token,
             schema_request.expires_on
         )

@@ -2,7 +2,6 @@ from pydantic import BaseModel, Field, field_validator
 from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 from typing import List, Dict
-from adlfs import AzureBlobFileSystem
 from deltalake import DeltaTable
 import json,os
 import pyarrow.parquet as pq
@@ -20,26 +19,20 @@ class ADLSGen2Request(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided")
     directory_path: str = Field(..., description="Directory Path must be provided")
     token: str = Field(..., description="Token must be provided")
-    expires_on: str = Field(..., description="Token Expiration must be provided")
-    storage_type: str = Field('adlsgen2', description="Expected value 'fabric' or 'adlsgen2' (default: 'adlsgen2')")
+    expires_on: int = Field(..., description="Token Expiration must be provided")
     
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','storage_type')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int, storage_type: str = 'adlsgen2') -> Dict[str, str]:
+    def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
             # Initialize ADLS client
-            #credential = DefaultAzureCredential()
             credential = CustomTokenCredential(token=token,expires_on=expires_on)
-            if storage_type == 'fabric':
-                account_url = f"https://{account_name}.dfs.fabric.microsoft.com"
-            else:
-                account_url = f"https://{account_name}.dfs.core.windows.net"
-                
+            account_url = f"https://{account_name}.dfs.core.windows.net"
             service_client = DataLakeServiceClient(account_url=account_url, credential=credential)
 
             # Check if the directory exists
@@ -57,9 +50,9 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: str = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -68,14 +61,14 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
             #credential = DefaultAzureCredential()
-            credential = CustomTokenCredential(token=token,expires_on=expires_on)
-            fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-            # Use delta-lake-reader to access the table schema
+            #credential = CustomTokenCredential(token=token,expires_on=expires_on)
+            storage_options={"bearer_token": token, "use_fabric_endpoint": "false"}
+            #fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
             arrow_table = DeltaTable(
-                f"{file_system_name}/{directory_path}",
-                file_system=fs
-            ).schema
-            schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in arrow_table]
+                f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}",
+                storage_options=storage_options
+            ).schema().fields
+            schema_list = [{"column_name": field.name, "dtype": str(field.type.type)} for field in arrow_table]
             # Fetch schema
             return {"status": "success", "schema": schema_list}
         except Exception as e:
@@ -86,9 +79,9 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: str = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -112,9 +105,9 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: str = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -146,9 +139,9 @@ class ADLSGen2FormatDetector(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: str = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -178,8 +171,9 @@ class ADLSGen2FormatDetector(BaseModel):
                 pass
             # Try to detect Delta format
             try:
-                fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-                delta_table = DeltaTable(full_path, file_system=fs)
+                storage_options={"bearer_token": token, "use_fabric_endpoint": "false"}
+                #fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
+                delta_table = DeltaTable(f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}", storage_options=storage_options)
                 # If no error, it's a Delta format
                 return {"status": "success", "format": "delta" }
             except Exception:

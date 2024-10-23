@@ -29,7 +29,7 @@ RUN tdnf install -y \
 RUN --mount=type=secret,id=pip_index_url,target=/run/secrets/pip_index_url pip install --index-url $(cat /run/secrets/pip_index_url) -r requirements.txt
 #RUN pip3 install -r requirements.txt --index-url $PIP_INDEX_URL
 
-RUN ACCEPT_EULA=Y yum install -y msodbcsql17 && \
+RUN ACCEPT_EULA=Y yum install -y msodbcsql18 && \
     yum clean all
 
 COPY drivers/simbaspark-2.8.2.1013-1.x86_64.rpm /tmp/
@@ -43,6 +43,19 @@ RUN tdnf install --nogpgcheck -y /tmp/simbaspark-2.8.2.1013-1.x86_64.rpm && \
 RUN echo "[Simba Spark ODBC Driver]" > /etc/odbcinst.ini && \
     echo "Description=Simba Spark ODBC Driver" >> /etc/odbcinst.ini && \
     echo "Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so" >> /etc/odbcinst.ini && \
+    echo "UsageCount=1" >> /etc/odbcinst.ini
+
+# Copy and install Snowflake ODBC driver
+#https://developers.snowflake.com/odbc/
+COPY drivers/snowflake-odbc-3.4.1.x86_64.rpm /tmp/
+
+RUN tdnf install --nogpgcheck -y /tmp/snowflake-odbc-3.4.1.x86_64.rpm && \
+    rm -f /tmp/snowflake-odbc-3.4.1.x86_64.rpm
+
+# Configure Snowflake ODBC Driver
+RUN echo "[Snowflake]" >> /etc/odbcinst.ini && \
+    echo "Description=Snowflake ODBC Driver" >> /etc/odbcinst.ini && \
+    echo "Driver=/usr/lib64/snowflake/odbc/lib/libSnowflake.so" >> /etc/odbcinst.ini && \
     echo "UsageCount=1" >> /etc/odbcinst.ini
 
 

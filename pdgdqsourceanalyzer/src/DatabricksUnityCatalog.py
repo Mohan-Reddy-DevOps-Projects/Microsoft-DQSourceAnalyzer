@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 import pyodbc
 
-class DatabricksUnityCatalogRequest(BaseModel):
+class DatabricksBaseModel(BaseModel):
     hostname: str = Field(..., description="Databricks hostname must be provided")
     http_path: str = Field(..., description="Databricks HTTP path must be provided")
     access_token: str = Field(..., description="Access token must be provided")
@@ -12,37 +12,32 @@ class DatabricksUnityCatalogRequest(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(hostname, http_path, access_token):
+    def get_connection_string(self):
         port = 443  # Default port for Databricks ODBC
-
-        # Create a connection string
-        connection_string = (
+        return (
             f"Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so;"
-            f"HOST={hostname};"
+            f"HOST={self.hostname};"
             f"PORT={port};"
-            f"HTTPPath={http_path};"
-            f"AuthMech=3;"  # AuthMech=3 indicates token-based authentication
+            f"HTTPPath={self.http_path};"
+            f"AuthMech=3;"  # Token-based authentication
             f"UID=token;"
-            f"PWD={access_token};"
-            f"SparkServerType=3;"  # Use 3 for Databricks clusters
+            f"PWD={self.access_token};"
+            f"SparkServerType=3;"  # Databricks clusters
             f"SSL=1;"  # Enable SSL
-            f"ThriftTransport=2;"  # Use HTTP transport mode
+            f"ThriftTransport=2;"  # HTTP transport mode
             f"SparkSQLCatalogImplementation=hive;"
         )
 
+class DatabricksUnityCatalogRequest(DatabricksBaseModel):
+    def test_connection(self):
         try:
-            # Establish a connection
-            connection = pyodbc.connect(connection_string, autocommit=True)
-
-            # Create a cursor and execute a test query
+            connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
             cursor.execute("SHOW CATALOGS")
 
-            # Fetch results
             catalogs = cursor.fetchall()
             catalog_names = [catalog[0] for catalog in catalogs]
 
-            # Close the cursor and connection
             cursor.close()
             connection.close()
 
@@ -51,52 +46,27 @@ class DatabricksUnityCatalogRequest(BaseModel):
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-class DatabricksUnityCatalogSchemaRequest(BaseModel):
-    hostname: str = Field(..., description="Databricks hostname must be provided")
-    http_path: str = Field(..., description="Databricks HTTP path must be provided")
-    access_token: str = Field(..., description="Access token must be provided")
+class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     catalog: str = Field(..., description="Databricks catalog must be provided")
-    unitycatalogschema: str = Field(..., description="Databricks unitycatalogschema must be provided")
-    table: str = Field(..., description="Table Name must be provided")
+    unitycatalogschema: str = Field(..., description="Databricks schema must be provided")
+    table: str = Field(..., description="Table name must be provided")
 
-    @field_validator('hostname', 'http_path', 'access_token','catalog','unitycatalogschema','table')
+    @field_validator('catalog', 'unitycatalogschema', 'table')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
         return value
 
-    def get_table_schema(hostname, http_path, access_token, catalog, unitycatalogschema, table):
-        port = 443  # Default port for Databricks ODBC
-
-        # Create a connection string
-        connection_string = (
-            f"Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so;"
-            f"HOST={hostname};"
-            f"PORT={port};"
-            f"HTTPPath={http_path};"
-            f"AuthMech=3;"
-            f"UID=token;"
-            f"PWD={access_token};"
-            f"SparkServerType=3;"
-            f"SSL=1;"
-            f"ThriftTransport=2;"
-            f"SparkSQLCatalogImplementation=hive;"
-        )
-
+    def get_table_schema(self):
         try:
-            # Establish a connection
-            connection = pyodbc.connect(connection_string, autocommit=True)
-
-            # Create a cursor and execute the query to get the table schema
+            connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
-            query = f"DESCRIBE {catalog}.{unitycatalogschema}.{table}"
+            query = f"DESCRIBE {self.catalog}.{self.unitycatalogschema}.{self.table}"
             cursor.execute(query)
 
-            # Fetch the schema (column name and data type)
             columns = cursor.fetchall()
             schema_info = [{"column_name": row[0], "data_type": row[1]} for row in columns]
 
-            # Close the cursor and connection
             cursor.close()
             connection.close()
 
