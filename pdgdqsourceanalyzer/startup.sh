@@ -18,6 +18,7 @@ from azure.keyvault.secrets import SecretClient
 from cryptography.hazmat.primitives.serialization import pkcs12, Encoding, PrivateFormat, NoEncryption
 from tempfile import NamedTemporaryFile
 from pathlib import Path
+from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
 
 # Determine the environment
 environment = os.getenv('ENVIRONMENT', 'DEV')
@@ -94,6 +95,12 @@ def cleanup_files():
         Path(client_ca_cert_file_path).unlink(missing_ok=True)
     except Exception as e:
         print(f"Error cleaning up files: {e}")
+
+old_on_url = HttpToolsProtocol.on_url
+def new_on_url(self,url):
+    old_on_url(self, url)
+    self.scope['transport'] = self.transport
+HttpToolsProtocol.on_url = new_on_url
 
 # Run Uvicorn with the SSL certificate, key, and client CA certificate for mutual TLS (mTLS)
 try:

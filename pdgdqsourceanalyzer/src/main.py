@@ -21,6 +21,9 @@ load_dotenv()
 # Initialize the FastAPI application
 app = FastAPI()
 
+# Define a list of allowed common names (CNs) for validation
+ALLOWED_CN = ["cus.dataquality-service.purview.azure.com"]
+
 # Middleware to enforce a request timeout of 30 seconds
 @app.middleware("http")
 async def timeout_middleware(request: Request, call_next):
@@ -41,10 +44,15 @@ async def timeout_middleware(request: Request, call_next):
         )
 
 def verify_client_certificate(request: Request):
-    client_cert = request.scope.get('client_cert')
+    client_cert_subject = request.scope["transport"].get_extra_info("ssl_object").getpeercert()["subject"]
     # Raise an HTTP 403 Forbidden error if no valid client certificate is presented
-    if not client_cert:
-        raise HTTPException(status_code=403, detail="Client certificate is required.")
+    for item in client_cert_subject:
+        if item[0][0] == 'commonName':
+            client_cert_subjec_name = item[0][1]
+            break
+    if client_cert_subjec_name not in ALLOWED_CN:
+        print("Invalid client cert subject -", client_cert_subject)
+        raise HTTPException(status_code=403, detail="Valid Client certificate is required.")
 
 @app.get("/test")
 async def test_hello_world():
