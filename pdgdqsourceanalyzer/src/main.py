@@ -70,7 +70,7 @@ async def test_hello_world():
 async def test_databricksUnityCatalog_connection(connection_request: DatabricksUnityCatalogRequest):
     #verify_client_certificate(request)
     try:
-        result = DatabricksUnityCatalogRequest.test_connection()
+        result = connection_request.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -83,7 +83,7 @@ async def test_databricksUnityCatalog_connection(connection_request: DatabricksU
 async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatalogSchemaRequest):
     #verify_client_certificate(request)
     try:
-        result = DatabricksUnityCatalogSchemaRequest.get_table_schema()
+        result = schema_request.get_table_schema()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -96,7 +96,7 @@ async def get_databricksUnityCatalog_schema(schema_request: DatabricksUnityCatal
 async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
     #verify_client_certificate(request)
     try:
-        result = SnowflakeDWRequest.test_connection()
+        result = connection_request.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -109,7 +109,7 @@ async def test_snowflake_connection(connection_request: SnowflakeDWRequest):
 async def get_snowflake_schema(schema_request: SnowflakeDWSchemaRequest):
     #verify_client_certificate(request)
     try:
-        result = SnowflakeDWSchemaRequest.get_table_schema()
+        result = schema_request.get_table_schema()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -267,7 +267,7 @@ async def get_adlsgen2_getPartitionColumns(schema_request: ADLSGen2FormatDetecto
 async def test_azure_sql_connection(connection_request: AzureSQLRequest):
     #verify_client_certificate(request)
     try:
-        result = AzureSQLRequest.test_connection()
+        result = connection_request.test_connection()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
@@ -280,7 +280,7 @@ async def test_azure_sql_connection(connection_request: AzureSQLRequest):
 async def get_azure_sql_schema(schema_request: AzureSQLSchemaRequest):
     #verify_client_certificate(request)
     try:
-        result = AzureSQLSchemaRequest.get_table_schema()
+        result = schema_request.get_table_schema()
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
