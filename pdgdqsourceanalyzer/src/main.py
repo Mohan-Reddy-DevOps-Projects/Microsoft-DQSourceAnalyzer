@@ -155,8 +155,7 @@ async def test_adlsgen2_connection(connection_request: ADLSGen2Request):
             connection_request.file_system_name,
             connection_request.directory_path,
             connection_request.token,
-            connection_request.expires_on,
-            connection_request.storage_type
+            connection_request.expires_on
         )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
