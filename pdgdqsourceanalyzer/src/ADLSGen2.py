@@ -91,13 +91,21 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
         try:
             #credential = DefaultAzureCredential()
             credential = CustomTokenCredential(token=token,expires_on=expires_on)
-            duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
-            duckdb.sql("INSTALL iceberg; LOAD iceberg")
-            schema_result = duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)").fetchall()
-            schema_list = [{"column_name": schema[0], "dtype": schema[1]} for schema in schema_result]
-            duckdb.unregister_filesystem(name='abfs')
-            # Fetch schema
-            return {"status": "success", "schema": schema_list}
+            fs = filesystem("abfs", account_name=account_name, credential=credential)
+            conn = duckdb.connect()
+            try:
+                conn.register_filesystem(fs)
+                conn.sql("INSTALL iceberg; LOAD iceberg;")
+                schema_result = conn.sql(
+                    f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}', allow_moved_paths=true) LIMIT 1)"
+                ).fetchall()
+                schema_list = [{"column_name": schema[0], "dtype": "TIMESTAMP" if schema[1]=="TIMESTAMP WITH TIME ZONE" else schema[1]} for schema in schema_result]
+                conn.unregister_filesystem(name="abfs")
+                return {"status": "success", "schema": schema_list}
+            except Exception as e:
+                return {"status": "error", "message": str(e)}
+            finally:
+                conn.close()
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
@@ -163,11 +171,20 @@ class ADLSGen2FormatDetector(BaseModel):
             full_path = f"{file_system_name}/{directory_path}"
             # Try to detect Iceberg format
             try:
-                duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
-                duckdb.sql("INSTALL iceberg; LOAD iceberg")
-                duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)")
-                duckdb.unregister_filesystem(name='abfs')
-                return {"status": "success", "format": "iceberg" }
+                fs = filesystem("abfs", account_name=account_name, credential=credential)
+                conn = duckdb.connect()
+                try:
+                    conn.register_filesystem(fs)
+                    conn.sql("INSTALL iceberg; LOAD iceberg;")
+                    result = conn.sql(
+                        f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}', allow_moved_paths=true) LIMIT 1)"
+                    ).fetchall()
+                    conn.unregister_filesystem(name="abfs")
+                    return {"status": "success", "format": "iceberg" }
+                except Exception as e:
+                    pass
+                finally:
+                    conn.close()
             except Exception:
                 # Not a Iceberg format, proceed to check for Delta Format
                 pass
