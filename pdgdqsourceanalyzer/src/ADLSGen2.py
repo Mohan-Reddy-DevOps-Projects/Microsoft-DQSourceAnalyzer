@@ -95,6 +95,7 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
             duckdb.sql("INSTALL iceberg; LOAD iceberg")
             schema_result = duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)").fetchall()
             schema_list = [{"column_name": schema[0], "dtype": schema[1]} for schema in schema_result]
+            duckdb.unregister_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
             # Fetch schema
             return {"status": "success", "schema": schema_list}
         except Exception as e:
@@ -165,6 +166,7 @@ class ADLSGen2FormatDetector(BaseModel):
                 duckdb.register_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
                 duckdb.sql("INSTALL iceberg; LOAD iceberg")
                 duckdb.sql(f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}',allow_moved_paths=true) LIMIT 1)")
+                duckdb.unregister_filesystem(filesystem('abfs', account_name=account_name,credential=credential))
                 return {"status": "success", "format": "iceberg" }
             except Exception:
                 # Not a Iceberg format, proceed to check for Delta Format
