@@ -110,7 +110,7 @@ try:
             host="0.0.0.0", 
             port=443, 
             ssl_certfile=cert_file_path, 
-            ssl_keyfile=key_file_path),
+            ssl_keyfile=key_file_path,
             ssl_ca_certs=client_ca_cert_file_path,  # Use client certificate's CA chain for client validation
             ssl_cert_reqs=ssl.CERT_REQUIRED  # Enforce client certificate authentication (mTLS)
             )
