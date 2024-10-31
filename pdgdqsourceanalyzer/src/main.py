@@ -23,7 +23,7 @@ load_dotenv()
 app = FastAPI()
 
 # Define a list of allowed common names (CNs) for validation
-ALLOWED_CN = ["cus.dataquality-service.purview.azure.com"]
+ALLOWED_CN = ["cus.dataquality-service.purview.azure.com","wus2.dataquality-service.purview.azure-test.com"]
 
 # Middleware to enforce a request timeout of 30 seconds
 @app.middleware("http")
