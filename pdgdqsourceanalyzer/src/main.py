@@ -326,6 +326,81 @@ async def get_fabric_schema(request: Request, schema_request: FabricDeltaSchemaR
     except Exception as e:
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
+@app.post("/fabric/getparquetschema")
+async def get_fabric_schema(request: Request, schema_request: FabricParquetSchemaRequest):
+    verify_client_certificate(request)
+    try:
+        result = FabricParquetSchemaRequest.get_table_schema(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/fabric/geticebergschema")
+async def get_fabric_schema(request: Request, schema_request: FabricIcebergSchemaRequest):
+    verify_client_certificate(request)
+    try:
+        result = FabricIcebergSchemaRequest.get_table_schema(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/fabric/getformat")
+async def get_fabric_format(request: Request, schema_request: FabricFormatDetector):
+    verify_client_certificate(request)
+    try:
+        result = FabricFormatDetector.detect_format(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/fabric/getparquetpartitioncolumns")
+async def get_fabric_getPartitionColumns(request: Request, schema_request: FabricFormatDetector):
+    verify_client_certificate(request)
+    try:
+        result = FabricFormatDetector.detect_partitions(
+            schema_request.account_name,
+            schema_request.file_system_name,
+            schema_request.directory_path,
+            schema_request.token,
+            schema_request.expires_on
+        )
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 if __name__ == '__main__':
     app.run(debug=True)
