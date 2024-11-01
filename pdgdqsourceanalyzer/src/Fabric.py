@@ -196,9 +196,6 @@ class FabricFormatDetector(BaseModel):
             # Try to detect Parquet format
             try:
                 # Attempt to read the directory as a Parquet dataset
-                fs= AzureBlobFileSystem(account_name="onelake", anon=False, credential=credential)
-                fs.account_host = "onelake.blob.fabric.microsoft.com"
-                fs.do_connect()
                 dataset = ds.dataset(full_path, filesystem=fs, format="parquet" , partitioning="hive")
                 parquet_schema = dataset.schema
                 schema_list = [{"column_name": field.name, "dtype": str(field.type)} for field in parquet_schema]
