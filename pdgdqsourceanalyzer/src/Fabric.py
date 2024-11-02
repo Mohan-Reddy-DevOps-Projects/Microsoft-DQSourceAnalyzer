@@ -90,7 +90,7 @@ class FabricIcebergSchemaRequest(BaseModel):
                 conn.register_filesystem(fs)
                 conn.sql("INSTALL iceberg; LOAD iceberg;")
                 schema_result = conn.sql(
-                    f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}', allow_moved_paths=true) LIMIT 1)"
+                    f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.fabric.microsoft.com/{directory_path}', allow_moved_paths=true) LIMIT 1)"
                 ).fetchall()
                 schema_list = [{"column_name": schema[0], "dtype": "TIMESTAMP" if schema[1]=="TIMESTAMP WITH TIME ZONE" else schema[1]} for schema in schema_result]
                 conn.unregister_filesystem(name="abfs")
@@ -172,7 +172,7 @@ class FabricFormatDetector(BaseModel):
                     conn.register_filesystem(fs)
                     conn.sql("INSTALL iceberg; LOAD iceberg;")
                     result = conn.sql(
-                        f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}', allow_moved_paths=true) LIMIT 1)"
+                        f"DESCRIBE (SELECT * FROM iceberg_scan('abfs://{file_system_name}@{account_name}.dfs.fabric.microsoft.com/{directory_path}', allow_moved_paths=true) LIMIT 1)"
                     ).fetchall()
                     conn.unregister_filesystem(name="abfs")
                     return {"status": "success", "format": "iceberg" }
@@ -187,7 +187,7 @@ class FabricFormatDetector(BaseModel):
             try:
                 storage_options={"bearer_token": token, "use_fabric_endpoint": "true"}
                 #fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-                delta_table = DeltaTable(f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}", storage_options=storage_options)
+                delta_table = DeltaTable(f"abfss://{file_system_name}@{account_name}dfs.fabric.microsoft.com/{directory_path}", storage_options=storage_options)
                 # If no error, it's a Delta format
                 return {"status": "success", "format": "delta" }
             except Exception:
