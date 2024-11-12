@@ -69,7 +69,7 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
                 f"abfss://{file_system_name}@{account_name}.dfs.core.windows.net/{directory_path}",
                 storage_options=storage_options
             ).schema().fields
-            schema_list = [{"name": field.name, "type": str(field.type.type)} for field in arrow_table]
+            schema_list = [{"column_name": field.name, "dtype": str(field.type.type)} for field in arrow_table]
             # Fetch schema
             return {"status": "success", "schema": schema_list}
         except Exception as e:
