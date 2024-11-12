@@ -13,6 +13,7 @@ import pyarrow.dataset as ds
 import duckdb
 from fsspec import filesystem
 from src.CustomTokenCredentialHelper import CustomTokenCredential
+from src.ConvertToDQDataType import DQDataType
 
 class ADLSGen2Request(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
@@ -101,7 +102,8 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
                 ).fetchall()
                 schema_list = [{"column_name": schema[0], "dtype": "TIMESTAMP" if schema[1]=="TIMESTAMP WITH TIME ZONE" else schema[1]} for schema in schema_result]
                 conn.unregister_filesystem(name="abfs")
-                return {"status": "success", "schema": schema_list}
+                schemaResponse = DQDataType().fnconvertToDQDataType(schema_list=schema_list,sourceType="iceberg")
+                return schemaResponse
             except Exception as e:
                 return {"status": "error", "message": str(e)}
             finally:
