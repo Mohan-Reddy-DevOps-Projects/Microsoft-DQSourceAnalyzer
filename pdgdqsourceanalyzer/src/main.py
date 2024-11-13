@@ -15,7 +15,7 @@ from src.Snowflakedw import SnowflakeDWRequest, SnowflakeDWSchemaRequest
 from src.GoogleBigQuery import GoogleBigQueryRequest, GoogleBigQuerySchemaRequest
 from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest,ADLSGen2IcebergSchemaRequest,ADLSGen2FormatDetector
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
-from src.Fabric import FabricRequest, FabricDeltaSchemaRequest
+from src.Fabric import FabricRequest, FabricDeltaSchemaRequest, FabricIcebergSchemaRequest, FabricParquetSchemaRequest, FabricFormatDetector
 
 # Load the environment variables from the .env file into the application
 load_dotenv() 
