@@ -115,7 +115,13 @@ execNodeCmd() {
           "stdin": true,
           "stdinOnce": true,
           "tty": $tty,
-          "command": [ $nsenterCmd ]
+          "command": [ $nsenterCmd ],
+          "env": [
+                  {
+                    "name": "DQS_ENV_REGION",
+                    "value": "$tlsCertName"
+                  }
+                ]
         }
       ]
     }
@@ -260,8 +266,7 @@ podIdentityResourceId=$podMSIResourceId,\
 podIdentityClientId=$podMSIClientId,\
 tlsDNS=$tlsDNS,\
 dqs.imagePath=$imagePath,\
-dqs.allowedServiceTags=$allowedServiceTags,\
-DQS_ENV_REGION=$tlsCertName"
+dqs.allowedServiceTags=$allowedServiceTags"
 
 echo "Helm --set parameters: $helmParams"
 
