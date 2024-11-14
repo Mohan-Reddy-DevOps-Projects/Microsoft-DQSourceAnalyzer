@@ -23,6 +23,9 @@ from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
 # Determine the environment
 environment = os.getenv('ENVIRONMENT', 'DEV')
 
+parameters = os.getenv('parameters', 'DEV')
+
+print(f"parameters: {parameters}")
 client_ca_cert_file_path = "/app/certs"
 os.makedirs(client_ca_cert_file_path, exist_ok=True)
 
