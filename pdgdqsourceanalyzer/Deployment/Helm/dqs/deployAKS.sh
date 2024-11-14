@@ -261,7 +261,7 @@ podIdentityClientId=$podMSIClientId,\
 tlsDNS=$tlsDNS,\
 dqs.imagePath=$imagePath,\
 dqs.allowedServiceTags=$allowedServiceTags,\
-dqs.env.REGION=$tlsCertName"
+DQS_ENV_REGION=$tlsCertName"
 
 echo "Helm --set parameters: $helmParams"
 
