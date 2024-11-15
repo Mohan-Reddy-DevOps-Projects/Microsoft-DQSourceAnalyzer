@@ -58,7 +58,8 @@ def verify_client_certificate(request: Request):
 @app.get("/test")
 async def test_hello_world():
     try:
-        result = {"status": "success", "details": "Hello World"}
+        DQS_ENV_REGION = os.getenv('DQS_ENV_REGION','DEFAULT_DEV')
+        result = {"status": "success", "details": f"Hello World ENV {DQS_ENV_REGION}"}
         return result
     except HTTPException as e:
         raise e
