@@ -189,10 +189,8 @@ kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/v1.8.8
 
 deployment_name=$(kubectl get deployments -l app=purview-dqsa -o jsonpath='{.items[0].metadata.name}')
 
-# Check if the deployment name was found
-if [[ -n "$deployment_name" ]]; then
-  echo "Setting environment variable DQS_ENV_REGION for deployment $deployment_name"
-  kubectl set env deployment/$deployment_name DQS_ENV_REGION="$tlsCertName"
+echo "Setting environment variable DQS_ENV_REGION for deployment"
+kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$tlsCertName"
 
 # echo "Install kured for automatic reboots"
 kubectl apply -f ./dqs/kured/kured-1.9.2-dockerhub.yaml
