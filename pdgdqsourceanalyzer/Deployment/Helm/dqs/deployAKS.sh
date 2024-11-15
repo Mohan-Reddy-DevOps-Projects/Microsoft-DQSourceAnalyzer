@@ -115,13 +115,7 @@ execNodeCmd() {
           "stdin": true,
           "stdinOnce": true,
           "tty": $tty,
-          "command": [ $nsenterCmd ],
-          "env": [
-                  {
-                    "name": "DQS_ENV_REGION",
-                    "value": "$tlsCertName"
-                  }
-                ]
+          "command": [ $nsenterCmd ]
         }
       ]
     }
@@ -192,6 +186,13 @@ echo "Install support for pod managed identity"
 # Use explicit version rather than latest from master to avoid accidental deployment of untested versions
 kubectl apply -f enable-pod-identity-with-kubenet.yaml
 kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/v1.8.8/deploy/infra/mic-exception.yaml
+
+deployment_name=$(kubectl get deployments -l app=purview-dqsa -o jsonpath='{.items[0].metadata.name}')
+
+# Check if the deployment name was found
+if [[ -n "$deployment_name" ]]; then
+  echo "Setting environment variable DQS_ENV_REGION for deployment $deployment_name"
+  kubectl set env deployment/$deployment_name DQS_ENV_REGION="$tlsCertName"
 
 # echo "Install kured for automatic reboots"
 kubectl apply -f ./dqs/kured/kured-1.9.2-dockerhub.yaml
