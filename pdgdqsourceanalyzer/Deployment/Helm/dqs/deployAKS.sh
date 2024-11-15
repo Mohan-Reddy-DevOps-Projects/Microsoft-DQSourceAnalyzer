@@ -187,8 +187,6 @@ echo "Install support for pod managed identity"
 kubectl apply -f enable-pod-identity-with-kubenet.yaml
 kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/v1.8.8/deploy/infra/mic-exception.yaml
 
-deployment_name=$(kubectl get deployments -l app=purview-dqsa -o jsonpath='{.items[0].metadata.name}')
-
 echo "Setting environment variable DQS_ENV_REGION for deployment"
 kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$tlsCertName"
 
