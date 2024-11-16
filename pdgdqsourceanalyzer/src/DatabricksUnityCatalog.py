@@ -33,15 +33,15 @@ class DatabricksUnityCatalogRequest(DatabricksBaseModel):
         try:
             connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
-            cursor.execute("SHOW CATALOGS")
 
-            catalogs = cursor.fetchall()
-            catalog_names = [catalog[0] for catalog in catalogs]
+            cursor.execute("SELECT CURRENT_CATALOG(), CURRENT_METASTORE()")
+            result = cursor.fetchone()
+            current_catalog, current_metastore = result[0], result[1]
+            current_metastore = current_metastore.split(":")[-1]
 
             cursor.close()
             connection.close()
-
-            return {"status": "success", "catalogs": catalog_names}
+            return {"status": "success","current_catalog": current_catalog,"current_metastore": current_metastore}
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
