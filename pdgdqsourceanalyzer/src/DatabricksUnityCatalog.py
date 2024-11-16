@@ -5,8 +5,10 @@ class DatabricksBaseModel(BaseModel):
     hostname: str = Field(..., description="Databricks hostname must be provided")
     http_path: str = Field(..., description="Databricks HTTP path must be provided")
     access_token: str = Field(..., description="Access token must be provided")
+    catalog: str = Field(..., description="Databricks catalog must be provided")
+    unitycatalogschema: str = Field(..., description="Databricks schema must be provided")    
 
-    @field_validator('hostname', 'http_path', 'access_token')
+    @field_validator('hostname', 'http_path', 'access_token', 'catalog', 'unitycatalogschema')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -34,7 +36,8 @@ class DatabricksUnityCatalogRequest(DatabricksBaseModel):
             connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
 
-            cursor.execute("SELECT CURRENT_CATALOG(), CURRENT_METASTORE()")
+            cursor.execute(f"USE {self.catalog}.{self.unitycatalogschema};")
+            cursor.execute("SELECT CURRENT_CATALOG(), CURRENT_METASTORE();")
             result = cursor.fetchone()
             current_catalog, current_metastore = result[0], result[1]
             current_metastore = current_metastore.split(":")[-1]
@@ -47,11 +50,9 @@ class DatabricksUnityCatalogRequest(DatabricksBaseModel):
             return {"status": "error", "message": str(e)}
 
 class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
-    catalog: str = Field(..., description="Databricks catalog must be provided")
-    unitycatalogschema: str = Field(..., description="Databricks schema must be provided")
     table: str = Field(..., description="Table name must be provided")
 
-    @field_validator('catalog', 'unitycatalogschema', 'table')
+    @field_validator('table')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
