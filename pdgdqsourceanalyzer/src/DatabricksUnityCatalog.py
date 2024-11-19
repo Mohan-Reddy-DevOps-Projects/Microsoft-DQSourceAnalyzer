@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 import pyodbc
+from src.ConvertToDQDataType import DQDataType
 
 class DatabricksBaseModel(BaseModel):
     hostname: str = Field(..., description="Databricks hostname must be provided")
@@ -66,12 +67,14 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
             cursor.execute(query)
 
             columns = cursor.fetchall()
-            schema_info = [{"column_name": row[0], "data_type": row[1]} for row in columns]
+            schema_info = [{"column_name": row[0], "dtype": row[1]} for row in columns]
 
             cursor.close()
             connection.close()
+            
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="delta")
 
-            return {"status": "success", "schema": schema_info}
+            return schema
 
         except Exception as e:
             return {"status": "error", "message": str(e)}

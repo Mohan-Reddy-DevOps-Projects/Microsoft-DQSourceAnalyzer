@@ -4,6 +4,7 @@ from azure.identity import DefaultAzureCredential
 from typing import List, Dict
 from src.CustomTokenCredentialHelper import CustomTokenCredential
 import struct
+from src.ConvertToDQDataType import DQDataType
 
 class AzureSQLBaseModel(BaseModel):
     server: str = Field(..., description="Server must be provided")
@@ -71,7 +72,8 @@ class AzureSQLSchemaRequest(AzureSQLBaseModel):
 
         if result["status"] == "success":
             columns = result["result"]
-            schema_info = [{"column_name": row[0], "data_type": row[1]} for row in columns]
-            return {"status": "success", "schema": schema_info}
+            schema_info = [{"column_name": row[0], "dtype": row[1]} for row in columns]
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="azuresql")
+            return schema
         else:
             return result

@@ -1,4 +1,5 @@
 from typing import Dict, List, Any
+import re
 
 class DQDataType:
 
@@ -6,35 +7,77 @@ class DQDataType:
 
         self.DATA_TYPE_MAPPINGS = {
             "iceberg": {
-                "String": ["VARCHAR","UUID","TIME","JSON","INTERVAL","BIT"],
+                "String": ["VARCHAR","UUID","TIME","JSON","INTERVAL","BIT","BLOB"],
                 "Boolean": ["BOOLEAN"],
                 "Number_integral": ["SMALLINT", "INTEGER","HUGEINT", "BIGINT", "TINYINT", "UBIGINT", "UHUGEINT", "UINTEGER", "USMALLINT", "UTINYINT"],
                 "Number_non_integral": ["FLOAT", "DOUBLE"],
-                "Decimal": ["DECIMAL","DECIMAL(18,3)", "NUMERIC"],
+                "Decimal": ["DECIMAL", "NUMERIC"],
                 "Date": ["DATE"],
                 "DateTime": ["TIMESTAMP", "TIMESTAMPTZ"]
             },
             "azuresql": {
-                # Define Azure SQL mappings
-                "String": ["NVARCHAR", "VARCHAR", "CHAR", "TEXT"],
+                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME"],
                 "Boolean": ["BIT"],
                 "Number_integral": ["SMALLINT", "INT", "BIGINT", "TINYINT"],
-                "Number_non_integral": ["FLOAT", "REAL", "NUMERIC"],
-                "Decimal": ["DECIMAL"],
+                "Number_non_integral": ["FLOAT", "REAL"],
+                "Decimal": ["DECIMAL","NUMERIC"],
                 "Date": ["DATE"],
-                "DateTime": ["DATETIME", "DATETIME2", "TIMESTAMP"]
+                "DateTime": ["DATETIME", "DATETIME2", "SMALLDATETIME", "DATETIMEOFFSET", "TIMESTAMP"]
             },
             "snowflake": {
-                # Define Snowflake mappings
-                "String": ["STRING", "VARCHAR", "TEXT"],
+                "String": ["STRING", "VARCHAR", "TEXT", "CHAR", "CHARACTER", "NCHAR", "BINARY", "VARBINARY", "TIME", "MAP", "ARRAY"],
                 "Boolean": ["BOOLEAN"],
-                "Number_integral": ["INT", "BIGINT", "SMALLINT"],
-                "Number_non_integral": ["FLOAT", "DOUBLE", "NUMBER"],
+                "Number_integral": ["INT" , "INTEGER" , "BIGINT" , "SMALLINT" , "TINYINT" , "BYTEINT"],
+                "Number_non_integral": ["FLOAT" , "FLOAT4" , "FLOAT8", "DOUBLE", "REAL"],
                 "Decimal": ["NUMBER"],
                 "Date": ["DATE"],
-                "DateTime": ["TIMESTAMP_NTZ", "TIMESTAMP_TZ", "TIMESTAMP_LTZ"]
+                "DateTime": ["DATETIME","TIMESTAMP_NTZ", "TIMESTAMP_TZ", "TIMESTAMP_LTZ"]
+            },
+            "parquet": {
+                "String": ["STRING", "LARGE_STRING", "UTF8","INTERVAL","BINARY","ARRAY","MAP","LIST"],
+                "Boolean": ["BOOL","BOOLEAN"],
+                "Number_integral": ["INT","LONG","INT8", "INT16", "INT32", "INT64", "UINT8", "UINT16", "UINT32", "UINT64"],
+                "Number_non_integral": ["FLOAT16", "FLOAT32", "FLOAT64", "HALFFLOAT", "FLOAT","DOUBLE"],
+                "Decimal": ["DECIMAL","DECIMAL128", "DECIMAL256"],
+                "Date": ["DATE","DATE32", "DATE64"],
+                "DateTime": ["TIMESTAMP","TIMESTAMP[NS]", "TIMESTAMP[US]", "TIMESTAMP[MS]", "TIMESTAMP[S]","TIMESTAMP[NS, TZ=UTC]", "TIMESTAMP[US, TZ=UTC]", "TIMESTAMP[MS, TZ=UTC]","TIMESTAMP[S, TZ=UTC]"]
+                },
+            "delta": {
+                "String": ["STRING", "VARCHAR", "CHAR","INTERVAL", "BINARY","ARRAY","MAP"],
+                "Boolean": ["BOOLEAN"],
+                "Number_integral": ["BYTE", "SHORT", "INT", "BIGINT", "LONG","INTEGER","TINYINT", "SMALLINT"],
+                "Number_non_integral": ["FLOAT", "DOUBLE"],
+                "Decimal": ["DECIMAL"],
+                "Date": ["DATE"],
+                "DateTime": ["TIMESTAMP","TIMESTAMP_NTZ"]
+                },
+            "bigquery": {
+                "String": ["STRING", "ARRAY", "BYTES", "GEOGRAPHY", "INTERVAL", "JSON", "STRUCT", "TIME"],
+                "Boolean": ["BOOL", "BOOLEAN"],
+                "Number_integral": ["INT64", "INTEGER", "INT", "SMALLINT", "BIGINT", "TINYINT", "BYTEINT"],
+                "Number_non_integral": ["FLOAT64", "FLOAT"],
+                "Decimal": ["NUMERIC", "BIGNUMERIC"],
+                "Date": ["DATE"],
+                "DateTime": ["DATETIME","TIMESTAMP"]
+                },
+            "synapsededicateddw": {
+                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME"],
+                "Boolean": ["BIT"],
+                "Number_integral": ["SMALLINT", "INT", "BIGINT", "TINYINT"],
+                "Number_non_integral": ["FLOAT", "REAL"],
+                "Decimal": ["DECIMAL", "NUMERIC"],
+                "Date": ["DATE"],
+                "DateTime": ["DATETIME", "DATETIME2", "SMALLDATETIME", "DATETIMEOFFSET", "TIMESTAMP"]
+            },
+            "synapseserverless": {
+                "String": ["NVARCHAR", "VARBINARY", "VARCHAR", "CHAR", "STRING", "TIME"],
+                "Boolean": ["BIT"],
+                "Number_integral": ["TINYINT", "SMALLINT", "INT", "BIGINT"],
+                "Number_non_integral": ["FLOAT", "REAL"],
+                "Decimal": ["DECIMAL", "NUMERIC"],
+                "Date": ["DATE"],
+                "DateTime": ["DATETIME", "DATETIME2", "SMALLDATETIME", "DATETIMEOFFSET", "TIMESTAMP"]
             }
-            # Add other sources like Databricks Unity Catalog here as needed
         }
 
     # Convert schema based on sourceType
@@ -46,44 +89,42 @@ class DQDataType:
             raise ValueError(f"Unsupported source type: {sourceType}")
 
         for column in schema_list:
-            column_name = column["column_name"]
-            dtype = column["dtype"]
+            column_name = column.get("column_name")
+            dtype = column.get("dtype", "").upper()
+
+            if not column_name or not dtype:
+                raise ValueError(f"Invalid schema column definition: {column}")
+
+            # Extract the base type using regex
+            dtype_match = re.match(r"^([A-Z]+)", dtype)
+            if dtype_match:
+                dtype = dtype_match.group(1)
+            else:
+                raise ValueError(f"Invalid data type '{dtype}' for column '{column_name}'.")
+
             dq_column = {"name": column_name}
 
             # Map types based on source-specific mappings
-            if dtype in type_mapping["String"]:
-                dq_column["type"] = "String"
-            
-            elif dtype in type_mapping["Boolean"]:
-                dq_column["type"] = "Boolean"
-            
-            elif dtype in type_mapping["Number_integral"]:
-                dq_column["type"] = "Number"
-                dq_column["typeProperties"] = {"integral": True}
-            
-            elif dtype in type_mapping["Number_non_integral"]:
-                dq_column["type"] = "Number"
-                dq_column["typeProperties"] = {"integral": False}
-            
-            elif dtype in type_mapping["Decimal"]:
-                dq_column["type"] = "Number"
-                dq_column["typeProperties"] = {
-                    "integral": False,
-                    "precision": 38,  # Default precision value
-                    "scale": 38       # Default scale value
-                }
-            
-            elif dtype in type_mapping["Date"]:
-                dq_column["type"] = "Date"
-                dq_column["typeProperties"] = {
-                    "formats": ["YYYY-MM-DD"]
-                }
-            
-            elif dtype in type_mapping["DateTime"]:
-                dq_column["type"] = "DateTime"
-            
+            for key, value in type_mapping.items():
+                if dtype in value:
+                    dq_column["type"] = key
+                    if key == "Number_integral":
+                        dq_column["type"] = "Number"
+                        dq_column["typeProperties"] = {"integral": True}
+                    elif key == "Number_non_integral":
+                        dq_column["type"] = "Number"
+                        dq_column["typeProperties"] = {"integral": False}
+                    elif key == "Decimal":
+                        dq_column["type"] = "Number"
+                        dq_column["typeProperties"] = {
+                            "integral": False,
+                            "precision": 38,
+                            "scale": 38
+                        }
+                    elif key == "Date":
+                        dq_column["typeProperties"] = {"formats": ["YYYY-MM-DD"]}
+                    break
             else:
-                # Raise exception for unsupported types
                 raise ValueError(f"Unsupported data type '{dtype}' for column '{column_name}' in source '{sourceType}'.")
 
             dq_schema.append(dq_column)

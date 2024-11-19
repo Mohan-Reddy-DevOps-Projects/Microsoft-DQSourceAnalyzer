@@ -62,7 +62,8 @@ class FabricDeltaSchemaRequest(BaseModel):
             ).schema().fields
             schema_list = [{"column_name": field.name, "dtype": str(field.type.type)} for field in arrow_table]
             # Fetch schema
-            return {"status": "success", "schema": schema_list}
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_list,sourceType="delta")
+            return schema
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
@@ -132,7 +133,8 @@ class FabricParquetSchemaRequest(BaseModel):
             if not schema_list:
                 return {"status": "error", "message": "The specified directory is empty or does not exist."}
             else:
-                return {"status": "success", "schema": schema_list}
+                schema = DQDataType().fnconvertToDQDataType(schema_list=schema_list,sourceType="parquet")
+                return schema
         
         except Exception as e:
             return {"status": "error", "message": str(e)}

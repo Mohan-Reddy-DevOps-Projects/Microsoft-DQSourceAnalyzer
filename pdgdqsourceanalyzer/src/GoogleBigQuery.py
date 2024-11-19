@@ -2,6 +2,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 from pydantic import BaseModel, Field, field_validator
 import json
+from src.ConvertToDQDataType import DQDataType
 
 class GoogleBigQueryBaseModel(BaseModel):
     credentials_json: str = Field(..., description="Service Account Credentials must be provided")  # JSON string of the service account credentials
@@ -63,9 +64,10 @@ class GoogleBigQuerySchemaRequest(GoogleBigQueryBaseModel):
             table = client.get_table(table_ref)
 
             # Extract schema information (field names and types)
-            schema_info = [{"name": field.name, "type": field.field_type} for field in table.schema]
+            schema_info = [{"column_name": field.name, "dtype": field.field_type} for field in table.schema]
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="bigquery")
 
-            return {"status": "success", "schema": schema_info}
+            return schema
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
