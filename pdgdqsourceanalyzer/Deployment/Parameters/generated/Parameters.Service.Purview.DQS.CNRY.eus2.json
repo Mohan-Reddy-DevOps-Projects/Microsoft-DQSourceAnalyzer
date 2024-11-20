@@ -81,6 +81,10 @@
       {
         "name": "allowedServiceTags",
         "value": "AzureCloud"
+      },
+      {
+        "name": "regionName",
+        "value" "eastus2euap"
       }
     ],
       "identity": {

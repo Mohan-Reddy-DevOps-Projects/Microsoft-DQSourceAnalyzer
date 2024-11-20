@@ -86,6 +86,10 @@ foreach (var environment in environments)
       {
         "name": "allowedServiceTags",
         "value": "<#= GetEnvironmentType(environment)["allowedServiceTagsAuthz"].ToString() #>"
+      },
+      {
+        "name": "regionName",
+        "value" "<#= GetCompactLocation(environment) #>"
       }
     ],
       "identity": {
