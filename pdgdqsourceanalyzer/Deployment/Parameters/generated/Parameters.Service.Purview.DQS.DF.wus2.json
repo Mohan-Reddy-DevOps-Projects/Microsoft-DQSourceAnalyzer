@@ -81,6 +81,10 @@
       {
         "name": "allowedServiceTags",
         "value": "AzureCloud,CorpNetPublic"
+      },
+      {
+        "name": "regionName",
+        "value" "westus2"
       }
     ],
       "identity": {
