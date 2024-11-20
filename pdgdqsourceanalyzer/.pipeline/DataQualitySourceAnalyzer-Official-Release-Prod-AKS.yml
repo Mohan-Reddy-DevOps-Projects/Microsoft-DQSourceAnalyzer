@@ -6,9 +6,9 @@ resources:
     name: OneBranch.Pipelines/GovernedTemplates
     ref: refs/heads/main
   pipelines:
-  - pipeline: _DataQuality-Official-Main
+  - pipeline: _Data-Quality-Source-Analyzer-Main-Build
     trigger: none
-    source: DataQuality-Official-Main
+    source: Data-Quality-Source-Analyzer-Main-Build
     project: Purview Data Governance
 extends:
   template: v2/OneBranch.Official.CrossPlat.yml@templates
@@ -45,7 +45,7 @@ extends:
         pool:
           type: release
         steps:
-        - download: _DataQuality-Official-Main
+        - download: _Data-Quality-Source-Analyzer-Main-Build
         - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
           inputs:
             UseServerMonitorTask: true
@@ -54,8 +54,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Cnry.eus2.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Cnry.eus2.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T1
       displayName: 'Prod: T1'
@@ -111,8 +111,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cus.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T1_Approval_WestCentralUS
       displayName: 'Prod:T1 Approval WestCentralUS'
@@ -153,8 +153,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wcus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wcus.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T2
       displayName: 'Prod: T2'
@@ -192,8 +192,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.uks.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.uks.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T3
       displayName: 'Prod: T3'
@@ -230,8 +230,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.eus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.eus.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4
       displayName: 'Prod: T4'
@@ -286,8 +286,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wus.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_BrazilSouth
       displayName: 'Prod:T4 Approval BrazilSouth'
@@ -328,8 +328,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.brs.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.brs.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_JapanEast
       displayName: 'Prod:T4 Approval JapanEast'
@@ -370,8 +370,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.jpe.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.jpe.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_CentralIndia
       displayName: 'Prod:T4 Approval CentralIndia'
@@ -412,8 +412,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cid.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cid.json
             ApprovalServiceEnvironment: Production    
     - stage: Prod_T4_Approval_NorthEurope
       displayName: 'Prod:T4 Approval NorthEurope'
@@ -454,8 +454,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.ne.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.ne.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_AustraliaEast
       displayName: 'Prod:T4 Approval AustraliaEast'
@@ -496,8 +496,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.ae.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.ae.json
             ApprovalServiceEnvironment: Production
 
     - stage: Prod_T4_Approval_WestUS2
@@ -539,8 +539,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wus2.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.wus2.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_SouthEastAsia
       displayName: 'Prod:T4 Approval SouthEastAsia'
@@ -581,8 +581,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.sea.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.sea.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_CanadaCentral
       displayName: 'Prod:T4 Approval CanadaCentral'
@@ -623,8 +623,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cc.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cc.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_EastUS2
       displayName: 'Prod:T4 Approval EastUS2'
@@ -665,8 +665,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.eus2.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.eus2.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_WestEurope
       displayName: 'Prod:T4 Approval WestEurope'
@@ -707,8 +707,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.weu.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.weu.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_SouthCentralUS
       displayName: 'Prod:T4 Approval SouthCentralUS'
@@ -749,8 +749,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.scus.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.scus.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_FranceCentral
       displayName: 'Prod:T4 Approval FranceCentral'
@@ -791,8 +791,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.fc.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.fc.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T4_Approval_UAENorth
       displayName: 'Prod:T4 Approval UAENorth'
@@ -833,8 +833,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.uaen.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.uaen.json
             ApprovalServiceEnvironment: Production
 # SouthAfricaNorth
     - stage: Prod_T5
@@ -890,8 +890,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.san.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.san.json
             ApprovalServiceEnvironment: Production
 # GermanyWestCentral
     - stage: Prod_T5_Approval_GermanyWestCentral
@@ -933,8 +933,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.dewc.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.dewc.json
             ApprovalServiceEnvironment: Production
 # KoreaCentral
     - stage: Prod_T5_Approval_KoreaCentral
@@ -976,8 +976,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.kc.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.kc.json
             ApprovalServiceEnvironment: Production
 # Switzerland North
     - stage: Prod_T5_Approval_SwitzerlandNorth
@@ -1019,8 +1019,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.stzn.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.stzn.json
             ApprovalServiceEnvironment: Production
 # Canada East
     - stage: Prod_T5_Approval_CanadaEast
@@ -1062,8 +1062,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cae.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.cae.json
             ApprovalServiceEnvironment: Production
 # SwedenCentral
     - stage: Prod_T5_Approval_SwedenCentral
@@ -1105,8 +1105,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.sc.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.sc.json
             ApprovalServiceEnvironment: Production
 # NorwayEast
     # - stage: Prod_T5_Approval_NorwayEast
@@ -1148,6 +1148,6 @@ extends:
     #         EndpointProviderType: ApprovalService
     #         ServiceRootLocation: LinkedArtifact
     #         RolloutSpecType: RSPath
-    #         ServiceRootPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot
-    #         RolloutSpecPath: $(Pipeline.Workspace)/_DataQuality-Official-Main/drop_linux_build_stage_linux_job/DataQualityService/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.noe.json
+    #         ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot
+    #         RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.AKS.Purview.DQS.Prod.noe.json
     #         ApprovalServiceEnvironment: Production
