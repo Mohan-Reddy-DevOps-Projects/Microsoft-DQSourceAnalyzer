@@ -188,7 +188,7 @@ kubectl apply -f enable-pod-identity-with-kubenet.yaml
 kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/v1.8.8/deploy/infra/mic-exception.yaml
 
 echo "Setting environment variable DQS_ENV_REGION for deployment"
-kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$tlsCertName"
+kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$regionName"
 
 # echo "Install kured for automatic reboots"
 kubectl apply -f ./dqs/kured/kured-1.9.2-dockerhub.yaml
