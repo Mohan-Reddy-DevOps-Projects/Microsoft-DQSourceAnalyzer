@@ -42,6 +42,10 @@ elif DQS_ENV_REGION == "uaenorth":
     key_vault_name = os.getenv('uaenorth_KEYVAULT_NAME')
     cert_name = os.getenv('uaenorth_PFX_CERT_NAME')
     client_cert_names = os.getenv('uaenorth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "eastus2euap":
+    key_vault_name = os.getenv('eastus2euap_KEYVAULT_NAME')
+    cert_name = os.getenv('eastus2euap_PFX_CERT_NAME')
+    client_cert_names = os.getenv('eastus2euap_CLIENT_PFX_CERT_NAMES', '').split(',')
 else:
     raise ValueError("Invalid environment specified.")
 
