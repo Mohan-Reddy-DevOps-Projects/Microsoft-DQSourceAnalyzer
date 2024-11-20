@@ -51,7 +51,7 @@ extends:
           inputs:
             SourceFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_docker_linuxContainers
             Contents: '**'
-            TargetFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/DataQuality/ServiceGroupRoot
+            TargetFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/ServiceGroupRoot
             CleanTargetFolder: false
             OverWrite: false
             flattenFolders: false
@@ -63,7 +63,7 @@ extends:
           inputs:
             SourceFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer
             Contents: '**'
-            TargetFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/DataQuality/
+            TargetFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/
             CleanTargetFolder: false
             OverWrite: false
             flattenFolders: false
@@ -79,8 +79,8 @@ extends:
             EndpointProviderType: ApprovalService
             ServiceRootLocation: LinkedArtifact
             RolloutSpecType: RSPath
-            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/DataQuality/ServiceGroupRoot
-            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/DataQuality/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.PublishImage.Purview.DQS.CNRY.eus2.json
+            ServiceRootPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/ServiceGroupRoot
+            RolloutSpecPath: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/ServiceGroupRoot/RolloutSpecs/generated/RolloutSpec.PublishImage.Purview.DQS.CNRY.eus2.json
             ApprovalServiceEnvironment: Production
     - stage: Prod_T0_EastUS2EUAP
       displayName: Prod:T0:EastUS2EUAP
