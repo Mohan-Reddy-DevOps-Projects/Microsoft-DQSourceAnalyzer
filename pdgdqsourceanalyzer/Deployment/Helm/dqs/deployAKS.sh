@@ -187,8 +187,6 @@ echo "Install support for pod managed identity"
 kubectl apply -f enable-pod-identity-with-kubenet.yaml
 kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/v1.8.8/deploy/infra/mic-exception.yaml
 
-echo "Setting environment variable DQS_ENV_REGION for deployment"
-kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$regionName"
 
 # echo "Install kured for automatic reboots"
 kubectl apply -f ./dqs/kured/kured-1.9.2-dockerhub.yaml
@@ -300,6 +298,8 @@ if [ $deploymentSucceeded -eq 0 ]; then
     # Deployment succeeded
     echo "Helm install/upgrade succeeded."
     helm history $helmReleaseName
+    echo "Setting environment variable DQS_ENV_REGION for deployment"
+    kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$regionName"
 else
     # Wait loop timed out - display diagnostics and exit with failure
     echo "Deployment failed!!! Additional diagnostics..."
