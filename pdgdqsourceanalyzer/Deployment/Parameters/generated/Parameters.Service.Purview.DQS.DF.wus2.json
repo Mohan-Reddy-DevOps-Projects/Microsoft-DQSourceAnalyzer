@@ -84,7 +84,7 @@
       },
       {
         "name": "regionName",
-        "value" "westus2"
+        "value": "westus2"
       }
     ],
       "identity": {

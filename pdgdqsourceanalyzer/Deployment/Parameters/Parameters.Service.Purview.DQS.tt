@@ -89,7 +89,7 @@ foreach (var environment in environments)
       },
       {
         "name": "regionName",
-        "value" "<#= GetCompactLocation(environment) #>"
+        "value": "<#= GetCompactLocation(environment) #>"
       }
     ],
       "identity": {

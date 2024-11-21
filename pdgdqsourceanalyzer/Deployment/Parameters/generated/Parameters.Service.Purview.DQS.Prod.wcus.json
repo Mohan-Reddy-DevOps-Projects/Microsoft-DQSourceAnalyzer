@@ -84,7 +84,7 @@
       },
       {
         "name": "regionName",
-        "value" "westcentralus"
+        "value": "westcentralus"
       }
     ],
       "identity": {
