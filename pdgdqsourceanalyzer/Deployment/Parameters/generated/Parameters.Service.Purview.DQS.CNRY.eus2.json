@@ -84,7 +84,7 @@
       },
       {
         "name": "regionName",
-        "value" "eastus2euap"
+        "value": "eastus2euap"
       }
     ],
       "identity": {

@@ -84,7 +84,7 @@
       },
       {
         "name": "regionName",
-        "value" "eastus2"
+        "value": "eastus2"
       }
     ],
       "identity": {
