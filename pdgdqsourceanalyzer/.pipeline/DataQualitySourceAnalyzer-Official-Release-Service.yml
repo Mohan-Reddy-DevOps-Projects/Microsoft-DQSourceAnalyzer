@@ -59,18 +59,18 @@ extends:
             retryCount: 0
             delayBetweenRetries: 1000
             ignoreMakeDirErrors: false
-        - task: CopyFiles@2
+        - task: copyfiles@2
           inputs:
-            SourceFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer
-            Contents: '**'
-            TargetFolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/
-            CleanTargetFolder: false
-            OverWrite: false
-            flattenFolders: false
+            sourcefolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop_linux_build_stage_linux_job/PdgDqsourceAnalyzer
+            contents: '**'
+            targetfolder: $(Pipeline.Workspace)/_Data-Quality-Source-Analyzer-Main-Build/drop/PdgDqsourceAnalyzer/
+            cleantargetfolder: false
+            overwrite: false
+            flattenfolders: false
             preserveTimestamp: false
             retryCount: 0
-            delayBetweenRetries: 1000
-            ignoreMakeDirErrors: false
+            delaybetweenretries: 1000
+            ignoremakedirerrors: false
         - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
           inputs:
             UseServerMonitorTask: true
