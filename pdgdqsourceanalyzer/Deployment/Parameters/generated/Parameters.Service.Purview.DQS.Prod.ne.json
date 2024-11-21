@@ -84,7 +84,7 @@
       },
       {
         "name": "regionName",
-        "value" "northeurope"
+        "value": "northeurope"
       }
     ],
       "identity": {
