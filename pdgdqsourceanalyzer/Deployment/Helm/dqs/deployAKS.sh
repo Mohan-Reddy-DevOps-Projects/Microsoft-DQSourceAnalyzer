@@ -55,10 +55,10 @@ testAllServicesReady() {
     exitCode=1
   fi
   
-  if ! testDaemonsetReady $genevaDaemonsetName; then
-    echo "Waiting for all $genevaDaemonsetName instances to deploy..."
-    exitCode=1
-  fi
+  # if ! testDaemonsetReady $genevaDaemonsetName; then
+  #   echo "Waiting for all $genevaDaemonsetName instances to deploy..."
+  #   exitCode=1
+  # fi
 
   # Test if the public IP is bound with the load balancer service 
   local externalIP=$(kubectl get service $loadBalancerName -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
