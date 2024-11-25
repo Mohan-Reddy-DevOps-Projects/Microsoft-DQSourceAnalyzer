@@ -46,6 +46,94 @@ elif DQS_ENV_REGION == "eastus2euap":
     key_vault_name = os.getenv('eastus2euap_KEYVAULT_NAME')
     cert_name = os.getenv('eastus2euap_PFX_CERT_NAME')
     client_cert_names = os.getenv('eastus2euap_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "australiaeast":
+    key_vault_name = os.getenv('australiaeast_KEYVAULT_NAME')
+    cert_name = os.getenv('australiaeast_PFX_CERT_NAME')
+    client_cert_names = os.getenv('australiaeast_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "brazilsouth":
+    key_vault_name = os.getenv('brazilsouth_KEYVAULT_NAME')
+    cert_name = os.getenv('brazilsouth_PFX_CERT_NAME')
+    client_cert_names = os.getenv('brazilsouth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "canadaeast":
+    key_vault_name = os.getenv('canadaeast_KEYVAULT_NAME')
+    cert_name = os.getenv('canadaeast_PFX_CERT_NAME')
+    client_cert_names = os.getenv('canadaeast_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "canadacentral":
+    key_vault_name = os.getenv('canadacentral_KEYVAULT_NAME')
+    cert_name = os.getenv('canadacentral_PFX_CERT_NAME')
+    client_cert_names = os.getenv('canadacentral_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "centralindia":
+    key_vault_name = os.getenv('centralindia_KEYVAULT_NAME')
+    cert_name = os.getenv('centralindia_PFX_CERT_NAME')
+    client_cert_names = os.getenv('centralindia_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "centralus":
+    key_vault_name = os.getenv('centralus_KEYVAULT_NAME')
+    cert_name = os.getenv('centralus_PFX_CERT_NAME')
+    client_cert_names = os.getenv('centralus_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "germanywestcentral":
+    key_vault_name = os.getenv('germanywestcentral_KEYVAULT_NAME')
+    cert_name = os.getenv('germanywestcentral_PFX_CERT_NAME')
+    client_cert_names = os.getenv('germanywestcentral_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "eastus":
+    key_vault_name = os.getenv('eastus_KEYVAULT_NAME')
+    cert_name = os.getenv('eastus_PFX_CERT_NAME')
+    client_cert_names = os.getenv('eastus_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "eastus2":
+    key_vault_name = os.getenv('eastus2_KEYVAULT_NAME')
+    cert_name = os.getenv('eastus2_PFX_CERT_NAME')
+    client_cert_names = os.getenv('eastus2_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "francecentral":
+    key_vault_name = os.getenv('francecentral_KEYVAULT_NAME')
+    cert_name = os.getenv('francecentral_PFX_CERT_NAME')
+    client_cert_names = os.getenv('francecentral_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "japaneast":
+    key_vault_name = os.getenv('japaneast_KEYVAULT_NAME')
+    cert_name = os.getenv('japaneast_PFX_CERT_NAME')
+    client_cert_names = os.getenv('japaneast_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "koreacentral":
+    key_vault_name = os.getenv('koreacentral_KEYVAULT_NAME')
+    cert_name = os.getenv('koreacentral_PFX_CERT_NAME')
+    client_cert_names = os.getenv('koreacentral_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "southafricanorth":
+    key_vault_name = os.getenv('southafricanorth_KEYVAULT_NAME')
+    cert_name = os.getenv('southafricanorth_PFX_CERT_NAME')
+    client_cert_names = os.getenv('southafricanorth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "swedencentral":
+    key_vault_name = os.getenv('swedencentral_KEYVAULT_NAME')
+    cert_name = os.getenv('swedencentral_PFX_CERT_NAME')
+    client_cert_names = os.getenv('swedencentral_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "southeastasia":
+    key_vault_name = os.getenv('southeastasia_KEYVAULT_NAME')
+    cert_name = os.getenv('southeastasia_PFX_CERT_NAME')
+    client_cert_names = os.getenv('southeastasia_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "southcentralus":
+    key_vault_name = os.getenv('southcentralus_KEYVAULT_NAME')
+    cert_name = os.getenv('southcentralus_PFX_CERT_NAME')
+    client_cert_names = os.getenv('southcentralus_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "switzerlandnorth":
+    key_vault_name = os.getenv('switzerlandnorth_KEYVAULT_NAME')
+    cert_name = os.getenv('switzerlandnorth_PFX_CERT_NAME')
+    client_cert_names = os.getenv('switzerlandnorth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "uksouth":
+    key_vault_name = os.getenv('uksouth_KEYVAULT_NAME')
+    cert_name = os.getenv('uksouth_PFX_CERT_NAME')
+    client_cert_names = os.getenv('uksouth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "westcentralus":
+    key_vault_name = os.getenv('westcentralus_KEYVAULT_NAME')
+    cert_name = os.getenv('westcentralus_PFX_CERT_NAME')
+    client_cert_names = os.getenv('uksouth_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "westus":
+    key_vault_name = os.getenv('westus_KEYVAULT_NAME')
+    cert_name = os.getenv('westus_PFX_CERT_NAME')
+    client_cert_names = os.getenv('westus_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "westus2":
+    key_vault_name = os.getenv('westus2_KEYVAULT_NAME')
+    cert_name = os.getenv('westus2_PFX_CERT_NAME')
+    client_cert_names = os.getenv('westus2_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "westeurope":
+    key_vault_name = os.getenv('westeurope_KEYVAULT_NAME')
+    cert_name = os.getenv('westeurope_PFX_CERT_NAME')
+    client_cert_names = os.getenv('westeurope_CLIENT_PFX_CERT_NAMES', '').split(',')
 else:
     raise ValueError("Invalid environment specified.")
 
