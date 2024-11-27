@@ -92,7 +92,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: kured
-          image: mcr.microsoft.com/oss/weaveworks/kured:1.9.2
+          image: mcr.microsoft.com/oss/weaveworks/kured:1.9.2.6
                  # If you find yourself here wondering why there is no
                  # :latest tag on Docker Hub,see the FAQ in the README
           imagePullPolicy: IfNotPresent
