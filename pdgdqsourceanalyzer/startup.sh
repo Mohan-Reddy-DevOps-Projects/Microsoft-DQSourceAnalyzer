@@ -30,15 +30,7 @@ client_ca_cert_file_path = "/app/certs"
 os.makedirs(client_ca_cert_file_path, exist_ok=True)
 
 # Fetch Key Vault names based on environment
-if environment == "DEV":
-    key_vault_name = os.getenv('DEV_KEYVAULT_NAME')
-    cert_name = os.getenv('DEV_PFX_CERT_NAME')
-    client_cert_names = os.getenv('DEV_CLIENT_PFX_CERT_NAMES', '').split(',')
-elif environment == "PROD":
-    key_vault_name = os.getenv('PROD_KEYVAULT_NAME')
-    cert_name = os.getenv('PROD_PFX_CERT_NAME')
-    client_cert_names = os.getenv('PROD_CLIENT_PFX_CERT_NAMES', '').split(',')
-elif DQS_ENV_REGION == "uaenorth":
+if DQS_ENV_REGION == "uaenorth":
     key_vault_name = os.getenv('uaenorth_KEYVAULT_NAME')
     cert_name = os.getenv('uaenorth_PFX_CERT_NAME')
     client_cert_names = os.getenv('uaenorth_CLIENT_PFX_CERT_NAMES', '').split(',')
