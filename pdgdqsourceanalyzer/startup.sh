@@ -137,6 +137,7 @@ elif DQS_ENV_REGION == "westeurope":
 else:
     raise ValueError("Invalid environment specified.")
 
+
 key_vault_url = f"https://{key_vault_name}.vault.azure.net/"
 
 # Use DefaultAzureCredential for Managed Identity (MSI) authentication
