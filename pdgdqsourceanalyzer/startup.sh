@@ -153,6 +153,7 @@ pfx_secret = secret_client.get_secret(certificate_operation.name)
 # The .pfx data is base64-encoded, so we decode it
 pfx_data = base64.b64decode(pfx_secret.value)
 
+
 # Parse the PFX file to extract the private key and certificate
 private_key, cert, additional_certs = pkcs12.load_key_and_certificates(pfx_data, password=None)
 
