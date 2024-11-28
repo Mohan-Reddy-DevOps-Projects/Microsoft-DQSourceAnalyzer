@@ -140,7 +140,6 @@ else:
 
 key_vault_url = f"https://{key_vault_name}.vault.azure.net/"
 
-
 # Use DefaultAzureCredential for Managed Identity (MSI) authentication
 credential = DefaultAzureCredential()
 certificate_client = CertificateClient(vault_url=key_vault_url, credential=credential)
