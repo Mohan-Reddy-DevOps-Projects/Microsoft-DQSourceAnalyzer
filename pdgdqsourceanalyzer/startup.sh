@@ -137,6 +137,7 @@ elif DQS_ENV_REGION == "westeurope":
 else:
     raise ValueError("Invalid environment specified.")
 
+
 key_vault_url = f"https://{key_vault_name}.vault.azure.net/"
 
 # Use DefaultAzureCredential for Managed Identity (MSI) authentication
@@ -151,6 +152,7 @@ pfx_secret = secret_client.get_secret(certificate_operation.name)
 
 # The .pfx data is base64-encoded, so we decode it
 pfx_data = base64.b64decode(pfx_secret.value)
+
 
 # Parse the PFX file to extract the private key and certificate
 private_key, cert, additional_certs = pkcs12.load_key_and_certificates(pfx_data, password=None)
