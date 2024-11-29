@@ -299,6 +299,8 @@ for iteration in {1..30}
 if [ $deploymentSucceeded -eq 0 ]; then
     # Deployment succeeded
     echo "Helm install/upgrade succeeded."
+    echo "Dump service pod logs..."
+    kubectl logs -l app=$appLabelName || echo "Logs cannot be fetched"
     helm history $helmReleaseName
 else
     # Wait loop timed out - display diagnostics and exit with failure
