@@ -289,6 +289,8 @@ for iteration in {1..30}
         sleep 30
         echo "$(date): Checking status ($iteration)..."
         helm status $helmReleaseName
+        echo "Setting environment variable DQS_ENV_REGION for deployment"
+        kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$regionName"
         if testAllServicesReady $publicIp; then
             deploymentSucceeded=0
             break
@@ -298,8 +300,6 @@ if [ $deploymentSucceeded -eq 0 ]; then
     # Deployment succeeded
     echo "Helm install/upgrade succeeded."
     helm history $helmReleaseName
-    echo "Setting environment variable DQS_ENV_REGION for deployment"
-    kubectl set env deployment/purview-dqsa DQS_ENV_REGION="$regionName"
 else
     # Wait loop timed out - display diagnostics and exit with failure
     echo "Deployment failed!!! Additional diagnostics..."
