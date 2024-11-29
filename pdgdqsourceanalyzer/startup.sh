@@ -126,6 +126,10 @@ elif DQS_ENV_REGION == "westeurope":
     key_vault_name = os.getenv('westeurope_KEYVAULT_NAME')
     cert_name = os.getenv('westeurope_PFX_CERT_NAME')
     client_cert_names = os.getenv('westeurope_CLIENT_PFX_CERT_NAMES', '').split(',')
+elif DQS_ENV_REGION == "northeurope":
+    key_vault_name = os.getenv('northeurope_KEYVAULT_NAME')
+    cert_name = os.getenv('northeurope_PFX_CERT_NAME')
+    client_cert_names = os.getenv('northeurope_CLIENT_PFX_CERT_NAMES', '').split(',')
 else:
     raise ValueError("Invalid environment specified.")
 
