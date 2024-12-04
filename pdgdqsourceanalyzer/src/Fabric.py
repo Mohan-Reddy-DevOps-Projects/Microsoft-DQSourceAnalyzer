@@ -6,6 +6,8 @@ from deltalake import DeltaTable
 import pyarrow.parquet as pq
 from azure.storage.filedatalake import DataLakeServiceClient
 import pyarrow.dataset as ds
+import duckdb
+import json,os
 from fsspec import filesystem
 from adlfs import AzureBlobFileSystem
 from src.CustomTokenCredentialHelper import CustomTokenCredential
