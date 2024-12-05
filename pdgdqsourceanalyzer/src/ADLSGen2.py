@@ -16,32 +16,31 @@ from src.CustomTokenCredentialHelper import CustomTokenCredential
 from src.ConvertToDQDataType import DQDataType
 
 class ADLSGen2Request(BaseModel):
-    account_name: str = Field(..., description="Storage account name must be provided")
-    file_system_name: str = Field(..., description="File System Name must be provided")
-    directory_path: str = Field(..., description="Directory Path must be provided")
+    account_url: str = Field(..., description="Storage account URL name must be provided")
+    # Example - 
+    #https://synapseadlszonedeveus01.z39.dfs.storage.azure.net/
+    #https://synapseadlszonedeveus01.z39.blob.storage.azure.net/
+    #https://adlsdeveus02.blob.core.windows.net/
+    #https://adlsdeveus02.dfs.core.windows.net/
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
     
-    
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_url', 'token','expires_on')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
         return value
 
-    def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int) -> Dict[str, str]:
+    def test_connection(account_url: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
             # Initialize ADLS client
             credential = CustomTokenCredential(token=token,expires_on=expires_on)
-            account_url = f"https://{account_name}.dfs.core.windows.net"
             service_client = DataLakeServiceClient(account_url=account_url, credential=credential)
 
-            # Check if the directory exists
-            file_system_client = service_client.get_file_system_client(file_system=file_system_name)
-            directory_client = file_system_client.get_directory_client(directory_path)
-            if not directory_client.exists():
-                return {"status": "error", "message": "Directory does not exist"}
-
+            # Check if the filesystem are listable
+            filesystems = service_client.list_file_systems()
+            for _ in filesystems:  # Iterate through filesystems to ensure the API call succeeds
+                break
             return {"status": "success", "message": "Connection successful"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
