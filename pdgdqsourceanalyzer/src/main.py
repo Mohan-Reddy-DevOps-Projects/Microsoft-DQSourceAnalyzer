@@ -153,9 +153,7 @@ async def test_adlsgen2_connection(request: Request, connection_request: ADLSGen
     verify_client_certificate(request)
     try:
         result = ADLSGen2Request.test_connection(
-            connection_request.account_name,
-            connection_request.file_system_name,
-            connection_request.directory_path,
+            connection_request.account_url,
             connection_request.token,
             connection_request.expires_on
         )
