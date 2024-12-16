@@ -37,7 +37,7 @@ class FabricRequest(BaseModel):
             directory_client = file_system_client.get_directory_client(directory_path)
             if not directory_client.exists():
                 return {"status": "error", "message": "Directory does not exist"}
-            return {"status": "success", "message": "Connection successful"}
+            return {"status": "success", "result": "Connection successful"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
