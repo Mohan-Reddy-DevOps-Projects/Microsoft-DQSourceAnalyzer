@@ -41,7 +41,7 @@ class ADLSGen2Request(BaseModel):
             filesystems = service_client.list_file_systems()
             for _ in filesystems:  # Iterate through filesystems to ensure the API call succeeds
                 break
-            return {"status": "success", "message": "Connection successful"}
+            return {"status": "success", "result": "Connection successful"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
