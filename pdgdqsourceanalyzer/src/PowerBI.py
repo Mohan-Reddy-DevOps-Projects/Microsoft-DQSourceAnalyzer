@@ -32,8 +32,8 @@ class PowerBIRequest(BaseModel):
                                 for item in response_json.get("value", [])
                                 if item.get("type") == "Workspace"
                                 ]
-            return {"status": "success", "result": workspaces}
-            ## Example {'status': 'success', 'result': [{'workspaceId': 'c4dd39bb-77e2-43d3-af10-712845dc2179', 'workspaceName': 'CorpBI'}, {'workspaceId': '86f9770b-23a7-4cf8-a877-51734a900e66', 'workspaceName': 'dq-workspace'}, {'workspaceId': 'c91b1a76-c8df-4f19-be51-41688eb5c0ea', 'workspaceName': 'Sustainability'}, {'workspaceId': 'd348f7cc-755b-4309-ab2c-505dc0c64726', 'workspaceName': 'corpbi-pdg07'}, {'workspaceId': '9fa24700-1a69-4ef0-88aa-3608e22db3d5', 'workspaceName': 'pdg07-dataactivator'}]}
+                return {"status": "success", "result": workspaces}
+                ## Example {'status': 'success', 'result': [{'workspaceId': 'c4dd39bb-77e2-43d3-af10-712845dc2179', 'workspaceName': 'CorpBI'}, {'workspaceId': '86f9770b-23a7-4cf8-a877-51734a900e66', 'workspaceName': 'dq-workspace'}, {'workspaceId': 'c91b1a76-c8df-4f19-be51-41688eb5c0ea', 'workspaceName': 'Sustainability'}, {'workspaceId': 'd348f7cc-755b-4309-ab2c-505dc0c64726', 'workspaceName': 'corpbi-pdg07'}, {'workspaceId': '9fa24700-1a69-4ef0-88aa-3608e22db3d5', 'workspaceName': 'pdg07-dataactivator'}]}
             else:
                 print(f"Failed to connect to Power BI API. Status Code: {response.status_code}, Details: {response.text}")
                 return {"status": "error", "message": response.text}
