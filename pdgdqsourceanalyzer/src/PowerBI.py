@@ -18,8 +18,8 @@ class PowerBIRequest(BaseModel):
 
     def test_connection(tenantId: str, token: str, expires_on: int) -> Dict[str, str]:
         try:
-            credential = CustomTokenCredential(token=token,expires_on=expires_on)
-            token = credential.get_token("https://analysis.windows.net/powerbi/api/.default")
+            #Token Audience
+            #token = credential.get_token("https://analysis.windows.net/powerbi/api/.default")
 
             POWER_BI_API_ENDPOINT = "https://api.powerbi.com/v1.0/myorg/groups"
             headers = {"Authorization": f"Bearer {token}"}
