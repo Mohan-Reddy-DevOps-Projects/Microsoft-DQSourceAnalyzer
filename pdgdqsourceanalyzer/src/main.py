@@ -16,6 +16,7 @@ from src.GoogleBigQuery import GoogleBigQueryRequest, GoogleBigQuerySchemaReques
 from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2ParquetSchemaRequest,ADLSGen2IcebergSchemaRequest,ADLSGen2FormatDetector
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 from src.Fabric import FabricRequest, FabricDeltaSchemaRequest, FabricIcebergSchemaRequest, FabricParquetSchemaRequest, FabricFormatDetector
+from src.PowerBI import PowerBIRequest
 
 # Load the environment variables from the .env file into the application
 load_dotenv() 
@@ -280,6 +281,23 @@ async def get_azure_sql_schema(request: Request, schema_request: AzureSQLSchemaR
     verify_client_certificate(request)
     try:
         result = schema_request.get_table_schema()
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+
+@app.post("/powerbi/testconnection")
+async def test_powerbi_connection(request: Request, connection_request: PowerBIRequest):
+    verify_client_certificate(request)
+    try:
+        result = PowerBIRequest.test_connection(
+            connection_request.tenantId,
+            connection_request.token,
+            connection_request.expires_on
+        )
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result["message"])
         return result
