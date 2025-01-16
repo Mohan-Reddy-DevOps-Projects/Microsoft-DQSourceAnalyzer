@@ -17,6 +17,19 @@ from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2Parq
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 from src.Fabric import FabricRequest, FabricDeltaSchemaRequest, FabricIcebergSchemaRequest, FabricParquetSchemaRequest, FabricFormatDetector
 from src.PowerBI import PowerBIRequest
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+    handlers=[
+        logging.StreamHandler(),  # Logs to console
+        #logging.FileHandler("app.log"),  # Logs to a file named 'app.log'
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 # Load the environment variables from the .env file into the application
 load_dotenv() 
@@ -27,20 +40,45 @@ app = FastAPI()
 
 ALLOWED_CN = ["weu.dataquality-service.purview.azure.com","ae.dataquality-service.purview.azure.com","brs.dataquality-service.purview.azure.com","cae.dataquality-service.purview.azure.com","cc.dataquality-service.purview.azure.com","cid.dataquality-service.purview.azure.com","dewc.dataquality-service.purview.azure.com","eus.dataquality-service.purview.azure.com","eus2.dataquality-service.purview.azure.com","fc.dataquality-service.purview.azure.com","jpe.dataquality-service.purview.azure.com","kc.dataquality-service.purview.azure.com","ne.dataquality-service.purview.azure.com","san.dataquality-service.purview.azure.com","sc.dataquality-service.purview.azure.com","scus.dataquality-service.purview.azure.com","sea.dataquality-service.purview.azure.com","stzn.dataquality-service.purview.azure.com","uks.dataquality-service.purview.azure.com","wcus.dataquality-service.purview.azure.com","wus.dataquality-service.purview.azure.com","wus2.dataquality-service.purview.azure.com","cus.dataquality-service.purview.azure.com","wus2.dataquality-service.purview.azure-test.com","uaen.dataquality-service.purview.azure.com"]
 
+def redact_sensitive_data(data: dict, sensitive_keys: list) -> dict:
+    """Redacts sensitive fields from a dictionary."""
+    redacted_data = {}
+    for key, value in data.items():
+        if key in sensitive_keys:
+            redacted_data[key] = "***REDACTED***"
+        elif isinstance(value, dict):  # Handle nested dictionaries
+            redacted_data[key] = redact_sensitive_data(value, sensitive_keys)
+        else:
+            redacted_data[key] = value
+    return redacted_data
+
 # Middleware to enforce a request timeout of 30 seconds
 @app.middleware("http")
 async def timeout_middleware(request: Request, call_next):
     try:
-        # Enforce a timeout of 30 seconds for each request
+        body = await request.body()
+        try:
+            body_data = json.loads(body)
+            sensitive_keys = ["token", "expires_on","user", "password", "credentials_json" ,"access_token"]
+            redacted_body = redact_sensitive_data(body_data, sensitive_keys)
+            redacted_body_str = json.dumps(redacted_body, indent=2)
+        except json.JSONDecodeError:
+            redacted_body_str = body.decode('utf-8')
+
+        logger.info(f"Processing request: {request.method} {request.url}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Request payload: {redacted_body_str}")
         return await asyncio.wait_for(call_next(request), timeout=30)
     except asyncio.TimeoutError:
         # Return 504 Gateway Timeout for requests exceeding the time limit
+        logger.error("Request timeout occurred.")
         return JSONResponse(
             status_code=HTTP_504_GATEWAY_TIMEOUT,
             content={"message": "Request took too long, please try again later."}
         )
     except Exception as e:
         # Catch other exceptions and return a 500 Internal Server Error
+        logger.exception("An unexpected error occurred during request processing.")
         return JSONResponse(
             status_code=500,
             content={"message": f"An unexpected error occurred: {str(e)}"}
@@ -75,11 +113,14 @@ async def test_databricksUnityCatalog_connection(request: Request, connection_re
     try:
         result = connection_request.test_connection()
         if result["status"] == "error":
+            logger.error(f"Databricks UnityCatalog Connection test failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/databricksunitycatalog/getschema")
@@ -88,11 +129,14 @@ async def get_databricksUnityCatalog_schema(request: Request, schema_request: Da
     try:
         result = schema_request.get_table_schema()
         if result["status"] == "error":
+            logger.error(f"Databricks UnityCatalog GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/snowflake/testconnection")
@@ -101,11 +145,14 @@ async def test_snowflake_connection(request: Request, connection_request: Snowfl
     try:
         result = connection_request.test_connection()
         if result["status"] == "error":
+            logger.error(f"Snowflake Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/snowflake/getschema")
@@ -114,11 +161,14 @@ async def get_snowflake_schema(request: Request, schema_request: SnowflakeDWSche
     try:
         result = schema_request.get_table_schema()
         if result["status"] == "error":
+            logger.error(f"Snowflake GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 # New Google BigQuery endpoints
@@ -128,11 +178,14 @@ async def test_googleBigQuery_connection(request: Request, connection_request: G
     try:
         result = connection_request.test_connection()
         if result["status"] == "error":
+            logger.error(f"Google BigQuery Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/googlebigquery/getschema")
@@ -141,11 +194,14 @@ async def get_googleBigQuery_schema(request: Request, schema_request: GoogleBigQ
     try:
         result = schema_request.get_table_schema()
         if result["status"] == "error":
+            logger.error(f"Google BigQuery GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 # ADLS Gen2 endpoints
@@ -159,11 +215,14 @@ async def test_adlsgen2_connection(request: Request, connection_request: ADLSGen
             connection_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getdeltaschema")
@@ -178,11 +237,14 @@ async def get_adlsgen2_schema(request: Request, schema_request: ADLSGen2DeltaSch
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Get Delta Schema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getparquetschema")
@@ -197,11 +259,14 @@ async def get_adlsgen2_schema(request: Request, schema_request: ADLSGen2ParquetS
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Get Parquet Schema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/geticebergschema")
@@ -216,11 +281,14 @@ async def get_adlsgen2_schema(request: Request, schema_request: ADLSGen2IcebergS
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Get Iceberg Schema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getformat")
@@ -235,11 +303,14 @@ async def get_adlsgen2_format(request: Request, schema_request: ADLSGen2FormatDe
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Format Detection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/adlsgen2/getparquetpartitioncolumns")
@@ -254,11 +325,14 @@ async def get_adlsgen2_getPartitionColumns(request: Request, schema_request: ADL
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"ADLS Gen2 Parquet Partition Column Detection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 
@@ -269,11 +343,14 @@ async def test_azure_sql_connection(request: Request, connection_request: AzureS
     try:
         result = connection_request.test_connection()
         if result["status"] == "error":
+            logger.error(f"SQL DB Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/azuresql/getschema")
@@ -282,11 +359,14 @@ async def get_azure_sql_schema(request: Request, schema_request: AzureSQLSchemaR
     try:
         result = schema_request.get_table_schema()
         if result["status"] == "error":
+            logger.error(f"SQL DB GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/powerbi/testconnection")
@@ -299,11 +379,14 @@ async def test_powerbi_connection(request: Request, connection_request: PowerBIR
             connection_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"PBI Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/testconnection")
@@ -318,11 +401,14 @@ async def test_fabric_connection(request: Request, connection_request: FabricReq
             connection_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric Test Connection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/getdeltaschema")
@@ -337,11 +423,14 @@ async def get_fabric_schema(request: Request, schema_request: FabricDeltaSchemaR
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric Delta GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/getparquetschema")
@@ -356,11 +445,14 @@ async def get_fabric_schema(request: Request, schema_request: FabricParquetSchem
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric Parquet GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/geticebergschema")
@@ -375,11 +467,14 @@ async def get_fabric_schema(request: Request, schema_request: FabricIcebergSchem
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric Iceberg GetSchema failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/getformat")
@@ -394,11 +489,14 @@ async def get_fabric_format(request: Request, schema_request: FabricFormatDetect
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric GetFormat Detection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/getparquetpartitioncolumns")
@@ -413,11 +511,14 @@ async def get_fabric_getPartitionColumns(request: Request, schema_request: Fabri
             schema_request.expires_on
         )
         if result["status"] == "error":
+            logger.error(f"Fabric Parquet Partition Column Detection failed: {result['message']}")
             raise HTTPException(status_code=400, detail=result["message"])
         return result
     except HTTPException as e:
+        logger.error(f"HTTP exception occurred: {e.detail}")
         raise e
     except Exception as e:
+        logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 if __name__ == '__main__':
