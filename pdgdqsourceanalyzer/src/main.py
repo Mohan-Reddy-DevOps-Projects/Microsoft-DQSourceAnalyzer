@@ -18,6 +18,18 @@ from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 from src.Fabric import FabricRequest, FabricDeltaSchemaRequest, FabricIcebergSchemaRequest, FabricParquetSchemaRequest, FabricFormatDetector
 from src.PowerBI import PowerBIRequest
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+    handlers=[
+        logging.StreamHandler(),  # Logs to console
+        #logging.FileHandler("app.log"),  # Logs to a file named 'app.log'
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 # Load the environment variables from the .env file into the application
 load_dotenv() 
 # Initialize the FastAPI application
@@ -31,16 +43,29 @@ ALLOWED_CN = ["weu.dataquality-service.purview.azure.com","ae.dataquality-servic
 @app.middleware("http")
 async def timeout_middleware(request: Request, call_next):
     try:
-        # Enforce a timeout of 30 seconds for each request
+        body = await request.body()
+        try:
+            body_data = json.loads(body)
+            sensitive_keys = ["token", "expires_on","user", "password", "credentials_json" ,"access_token"]
+            redacted_body = redact_sensitive_data(body_data, sensitive_keys)
+            redacted_body_str = json.dumps(redacted_body, indent=2)
+        except json.JSONDecodeError:
+            redacted_body_str = body.decode('utf-8')
+
+        logger.info(f"Processing request: {request.method} {request.url}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Request payload: {redacted_body_str}")
         return await asyncio.wait_for(call_next(request), timeout=30)
     except asyncio.TimeoutError:
         # Return 504 Gateway Timeout for requests exceeding the time limit
+        logger.error("Request timeout occurred.")
         return JSONResponse(
             status_code=HTTP_504_GATEWAY_TIMEOUT,
             content={"message": "Request took too long, please try again later."}
         )
     except Exception as e:
         # Catch other exceptions and return a 500 Internal Server Error
+        logger.exception("An unexpected error occurred during request processing.")
         return JSONResponse(
             status_code=500,
             content={"message": f"An unexpected error occurred: {str(e)}"}
