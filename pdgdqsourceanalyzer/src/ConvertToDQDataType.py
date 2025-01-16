@@ -16,7 +16,7 @@ class DQDataType:
                 "DateTime": ["TIMESTAMP", "TIMESTAMPTZ"]
             },
             "azuresql": {
-                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME"],
+                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME", "UNIQUEIDENTIFIER"],
                 "Boolean": ["BIT"],
                 "Number_integral": ["SMALLINT", "INT", "BIGINT", "TINYINT"],
                 "Number_non_integral": ["FLOAT", "REAL"],
@@ -61,7 +61,7 @@ class DQDataType:
                 "DateTime": ["DATETIME","TIMESTAMP"]
                 },
             "synapsededicateddw": {
-                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME"],
+                "String": ["NVARCHAR", "VARCHAR", "VARBINARY", "CHAR", "TEXT","TIME", "UNIQUEIDENTIFIER"],
                 "Boolean": ["BIT"],
                 "Number_integral": ["SMALLINT", "INT", "BIGINT", "TINYINT"],
                 "Number_non_integral": ["FLOAT", "REAL"],
@@ -70,7 +70,7 @@ class DQDataType:
                 "DateTime": ["DATETIME", "DATETIME2", "SMALLDATETIME", "DATETIMEOFFSET", "TIMESTAMP"]
             },
             "synapseserverless": {
-                "String": ["NVARCHAR", "VARBINARY", "VARCHAR", "CHAR", "STRING", "TIME"],
+                "String": ["NVARCHAR", "VARBINARY", "VARCHAR", "CHAR", "STRING", "TIME", "UNIQUEIDENTIFIER"],
                 "Boolean": ["BIT"],
                 "Number_integral": ["TINYINT", "SMALLINT", "INT", "BIGINT"],
                 "Number_non_integral": ["FLOAT", "REAL"],
