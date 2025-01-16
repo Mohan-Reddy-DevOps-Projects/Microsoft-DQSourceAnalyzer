@@ -40,6 +40,18 @@ app = FastAPI()
 
 ALLOWED_CN = ["weu.dataquality-service.purview.azure.com","ae.dataquality-service.purview.azure.com","brs.dataquality-service.purview.azure.com","cae.dataquality-service.purview.azure.com","cc.dataquality-service.purview.azure.com","cid.dataquality-service.purview.azure.com","dewc.dataquality-service.purview.azure.com","eus.dataquality-service.purview.azure.com","eus2.dataquality-service.purview.azure.com","fc.dataquality-service.purview.azure.com","jpe.dataquality-service.purview.azure.com","kc.dataquality-service.purview.azure.com","ne.dataquality-service.purview.azure.com","san.dataquality-service.purview.azure.com","sc.dataquality-service.purview.azure.com","scus.dataquality-service.purview.azure.com","sea.dataquality-service.purview.azure.com","stzn.dataquality-service.purview.azure.com","uks.dataquality-service.purview.azure.com","wcus.dataquality-service.purview.azure.com","wus.dataquality-service.purview.azure.com","wus2.dataquality-service.purview.azure.com","cus.dataquality-service.purview.azure.com","wus2.dataquality-service.purview.azure-test.com","uaen.dataquality-service.purview.azure.com"]
 
+def redact_sensitive_data(data: dict, sensitive_keys: list) -> dict:
+    """Redacts sensitive fields from a dictionary."""
+    redacted_data = {}
+    for key, value in data.items():
+        if key in sensitive_keys:
+            redacted_data[key] = "***REDACTED***"
+        elif isinstance(value, dict):  # Handle nested dictionaries
+            redacted_data[key] = redact_sensitive_data(value, sensitive_keys)
+        else:
+            redacted_data[key] = value
+    return redacted_data
+
 # Middleware to enforce a request timeout of 30 seconds
 @app.middleware("http")
 async def timeout_middleware(request: Request, call_next):
