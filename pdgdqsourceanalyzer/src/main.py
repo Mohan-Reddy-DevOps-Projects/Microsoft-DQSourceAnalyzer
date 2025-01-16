@@ -17,7 +17,7 @@ from src.ADLSGen2 import ADLSGen2Request,ADLSGen2DeltaSchemaRequest,ADLSGen2Parq
 from src.AzureSQL import AzureSQLRequest,AzureSQLSchemaRequest
 from src.Fabric import FabricRequest, FabricDeltaSchemaRequest, FabricIcebergSchemaRequest, FabricParquetSchemaRequest, FabricFormatDetector
 from src.PowerBI import PowerBIRequest
-import logger
+import logging
 
 # Configure logging
 logging.basicConfig(
