@@ -1,0 +1,31 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+  "contentVersion": "1.0.0.0",
+  "ServiceMetadata": {
+    "ServiceGroup": "Purview.DQS.AKS",
+    "Environment": "Production"
+  },
+  "ServiceResourceGroupDefinitions": [
+  {
+    "Name": "Purview.DQS.AKS.Group",
+    "ServiceResourceDefinitions": [
+    {
+      "Name": "Purview.DQS.AKS.Resource",
+      "ArmTemplatePath": "Templates\\Template.AKS.Purview.DQS.json"
+    }]
+  }],
+  "ServiceResourceGroups": [
+  {
+    "AzureResourceGroupName": "dqservice-prod-rg-kc",
+    "Location": "Korea Central",
+    "InstanceOf": "Purview.DQS.AKS.Group",
+    "AzureSubscriptionId": "c5c11fcf-262c-465f-9564-d573d8ed0d83",
+    "ServiceResources": [
+    {
+      "Name": "Purview.DQS.AKS.Cluster",
+      "InstanceOf": "Purview.DQS.AKS.Resource",
+      "ArmParametersPath": "Parameters\\generated\\Parameters.AKS.Purview.DQS.PROD.kc.json",
+      "RolloutParametersPath": "Parameters\\DQSRolloutParameters.json"
+    }]
+  }]
+}
