@@ -1,0 +1,32 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+  "ContentVersion": "1.0.0.0",
+  "RolloutMetadata": {
+    "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.Infra.Purview.DQS.PROD.cae.json",
+    "Name": "Data Quality Service Infrastructure Production Canada East BUILD_NUMBER",
+    "RolloutType": "Major",
+    "BuildSource": {
+      "Parameters": {
+        "ServiceGroupRoot": "ServiceGroupRoot",
+        "VersionFile": "build_ver.txt"
+      }
+    },
+   "Notification": {
+      "incident": {
+        "providerType": "IcM",
+        "properties": {
+          "connectorId": "030be584-96b9-4252-9c26-1c7170db859b",
+          "routingId": "MDM://Purview-DataQualityAlert",
+          "environment": "Prod"
+        }
+      }
+	  }
+  },
+  "OrchestratedSteps": [
+  {
+    "Name": "Rollout_Service",
+    "TargetType": "ServiceResource",
+    "TargetName": "Purview.DQS.Infra",
+    "Actions": [ "Deploy" ]
+  }]
+}
