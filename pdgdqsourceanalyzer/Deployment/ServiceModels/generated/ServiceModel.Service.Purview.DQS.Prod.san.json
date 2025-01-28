@@ -27,7 +27,7 @@
   }],
   "ServiceResourceGroups": [
   {
-      "AzureResourceGroupName": "dqservice-prod-rg-san",
+      "AzureResourceGroupName": "dqsa-prod-rg-san",
       "Location": "South Africa North",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "55d705bd-a53a-44ba-9aee-49d27318c405",

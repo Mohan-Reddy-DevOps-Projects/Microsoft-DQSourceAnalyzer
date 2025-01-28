@@ -20,27 +20,27 @@
       "environmentVariables": [
       {
         "name": "aksClusterName",
-        "value": "dqs-dg-prod-aks-san"
+        "value": "dqsa-dg-prod-aks-san"
       },
       {
         "name": "aksGroupName",
-        "value": "dqservice-prod-rg-san"
+        "value": "dqsa-prod-rg-san"
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-prod-public-ip-san"
+        "value": "dqsa-prod-public-ip-san"
       },
       {
         "name": "publicIpGroup",
-        "value": "dqservice-prod-rg-san"
+        "value": "dqsa-prod-rg-san"
       },
       {
         "name": "keyVaultName",
-        "value": "dqs-prod-kv-san"
+        "value": "dqsa-prod-kv-san"
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqs-prod"
+        "value": "release-dqsa-prod"
       },
       {
         "name": "helmValueFile",
@@ -72,17 +72,21 @@
       },
       {
         "name": "tlsCertName",
-        "value": "dqs-server-prod-cert"
+        "value": "dqsa-server-prod-cert"
       },
       {
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-san.babylon-service.azure.com"
       },
-      {
-        "name": "allowedServiceTags",
-        "value": "AzureCloud"
-      }
-    ],
+        {
+          "name": "allowedServiceTags",
+          "value": "AzureCloud"
+        },
+        {
+          "name": "regionName",
+          "value": "southafricanorth"
+        }
+      ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

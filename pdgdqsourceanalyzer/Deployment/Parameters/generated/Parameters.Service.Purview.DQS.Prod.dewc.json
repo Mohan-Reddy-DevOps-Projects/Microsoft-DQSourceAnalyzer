@@ -20,27 +20,27 @@
       "environmentVariables": [
       {
         "name": "aksClusterName",
-        "value": "dqs-dg-prod-aks-dewc"
+        "value": "dqsa-dg-prod-aks-dewc"
       },
       {
         "name": "aksGroupName",
-        "value": "dqservice-prod-rg-dewc"
+        "value": "dqsa-prod-rg-dewc"
       },
       {
         "name": "publicIpName",
-        "value": "dqservice-prod-public-ip-dewc"
+        "value": "dqsa-prod-public-ip-dewc"
       },
       {
         "name": "publicIpGroup",
-        "value": "dqservice-prod-rg-dewc"
+        "value": "dqsa-prod-rg-dewc"
       },
       {
         "name": "keyVaultName",
-        "value": "dqs-prod-kv-dewc"
+        "value": "dqsa-prod-kv-dewc"
       },
       {
         "name": "helmReleaseName",
-        "value": "release-dqs-prod"
+        "value": "release-dqsa-prod"
       },
       {
         "name": "helmValueFile",
@@ -72,17 +72,21 @@
       },
       {
         "name": "tlsCertName",
-        "value": "dqs-server-prod-cert"
+        "value": "dqsa-server-prod-cert"
       },
       {
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-dewc.babylon-service.azure.com"
       },
-      {
-        "name": "allowedServiceTags",
-        "value": "AzureCloud"
-      }
-    ],
+        {
+          "name": "allowedServiceTags",
+          "value": "AzureCloud"
+        },
+        {
+          "name": "regionName",
+          "value": "germanywestcentral"
+        }
+      ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

@@ -27,7 +27,7 @@
   }],
   "ServiceResourceGroups": [
   {
-      "AzureResourceGroupName": "dqservice-prod-rg-cae",
+      "AzureResourceGroupName": "dqsa-prod-rg-cae",
       "Location": "Canada East",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "8a6aaebf-493c-4b31-9ed8-5251f958d873",
