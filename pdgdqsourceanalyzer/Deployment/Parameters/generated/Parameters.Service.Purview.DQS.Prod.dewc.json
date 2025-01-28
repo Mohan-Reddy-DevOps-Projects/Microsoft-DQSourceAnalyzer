@@ -78,15 +78,15 @@
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-dewc.babylon-service.azure.com"
       },
-        {
-          "name": "allowedServiceTags",
-          "value": "AzureCloud"
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
         },
         {
           "name": "regionName",
           "value": "germanywestcentral"
-        }
-      ],
+      }
+    ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

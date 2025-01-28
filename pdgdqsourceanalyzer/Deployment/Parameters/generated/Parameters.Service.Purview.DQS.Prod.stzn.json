@@ -78,15 +78,15 @@
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-stzn.babylon-service.azure.com"
       },
-        {
-          "name": "allowedServiceTags",
-          "value": "AzureCloud"
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
         },
         {
           "name": "regionName",
           "value": "switzerlandnorth"
-        }
-      ],
+      }
+    ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

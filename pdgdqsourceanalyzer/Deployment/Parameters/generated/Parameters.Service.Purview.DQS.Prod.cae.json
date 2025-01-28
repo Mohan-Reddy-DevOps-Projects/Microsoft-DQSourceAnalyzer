@@ -78,15 +78,15 @@
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-cae.babylon-service.azure.com"
       },
-        {
-          "name": "allowedServiceTags",
-          "value": "AzureCloud"
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
         },
         {
           "name": "regionName",
           "value": "canadaeast"
-        }
-      ],
+      }
+    ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

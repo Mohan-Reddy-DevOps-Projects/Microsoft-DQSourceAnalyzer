@@ -12,6 +12,9 @@
         "Build Number": "BUILD_NUMBER"
       }
     },
+    "logAnalyticsWorkspaceName": {
+      "value": "dqs-prod-loganalytics-san"
+    },
     "clusterName": {
       "value": "dqsa-dg-prod-aks-san"
     },
@@ -25,20 +28,16 @@
       "value": 4
     },
     "clusterUmiIdentityName": {
-      "value": "PurviewDQSA_UMIManagedIdentity_prod_san"
     },
     "kubernetesVersion": {
         "value": "1.29.2"
     },
     "keyVaultName": {
-      "value": "dqsa-prod-kv-san"
     },
     "publicIpDns": {
-        "value": "dqsa"
     },
     "dnsApis": {
       "value": [
-        "purview-dqsaservice-prod"
       ]
     },
     "dnsServiceZone": {
@@ -62,6 +61,9 @@
     "podIdentityPrincipalId":{
       "value": "ea534029-ff81-4f74-af63-91e8938e7595"
     },
+    "podIdentityResourceId":{
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+    },
     "regionShortName": {
       "value": "san"
     },
@@ -69,10 +71,8 @@
       "value": "southafricanorth"
     },
     "storageAccountName": {
-      "value": "dqsaprodstoragesan"
     },
     "userAssignedIdentities_akspod_resourceid": {
-      "value": "/subscriptions/55d705bd-a53a-44ba-9aee-49d27318c405/resourceGroups/dqsa-prod-rg-san/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
     },
     "userAssignedIdentities_dqsprod_resourceid": {
       "value": "/subscriptions/37fce4be-a3d5-44dc-8c2c-975cf08d1af4/resourceGroups/aks-cnry-rg-eus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqsprod"
@@ -89,6 +89,9 @@
   "2",
   "3"
 ]
+    },
+    "logicAppManagedIdentityName": {
+      "value": "dqs-logicApp-prod-managedIdentity-san"
     },
     "aksRegionCompactLocation": {
       "value": "southafricanorth"

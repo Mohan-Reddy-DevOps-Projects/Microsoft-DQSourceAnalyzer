@@ -78,15 +78,15 @@
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-sc.babylon-service.azure.com"
       },
-        {
-          "name": "allowedServiceTags",
-          "value": "AzureCloud"
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
         },
         {
           "name": "regionName",
           "value": "swedencentral"
-        }
-      ],
+      }
+    ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

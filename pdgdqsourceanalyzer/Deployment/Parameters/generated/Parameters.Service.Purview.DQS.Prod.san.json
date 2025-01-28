@@ -78,15 +78,15 @@
         "name": "tlsDNS",
         "value": "purview-dqservice-prod-san.babylon-service.azure.com"
       },
-        {
-          "name": "allowedServiceTags",
-          "value": "AzureCloud"
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
         },
         {
           "name": "regionName",
           "value": "southafricanorth"
-        }
-      ],
+      }
+    ],
       "identity": {
         "type": "UserAssigned",
         "UserAssignedIdentities": [

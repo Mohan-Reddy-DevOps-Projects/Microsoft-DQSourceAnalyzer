@@ -65,6 +65,9 @@
     "podIdentityPrincipalId":{
       "value": "ea534029-ff81-4f74-af63-91e8938e7595"
     },
+    "podIdentityResourceId":{
+      "value": "/subscriptions/4058cc89-e218-48c1-8a0a-9855f708296b/resourcegroups/dqs-prod-shared-resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"
+    },
     "regionShortName": {
       "value": "stzn"
     },
@@ -92,6 +95,9 @@
   "2",
   "3"
 ]
+    },
+    "logicAppManagedIdentityName": {
+      "value": "dqs-logicApp-prod-managedIdentity-stzn"
     },
     "aksRegionCompactLocation": {
       "value": "switzerlandnorth"
