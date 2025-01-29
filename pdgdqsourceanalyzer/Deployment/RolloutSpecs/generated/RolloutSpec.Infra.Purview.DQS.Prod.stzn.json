@@ -11,11 +11,13 @@
         "VersionFile": "build_ver.txt"
       }
     },
-  "OrchestratedSteps": [
-  {
-    "Name": "Rollout_Service",
-    "TargetType": "ServiceResource",
-    "TargetName": "Purview.DQS.Infra",
-    "Actions": [ "Deploy" ]
-  }]
+    "OrchestratedSteps": [
+      {
+        "Name": "Rollout_Service",
+        "TargetType": "ServiceResource",
+        "TargetName": "Purview.DQS.Infra",
+        "Actions": [ "Deploy" ]
+      }
+    ]
+  }
 }
