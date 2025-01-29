@@ -16,7 +16,7 @@
     }],
     "ServiceResourceGroups": [
     {
-      "AzureResourceGroupName": "dqservice-prod-rg-kc", 
+      "AzureResourceGroupName": "dqsa-prod-rg-kc", 
       "Location": "Korea Central",
       "InstanceOf": "Purview.DQS.Infra.Group",
       "AzureSubscriptionId": "c5c11fcf-262c-465f-9564-d573d8ed0d83",
