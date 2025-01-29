@@ -1,0 +1,98 @@
+{
+  "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "ShellExtensions": [
+  {
+    "name": "deploy-dqs-to-aks",
+    "type": "shellRun",
+    "properties": {
+      "maxexecutiontime": "PT30M"
+    },
+    "package": {
+      "reference": {
+        "path": "deployAKS.tar.gz"
+      }
+    },
+    "launch": {
+      "command": [
+        "dqs/deployAKS.sh"
+      ],
+      "environmentVariables": [
+      {
+        "name": "aksClusterName",
+        "value": "dqsa-dg-prod-aks-kc"
+      },
+      {
+        "name": "aksGroupName",
+        "value": "dqsa-prod-rg-kc"
+      },
+      {
+        "name": "publicIpName",
+        "value": "dqsa-prod-public-ip-kc"
+      },
+      {
+        "name": "publicIpGroup",
+        "value": "dqsa-prod-rg-kc"
+      },
+      {
+        "name": "keyVaultName",
+        "value": "dqsa-prod-kv-kc"
+      },
+      {
+        "name": "helmReleaseName",
+        "value": "release-dqsa-prod"
+      },
+      {
+        "name": "helmValueFile",
+        "value": "values_dqs_prod_kc.yaml"
+      },
+      {
+        "name": "subId",
+        "value": "c5c11fcf-262c-465f-9564-d573d8ed0d83"
+      },
+      {
+        "name": "genevaCertName",
+        "value": "dqs-geneva-prod-cert"
+      },
+      {
+        "name": "podIdentityName",
+        "value": "PurviewDQS_ManagedIdentity_Prod"
+      },
+      {
+        "name": "podIdentityGroup",
+        "value": "dqs-prod-shared-resources"
+      },
+      {
+        "name": "podIdentitySubscriptionId",
+        "value": "4058cc89-e218-48c1-8a0a-9855f708296b"
+      },
+      {
+        "name": "deploymentType",
+        "value": "Prod"
+      },
+      {
+        "name": "tlsCertName",
+        "value": "dqsa-server-prod-cert"
+      },
+      {
+        "name": "tlsDNS",
+        "value": "purview-dqservice-prod-kc.babylon-service.azure.com"
+      },
+      {
+        "name": "allowedServiceTags",
+        "value": "AzureCloud"
+        },
+        {
+          "name": "regionName",
+          "value": "koreacentral"
+      }
+    ],
+      "identity": {
+        "type": "UserAssigned",
+        "UserAssignedIdentities": [
+          "/subscriptions/34a8ddf8-ebee-475d-97d3-494d34c800b7/resourceGroups/babylon-gw-infra-prod-rg-eus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/Babylon_Ev2Shell_ManagedIdentity_Prod"
+        ]
+      }
+    }
+  }]
+}
