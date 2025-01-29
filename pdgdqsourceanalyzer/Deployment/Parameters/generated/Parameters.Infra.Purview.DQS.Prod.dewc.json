@@ -16,7 +16,7 @@
       "value": "germanywestcentral"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-dewc"
+      "value": "dqsa-prod-kv-dewc"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-dewc"
@@ -80,16 +80,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragedewc"
+      "value": "dqsaprodstoragedewc"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-dewc"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-dewc"
-    },
+    }
   }
 }

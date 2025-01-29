@@ -13,10 +13,10 @@
       }
     },
     "logAnalyticsWorkspaceName": {
-      "value": "dqs-prod-loganalytics-stzn"
+      "value": "dqsa-prod-loganalytics-stzn"
     },
     "clusterName": {
-      "value": "dqs-dg-prod-aks-stzn"
+      "value": "dqsa-dg-prod-aks-stzn"
     },
     "nodeType": {
       "value": "Standard_D4s_v3"
@@ -28,20 +28,20 @@
       "value": 4
     },
     "clusterUmiIdentityName": {
-      "value": "PurviewDQS_UMIManagedIdentity_prod_stzn"
+      "value": "PurviewDQSA_UMIManagedIdentity_prod_stzn"
     },
     "kubernetesVersion": {
         "value": "1.29.2"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-stzn"
+      "value": "dqsa-prod-kv-stzn"
     },
     "publicIpDns": {
-        "value": "dqservice"
+        "value": "dqsa"
     },
     "dnsApis": {
       "value": [
-        "purview-dqservice-prod"
+        "purview-dqsaservice-prod"
       ]
     },
     "dnsServiceZone": {
@@ -75,7 +75,7 @@
       "value": "switzerlandnorth"
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragestzn"
+      "value": "dqsaprodstoragestzn"
     },
     "userAssignedIdentities_akspod_resourceid": {
       "value": "/subscriptions/f94ba68f-6be8-4ad9-a331-5fb490527e15/resourceGroups/dqservice-prod-rg-stzn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PurviewDQS_ManagedIdentity_Prod"

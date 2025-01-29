@@ -16,7 +16,7 @@
       "value": "swedencentral"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-sc"
+      "value": "dqsa-prod-kv-sc"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-sc"
@@ -80,16 +80,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragesc"
+      "value": "dqsaprodstoragesc"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-sc"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-sc"
-    },
+    }
   }
 }

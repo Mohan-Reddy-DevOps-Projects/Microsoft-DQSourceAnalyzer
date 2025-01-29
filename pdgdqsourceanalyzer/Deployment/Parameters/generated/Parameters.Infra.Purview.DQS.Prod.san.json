@@ -16,7 +16,7 @@
       "value": "southafricanorth"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-san"
+      "value": "dqsa-prod-kv-san"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-san"
@@ -80,16 +80,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragesan"
+      "value": "dqsaprodstoragesan"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-san"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-san"
-    },
+    }
   }
 }

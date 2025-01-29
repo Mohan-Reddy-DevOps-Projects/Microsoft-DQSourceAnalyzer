@@ -9,17 +9,9 @@
         "Build Number": "BUILD_NUMBER"
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "value": "dqs-prod-loganalytics-kc"
-    },
-    "logAnalyticsLocation": {
-      "value": "koreacentral"
-    },
+    
     "keyVaultName": {
-      "value": "dqs-prod-kv-kc"
-    },
-    "keyVaultLogicAppName": {
-      "value": "dqs-lapp-prod-kv-kc"
+      "value": "dqsa-prod-kv-kc"
     },
     "secretGeneratorAppObjectId": {
       "value": "77061aa7-c53d-4eca-8f7a-15dc852053f7"
@@ -80,16 +72,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragekc"
+      "value": "dqsaprodstoragekc"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-kc"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-kc"
-    },
+    }
   }
 }

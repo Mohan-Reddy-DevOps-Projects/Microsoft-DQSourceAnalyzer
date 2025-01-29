@@ -27,7 +27,7 @@
   }],
   "ServiceResourceGroups": [
   {
-      "AzureResourceGroupName": "dqservice-prod-rg-stzn",
+      "AzureResourceGroupName": "dqsa-prod-rg-stzn",
       "Location": "Switzerland North",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "f94ba68f-6be8-4ad9-a331-5fb490527e15",

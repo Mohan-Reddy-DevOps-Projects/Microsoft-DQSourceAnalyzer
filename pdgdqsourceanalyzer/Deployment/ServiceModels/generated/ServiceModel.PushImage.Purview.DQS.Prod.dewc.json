@@ -29,7 +29,7 @@
   }],
   "ServiceResourceGroups": [
   {
-    "AzureResourceGroupName": "dqservice-prod-rg-dewc",
+    "AzureResourceGroupName": "dqsa-prod-rg-dewc",
     "Location": "Germany West Central",
     "InstanceOf": "Purview.DQS.PushImage.Group",
     "AzureSubscriptionId": "861583b9-0d55-4747-a9ec-62b3f4ad1ae6",

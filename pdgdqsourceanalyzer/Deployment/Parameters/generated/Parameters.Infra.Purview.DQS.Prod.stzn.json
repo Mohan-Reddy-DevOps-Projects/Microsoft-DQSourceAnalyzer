@@ -16,7 +16,7 @@
       "value": "switzerlandnorth"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-stzn"
+      "value": "dqsa-prod-kv-stzn"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-stzn"
@@ -80,16 +80,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragestzn"
+      "value": "dqsaprodstoragestzn"
     },
     "storageAccountReplicationType": {
       "value": "Standard_ZRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-stzn"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-stzn"
-    },
+    }
   }
 }

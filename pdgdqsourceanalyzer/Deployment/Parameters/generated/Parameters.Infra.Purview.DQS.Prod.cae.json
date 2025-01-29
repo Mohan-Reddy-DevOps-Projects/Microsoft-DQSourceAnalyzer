@@ -16,7 +16,7 @@
       "value": "canadaeast"
     },
     "keyVaultName": {
-      "value": "dqs-prod-kv-cae"
+      "value": "dqsa-prod-kv-cae"
     },
     "keyVaultLogicAppName": {
       "value": "dqs-lapp-prod-kv-cae"
@@ -80,16 +80,10 @@
       }
     },
     "storageAccountName": {
-      "value": "dqserviceprodstoragecae"
+      "value": "dqsaprodstoragecae"
     },
     "storageAccountReplicationType": {
       "value": "Standard_GRS"
-    },
-    "logicAppManagedIdentityName": {
-      "value": "dqs-logicApp-prod-managedIdentity-cae"
-    },
-    "logicAppKeyVaultConnectionName": {
-      "value": "dqs-logicApp-prod-keyVaultConnection-cae"
-    },
+    }
   }
 }
