@@ -4,7 +4,9 @@ gcs_environment: DiagnosticsPROD
 gcs_account: BabylonProd 
 gcs_region: koreacentral
 gcs_namespace: DQSProd 
-gcs_config_version: 1.7        # Must match the logs namespace configuration version from the Geneva Jarvis management portal
+gcs_config_version: 1.7 
+gcs_keyvault_name: dqsa-prod-kv-kc
+# Must match the logs namespace configuration version from the Geneva Jarvis management portal
 gcs_keyvault_tenant: 33e01921-4d64-4f8c-a055-5bdaffd5e33d
 gcs_cert_name: dqs-geneva-prod-cert
 gcs_cert_san: PROD-AME.KC.GENEVA.KEYVAULT.BABYLON.AZURE.COM                      
