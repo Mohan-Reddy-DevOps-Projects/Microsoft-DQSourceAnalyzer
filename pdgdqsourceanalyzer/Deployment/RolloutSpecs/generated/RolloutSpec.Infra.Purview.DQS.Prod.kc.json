@@ -28,5 +28,6 @@
       "TargetType": "ServiceResource",
       "TargetName": "Purview.DQS.Infra",
       "Actions": [ "Deploy" ]
-    }]
+    }
+  ]
 }
