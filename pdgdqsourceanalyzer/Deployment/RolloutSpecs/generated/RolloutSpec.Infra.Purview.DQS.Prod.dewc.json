@@ -11,13 +11,22 @@
         "VersionFile": "build_ver.txt"
       }
     },
-    "OrchestratedSteps": [
-      {
-        "Name": "Rollout_Service",
-        "TargetType": "ServiceResource",
-        "TargetName": "Purview.DQS.Infra",
-        "Actions": [ "Deploy" ]
+    "Notification": {
+      "incident": {
+        "providerType": "IcM",
+        "properties": {
+          "connectorId": "030be584-96b9-4252-9c26-1c7170db859b",
+          "routingId": "MDM://Purview-DataQualityAlert",
+          "environment": "Prod"
+        }
       }
-    ]
-  }
+    }
+  },
+  "OrchestratedSteps": [
+    {
+      "Name": "Rollout_Service",
+      "TargetType": "ServiceResource",
+      "TargetName": "Purview.DQS.Infra",
+      "Actions": [ "Deploy" ]
+    }]
 }
