@@ -16,18 +16,22 @@ class SnowflakeBaseModel(BaseModel):
             raise ValueError('Field cannot be empty')
         return value
 
+    def quote_identifier(self, identifier: str) -> str:
+        """Ensure that the identifier is properly quoted for Snowflake."""
+        return f'"{identifier}"' if not identifier.isupper() else identifier
+
     def get_connection_string(self):
         return (
-            f"Driver=/usr/lib64/snowflake/odbc/lib/libSnowflake.so;"  # Snowflake ODBC driver path
-            f"Server={self.account};"  # Snowflake server hostname
-            f"Database={self.database};"  # Snowflake database
-            f"Schema={self.snowflakeschema};"  # Snowflake schema
-            f"UID={self.user};"  # Snowflake user ID
-            f"PWD={self.password};"  # Snowflake password
-            f"Warehouse={self.warehouse};"  # Snowflake warehouse
-            f"Port=443;"  # Snowflake uses port 443 by default for ODBC
-            f"SSL=on;"  # Enable SSL for secure connection
-            f"AuthenticatingViaOAuth=false;"  # If not using OAuth (optional)
+            f"Driver=/usr/lib64/snowflake/odbc/lib/libSnowflake.so;"
+            f"Server={self.account};"
+            f"Database={self.quote_identifier(self.database)};"
+            f"Schema={self.quote_identifier(self.snowflakeschema)};"
+            f"UID={self.user};"
+            f"PWD={self.password};"
+            f"Warehouse={self.warehouse};"
+            f"Port=443;"
+            f"SSL=on;"
+            f"AuthenticatingViaOAuth=false;"
         )
 
 class SnowflakeDWRequest(SnowflakeBaseModel):
@@ -40,9 +44,7 @@ class SnowflakeDWRequest(SnowflakeBaseModel):
             schema_names = [schema[1] for schema in schemas]
             cursor.close()
             conn.close()
-
             return {"status": "success", "schemas": schema_names}
-
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
@@ -59,16 +61,17 @@ class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
         try:
             conn = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = conn.cursor()
-            query = f"DESCRIBE TABLE {self.table}"
+            quoted_table = self.quote_identifier(self.table)
+            query = f"DESCRIBE TABLE {quoted_table}"
+            
             cursor.execute(query)
-            # Fetch the schema (column name and data type)
             columns = cursor.fetchall()
             schema_info = [{"column_name": row[0], "dtype": row[1]} for row in columns]
-            # Close the cursor and connection
+            
             cursor.close()
             conn.close()
-            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="snowflake")
 
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info, sourceType="snowflake")
             return schema
 
         except Exception as e:
