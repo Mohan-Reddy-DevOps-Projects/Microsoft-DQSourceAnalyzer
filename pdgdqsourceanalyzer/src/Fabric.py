@@ -193,7 +193,7 @@ class FabricFormatDetector(BaseModel):
             try:
                 storage_options={"bearer_token": token, "use_fabric_endpoint": "true"}
                 #fs = AzureBlobFileSystem(account_name=account_name, credential=credential)
-                delta_table = DeltaTable(f"abfss://{file_system_name}@{account_name}dfs.fabric.microsoft.com/{directory_path}", storage_options=storage_options)
+                delta_table = DeltaTable(f"abfss://{file_system_name}@{account_name}.dfs.fabric.microsoft.com/{directory_path}", storage_options=storage_options)
                 # If no error, it's a Delta format
                 return {"status": "success", "format": "delta" }
             except Exception:
