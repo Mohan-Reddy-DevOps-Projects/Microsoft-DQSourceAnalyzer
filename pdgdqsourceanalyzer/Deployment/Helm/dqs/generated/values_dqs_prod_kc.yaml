@@ -104,9 +104,12 @@ dqs:
       },
       "ServerConfig": {
         "Port": 443,
+        "KeyVaultUri": "https://dqsa-prod-kv-kc.vault.azure.net/",
+        "SecretName": "dqsa-server-prod-cert",
         "RefreshRate": "1.00:00:00"
       },
       "SecretsConfiguration": {
+        "KeyVaultUri": "https://dqsa-prod-kv-kc.vault.azure.net/",
         "SecretNamesList": [
           "blobConnectionString",
           "sparkexternalcomputekey",
@@ -115,8 +118,11 @@ dqs:
         ]
       },
       "CertificatesConfiguration": {
+        "KeyVaultUri": "https://dqsa-prod-kv-jpe.vault.azure.net/",
         "RefreshRate": "1.00:00:00",
         "CertificateList": [
+          "ClientCertificate:dqsa-client-prod-cert",
+          "MEOClientCertificate:dqsa-client-prod-cert"
         ]
       },
       "GenevaMetricConfig": {
@@ -182,6 +188,7 @@ dqs:
         "RegionConfig": {"eastus2euap":"https://purview-dqjm-prod-eastus2euap.babylon-service.azure.com","eastus2":"https://purview-dqjm-prod-eastus2.babylon-service.azure.com","westeurope":"https://purview-dqjm-prod-westeurope.babylon-service.azure.com","westus2":"https://purview-dqjm-prod-westus2.babylon-service.azure.com","southcentralus":"https://purview-dqjm-prod-southcentralus.babylon-service.azure.com","japaneast":"https://purview-dqjm-prod-japaneast.babylon-service.azure.com","canadacentral":"https://purview-dqjm-prod-canadacentral.babylon-service.azure.com","northeurope":"https://purview-dqjm-prod-northeurope.babylon-service.azure.com","centralus":"https://purview-dqjm-prod-centralus.babylon-service.azure.com","australiaeast":"https://purview-dqjm-prod-australiaeast.babylon-service.azure.com","brazilsouth":"https://purview-dqjm-prod-brazilsouth.babylon-service.azure.com","francecentral":"https://purview-dqjm-prod-francecentral.babylon-service.azure.com","uaenorth":"https://purview-dqjm-prod-uaenorth.babylon-service.azure.com","southeastasia":"https://purview-dqjm-prod-southeastasia.babylon-service.azure.com","uksouth":"https://purview-dqjm-prod-uksouth.babylon-service.azure.com","centralindia":"https://purview-dqjm-prod-centralindia.babylon-service.azure.com","westus":"https://purview-dqjm-prod-westus.babylon-service.azure.com","westcentralus":"https://purview-dqjm-prod-westcentralus.babylon-service.azure.com","eastus":"https://purview-dqjm-prod-eastus.babylon-service.azure.com","southafricanorth":"https://purview-dqjm-prod-southafricanorth.babylon-service.azure.com","germanywestcentral":"https://purview-dqjm-prod-germanywestcentral.babylon-service.azure.com","koreacentral":"https://purview-dqjm-prod-koreacentral.babylon-service.azure.com","switzerlandnorth":"https://purview-dqjm-prod-switzerlandnorth.babylon-service.azure.com","canadaeast":"https://purview-dqjm-prod-canadaeast.babylon-service.azure.com","swedencentral":"https://purview-dqjm-prod-swedencentral.babylon-service.azure.com"},
       },
       "JobCompletionQueueConfiguration": {
+        "AccountName": "dqsaprodstoragekc",
         "QueueName": "jobcompletionv2",
         "QueueRequestTimeout": "00:00:59",
         "QueueRetryCount": "3",
@@ -198,8 +205,10 @@ dqs:
         "Uri": "https://purview-dqv-prod-koreacentral.babylon-service.azure.com"
       },
       "JobManagementConfig": {
+        "storageAccountName": "dqsaprodstoragekc",
         "storageArmEndpoint": "https://management.azure.com",
         "storageAuthority": "https://login.microsoftonline.com/",
+        "storageResourceGroup": "dqsa-prod-rg-kc",
         "storageSubscriptionId": "c5c11fcf-262c-465f-9564-d573d8ed0d83",
         "storageTenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
         "storageSuffix": "core.windows.net",
@@ -210,7 +219,9 @@ dqs:
         "BackgroundJobConnectionString": ""
      },
      "DQStorageAccountConfiguration": {
+        "StorageAccountName": "dqsaprodstoragekc",
         "StorageAccountSubscriptionId": "c5c11fcf-262c-465f-9564-d573d8ed0d83",
+        "StorageAccountResourceGroupName": "dqsa-prod-rg-kc",
         "StorageAccountAuthority": "https://login.microsoftonline.com/",
         "StorageAccountResourceUri": "https://management.azure.com/subscriptions/c5c11fcf-262c-465f-9564-d573d8ed0d83/resourceGroups/dqservice-prod-rg-kc/providers/Microsoft.Storage/storageAccounts/dqserviceprodstoragekc",
         "TenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d",
@@ -222,6 +233,7 @@ dqs:
         "EventHubName": "dataqualityeventv2"
      },
      "CatalogEventHubConfiguration": {
+        "ProcessingStorageAccountName": "dqsaprodstoragekc",
         "IsEnabled": True,
         "EventHubNamespace": "dg-prod-hub-kc.servicebus.windows.net",
         "EventHubName": "catalogevent"
@@ -252,10 +264,14 @@ dqs:
         "RefreshRate": "1.00:00:00",
         "Certificates": {
             "ArtifactStoreClient": {
+                "KeyVaultUri": "https://dqsa-prod-kv-kc.vault.azure.net/",
+                "SecretName": "dqsa-client-prod-cert"
             }
         }
     },
     "ClientCertificate": {
+        "KeyVaultUri": "https://dqsa-prod-kv-kc.vault.azure.net/",
+        "SecretName": "dqsa-client-prod-cert",
         "RefreshRate": "1.00:00:00"
     },
     "ArtifactStore": {
@@ -275,9 +291,11 @@ dqs:
     },
     "LogicAppSchedulerConfiguration": {
         "SubscriptionId": "c5c11fcf-262c-465f-9564-d573d8ed0d83",
+        "ResourceGroup": "dqsa-prod-rg-kc",
         "LogicAppLocation": "koreacentral",
         "KeyVaultUri": "https://dqs-lapp-prod-kv-kc.vault.azure.net/",
         "LogicAppManagedIdentityId": "/subscriptions/c5c11fcf-262c-465f-9564-d573d8ed0d83/resourceGroups/dqservice-prod-rg-kc/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dqs-logicApp-prod-managedIdentity-kc",
+        "KeyVaultClientCertName": "dqsa-logicapp-client-prod-cert",
         "KeyVaultConnectionResourceId": "/subscriptions/c5c11fcf-262c-465f-9564-d573d8ed0d83/resourceGroups/dqservice-prod-rg-kc/providers/Microsoft.Web/connections/dqs-logicApp-prod-keyVaultConnection-kc",
         "KeyVaultConnectorApiId": "/subscriptions/c5c11fcf-262c-465f-9564-d573d8ed0d83/providers/Microsoft.Web/locations/koreacentral/managedApis/keyvault"
     },
