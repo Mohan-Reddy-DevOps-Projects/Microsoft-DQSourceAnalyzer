@@ -25,13 +25,13 @@ class DQDataType:
                 "DateTime": ["DATETIME", "DATETIME2", "SMALLDATETIME", "DATETIMEOFFSET", "TIMESTAMP"]
             },
             "snowflake": {
-                "String": ["STRING", "VARCHAR", "TEXT", "CHAR", "CHARACTER", "NCHAR", "BINARY", "VARBINARY", "TIME", "MAP", "ARRAY"],
+                "String": ["STRING", "VARCHAR", "TEXT", "CHAR", "CHARACTER", "NCHAR", "BINARY", "VARBINARY", "TIME", "MAP", "ARRAY", "UUID","JSON","INTERVAL","BIT","BLOB"],
                 "Boolean": ["BOOLEAN"],
-                "Number_integral": ["INT" , "INTEGER" , "BIGINT" , "SMALLINT" , "TINYINT" , "BYTEINT"],
+                "Number_integral": ["INT" , "INTEGER" , "BIGINT" , "SMALLINT" , "TINYINT" , "BYTEINT", "BIGINT"],
                 "Number_non_integral": ["FLOAT" , "FLOAT4" , "FLOAT8", "DOUBLE", "REAL"],
-                "Decimal": ["NUMBER"],
+                "Decimal": ["DECIMAL", "NUMERIC", "NUMBER"],
                 "Date": ["DATE"],
-                "DateTime": ["DATETIME","TIMESTAMP_NTZ", "TIMESTAMP_TZ", "TIMESTAMP_LTZ"]
+                "DateTime": ["DATETIME", "TIMESTAMP" , "TIMESTAMP_NTZ", "TIMESTAMP_TZ", "TIMESTAMP_LTZ","TIMESTAMPTZ"]
             },
             "parquet": {
                 "String": ["STRING", "LARGE_STRING", "UTF8","INTERVAL","BINARY","ARRAY","MAP","LIST"],
