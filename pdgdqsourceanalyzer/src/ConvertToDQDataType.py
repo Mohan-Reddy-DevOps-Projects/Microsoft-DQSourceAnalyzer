@@ -119,7 +119,7 @@ class DQDataType:
                         dq_column["typeProperties"] = {
                             "integral": False,
                             "precision": 38,
-                            "scale": 38
+                            "scale": 18
                         }
                     elif key == "Date":
                         dq_column["typeProperties"] = {"formats": ["YYYY-MM-DD"]}
