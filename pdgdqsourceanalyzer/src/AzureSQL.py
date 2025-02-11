@@ -58,8 +58,9 @@ class AzureSQLRequest(AzureSQLBaseModel):
 
 class AzureSQLSchemaRequest(AzureSQLBaseModel):
     table: str = Field(..., description="Table Name must be provided")
+    schema: str = Field(..., description="Schema Name must be provided")
 
-    @field_validator('table')
+    @field_validator('table','schema')
     def field_not_empty(cls, value):
         if not value:
             raise ValueError('Field cannot be empty')
@@ -67,7 +68,7 @@ class AzureSQLSchemaRequest(AzureSQLBaseModel):
 
     def get_table_schema(self) -> Dict[str, List[Dict[str, str]]]:
         """Get the schema of a table from Azure SQL."""
-        query = f"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.table}'"
+        query = f"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.table}' AND TABLE_SCHEMA ='{self.schema}'"
         result = self.connect_to_azure_sql(query)
 
         if result["status"] == "success":
