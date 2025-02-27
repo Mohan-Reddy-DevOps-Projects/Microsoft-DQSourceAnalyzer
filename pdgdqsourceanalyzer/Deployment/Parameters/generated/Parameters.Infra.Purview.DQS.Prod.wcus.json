@@ -30,7 +30,7 @@
       "value": "dqsaprodstoragewcus"
     },
     "storageAccountReplicationType": {
-      "value": "Standard_ZRS"
+      "value": "Standard_GRS"
     },    
   }
 }
