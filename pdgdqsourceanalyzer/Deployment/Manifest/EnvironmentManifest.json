@@ -723,6 +723,7 @@
             "insightsEventHubName": "",
             "onlineMLAuthMIObjectId": "e9e4300e-b402-453d-8a1a-a2dad20ef4b2",
             "onlineMLHostPrefix": "endp-rulesug-dqml",
+            "storageAccountReplicationType": "Standard_GRS",
             "onlineMLHostSub": "a3f438c0-30ef-4caa-a9e5-d3d3584005c1",
             "onlineMLHostRG": "dqservice-ml-prod-rg-cus",
             "onlineMLWS": "mlwdqmlcus",
