@@ -84,11 +84,7 @@
       "value": "e9e4300e-b402-453d-8a1a-a2dad20ef4b2"
     },
     "availabilityZones": {
-      "value": [
-  "1",
-  "2",
-  "3"
-]
+      "value": []
     },
     "aksRegionCompactLocation": {
       "value": "westcentralus"
