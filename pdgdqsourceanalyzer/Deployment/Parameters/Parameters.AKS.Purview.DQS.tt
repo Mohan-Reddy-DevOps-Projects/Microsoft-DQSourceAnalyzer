@@ -93,7 +93,16 @@ foreach (var environment in environments)
     },
     "aksRegionCompactLocation": {
       "value": "<#= GetAksDeploymentCompactLocation(environment) #>"
-    }
+    },
+         "DOTNET_DbgEnableMiniDump": {
+        "value": "1"
+    },
+    "DOTNET_DbgMiniDumpType": {
+        "value": "4"
+    },
+    "DOTNET_DbgMiniDumpName": {
+        "value": "/azure-watson/cores/%e-%p-%h-%t"
+    } 
   }
 }
 <#
