@@ -107,7 +107,8 @@ spec:
               mountPath: /tmp/geneva_mdm
       volumes:
         - name: mdsd-run-vol
-          emptyDir: {}
+          hostPath:
+            path: /var/run/mdsd-containers
         - name: mdsd-auth-vol
           csi:
             driver: secrets-store.csi.k8s.io
