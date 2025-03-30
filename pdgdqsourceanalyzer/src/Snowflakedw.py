@@ -10,6 +10,14 @@ class SnowflakeBaseModel(BaseModel):
     database: str = Field(..., description="Database must be provided")
     snowflakeschema: str = Field(..., description="Schema must be provided")
 
+    @field_validator('account')
+    def validate_account(cls, value):
+        """Validate Snowflake account format."""
+        pattern = r"^[a-zA-Z0-9_-]+\.[a-z0-9-]+\.snowflakecomputing\.com$"
+        if not re.match(pattern, value):
+            raise ValueError("Invalid Snowflake account. Must follow '.snowflakecomputing.com' format.")
+        return value
+
     @field_validator('user', 'password', 'account', 'warehouse', 'database', 'snowflakeschema')
     def field_not_empty(cls, value):
         if not value:
