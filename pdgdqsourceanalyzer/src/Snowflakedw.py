@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 import pyodbc
 from src.ConvertToDQDataType import DQDataType
+import re
 
 class SnowflakeBaseModel(BaseModel):
     user: str = Field(..., description="UserName must be provided")
