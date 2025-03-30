@@ -16,8 +16,14 @@ class AzureSQLBaseModel(BaseModel):
     @field_validator('server')
     def validate_server(cls, value):
         """Ensure server has a valid Azure SQL or Fabric domain."""
-        pattern = r"^(.*\.)?(database\.windows\.net|sql\.azuresynapse\.net|-ondemand\.sql\.azuresynapse\.net|datawarehouse\.fabric\.microsoft\.com)$"
-        if not re.match(pattern, value):
+        valid_suffixes = (
+            ".database.windows.net",
+            ".sql.azuresynapse.net",
+            "-ondemand.sql.azuresynapse.net",
+            ".datawarehouse.fabric.microsoft.com"
+        )
+
+        if not value.endswith(valid_suffixes):
             raise ValueError(
                 "Invalid server. Must end with one of: "
                 "'.database.windows.net', '.sql.azuresynapse.net', "
