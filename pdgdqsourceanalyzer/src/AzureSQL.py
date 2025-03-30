@@ -23,14 +23,13 @@ class AzureSQLBaseModel(BaseModel):
                 "'.database.windows.net', '.sql.azuresynapse.net', "
                 "'-ondemand.sql.azuresynapse.net', '.datawarehouse.fabric.microsoft.com'"
             )
-        return value.strip()
+        return value
 
     @field_validator('database', 'token', 'expires_on')
     def field_not_empty(cls, value):
-        """Ensure no fields are empty."""
-        if not value or str(value).strip() == "":
+        if not value:
             raise ValueError('Field cannot be empty')
-        return value.strip() if isinstance(value, str) else value
+        return value
 
     def get_token_struct(self) -> bytes:
         """Generate token struct for ODBC authentication."""
@@ -74,12 +73,11 @@ class AzureSQLSchemaRequest(AzureSQLBaseModel):
     table: str = Field(..., description="Table Name must be provided")
     schema: str = Field(..., description="Schema Name must be provided")
 
-    @field_validator('table', 'schema')
+    @field_validator('table','schema')
     def field_not_empty(cls, value):
-        """Ensure table and schema are not empty."""
-        if not value or value.strip() == "":
+        if not value:
             raise ValueError('Field cannot be empty')
-        return value.strip()
+        return value
 
     def get_table_schema(self) -> Dict[str, List[Dict[str, str]]]:
         """Retrieve table schema from Azure SQL."""
