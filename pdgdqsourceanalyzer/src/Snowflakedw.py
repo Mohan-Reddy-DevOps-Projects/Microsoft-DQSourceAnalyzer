@@ -12,16 +12,13 @@ class SnowflakeBaseModel(BaseModel):
     snowflakeschema: str = Field(..., description="Schema must be provided")
 
     @field_validator("account", mode="before")
-    @classmethod
     def validate_account(cls, value):
         """Validate Snowflake account format."""
-        pattern = r"\.snowflakecomputing\.com$"
-        if not re.match(pattern, value):
+        if not value.endswith(".snowflakecomputing.com"):
             raise ValueError("Invalid Snowflake account. Must follow '<account>.<region>.snowflakecomputing.com' format.")
         return value
 
     @field_validator("user", "password", "warehouse", "database", "snowflakeschema", mode="before")
-    @classmethod
     def validate_non_empty_fields(cls, value):
         """Ensure required fields are not empty."""
         if not value or not str(value).strip():
@@ -69,7 +66,6 @@ class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
     table: str = Field(..., description="Table Name must be provided")
 
     @field_validator("table", mode="before")
-    @classmethod
     def validate_table(cls, value):
         """Ensure table name is not empty."""
         if not value or not str(value).strip():
