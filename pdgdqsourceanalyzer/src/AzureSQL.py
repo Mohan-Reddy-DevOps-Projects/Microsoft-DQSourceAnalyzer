@@ -4,6 +4,7 @@ from azure.identity import DefaultAzureCredential
 from typing import List, Dict
 from src.CustomTokenCredentialHelper import CustomTokenCredential
 import struct
+import re
 from src.ConvertToDQDataType import DQDataType
 
 class AzureSQLBaseModel(BaseModel):
@@ -12,14 +13,27 @@ class AzureSQLBaseModel(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
-    @field_validator('server', 'database','token','expires_on')
+    @field_validator('server')
+    def validate_server(cls, value):
+        """Ensure server has a valid Azure SQL or Fabric domain."""
+        pattern = r"^(.*\.)?(database\.windows\.net|sql\.azuresynapse\.net|-ondemand\.sql\.azuresynapse\.net|datawarehouse\.fabric\.microsoft\.com)$"
+        if not re.match(pattern, value):
+            raise ValueError(
+                "Invalid server. Must end with one of: "
+                "'.database.windows.net', '.sql.azuresynapse.net', "
+                "'-ondemand.sql.azuresynapse.net', '.datawarehouse.fabric.microsoft.com'"
+            )
+        return value.strip()
+
+    @field_validator('database', 'token', 'expires_on')
     def field_not_empty(cls, value):
-        if not value:
+        """Ensure no fields are empty."""
+        if not value or str(value).strip() == "":
             raise ValueError('Field cannot be empty')
-        return value
+        return value.strip() if isinstance(value, str) else value
 
     def get_token_struct(self) -> bytes:
-        """Helper to obtain token struct for ODBC."""
+        """Generate token struct for ODBC authentication."""
         credential = CustomTokenCredential(token=self.token, expires_on=self.expires_on)
         token = credential.get_token().token
         exptoken = b''.join([bytes({i}) + bytes(1) for i in bytes(token, "UTF-8")])
@@ -60,21 +74,22 @@ class AzureSQLSchemaRequest(AzureSQLBaseModel):
     table: str = Field(..., description="Table Name must be provided")
     schema: str = Field(..., description="Schema Name must be provided")
 
-    @field_validator('table','schema')
+    @field_validator('table', 'schema')
     def field_not_empty(cls, value):
-        if not value:
+        """Ensure table and schema are not empty."""
+        if not value or value.strip() == "":
             raise ValueError('Field cannot be empty')
-        return value
+        return value.strip()
 
     def get_table_schema(self) -> Dict[str, List[Dict[str, str]]]:
-        """Get the schema of a table from Azure SQL."""
+        """Retrieve table schema from Azure SQL."""
         query = f"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.table}' AND TABLE_SCHEMA ='{self.schema}'"
         result = self.connect_to_azure_sql(query)
 
         if result["status"] == "success":
             columns = result["result"]
             schema_info = [{"column_name": row[0], "dtype": row[1]} for row in columns]
-            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="azuresql")
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info, sourceType="azuresql")
             return schema
         else:
             return result
