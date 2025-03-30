@@ -12,20 +12,22 @@ class DatabricksBaseModel(BaseModel):
 
     @field_validator('hostname')
     def validate_hostname(cls, value):
-        """Validate Databricks hostname format (without 'https://')."""
-        pattern = r"^adb-\d+\.\d+\.azuredatabricks\.net$"
+        """Validate Databricks hostname format (with or without 'https://')."""
+        pattern = r"^(https://)?adb-\d+\.\d+\.azuredatabricks\.net$"
         if not re.match(pattern, value):
             raise ValueError("Invalid Databricks hostname. Must follow 'adb-<unique-id>.<shard>.azuredatabricks.net' format.")
-        return value    
+        return value.strip().replace("https://", "")  # Ensure stored hostname is clean
 
-    @field_validator('hostname', 'http_path', 'access_token', 'catalog', 'unitycatalogschema')
+    @field_validator('http_path', 'access_token', 'catalog', 'unitycatalogschema', 'hostname')
     def field_not_empty(cls, value):
-        if not value:
+        """Ensure no fields are empty."""
+        if not value or value.strip() == "":
             raise ValueError('Field cannot be empty')
-        return value
+        return value.strip()
 
     def get_connection_string(self):
-        port = 443  # Default port for Databricks ODBC
+        """Generate Databricks ODBC connection string."""
+        port = 443  # Default Databricks ODBC port
         return (
             f"Driver=/opt/simba/spark/lib/64/libsparkodbc_sb64.so;"
             f"HOST={self.hostname};"
@@ -34,7 +36,7 @@ class DatabricksBaseModel(BaseModel):
             f"AuthMech=3;"  # Token-based authentication
             f"UID=token;"
             f"PWD={self.access_token};"
-            f"SparkServerType=3;"  # Databricks clusters
+            f"SparkServerType=3;"  # Databricks cluster type
             f"SSL=1;"  # Enable SSL
             f"ThriftTransport=2;"  # HTTP transport mode
             f"SparkSQLCatalogImplementation=hive;"
@@ -42,6 +44,7 @@ class DatabricksBaseModel(BaseModel):
 
 class DatabricksUnityCatalogRequest(DatabricksBaseModel):
     def test_connection(self):
+        """Test Databricks connection."""
         try:
             connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
@@ -54,7 +57,7 @@ class DatabricksUnityCatalogRequest(DatabricksBaseModel):
 
             cursor.close()
             connection.close()
-            return {"status": "success","current_catalog": current_catalog,"current_metastore": current_metastore}
+            return {"status": "success", "current_catalog": current_catalog, "current_metastore": current_metastore}
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
@@ -63,12 +66,14 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     table: str = Field(..., description="Table name must be provided")
 
     @field_validator('table')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    def validate_table(cls, value):
+        """Ensure table name is not empty."""
+        if not value or value.strip() == "":
+            raise ValueError('Table name cannot be empty')
+        return value.strip()
 
     def get_table_schema(self):
+        """Retrieve schema for a table in Databricks Unity Catalog."""
         try:
             connection = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = connection.cursor()
@@ -80,8 +85,8 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
 
             cursor.close()
             connection.close()
-            
-            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info,sourceType="delta")
+
+            schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info, sourceType="delta")
 
             return schema
 
