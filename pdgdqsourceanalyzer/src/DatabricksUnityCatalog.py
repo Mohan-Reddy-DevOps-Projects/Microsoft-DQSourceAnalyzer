@@ -68,10 +68,10 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     @field_validator('table')
     def field_not_empty(cls, value):
         """Ensure no fields are empty."""
-        if not value or value.strip() == "":
+        if not value:
             raise ValueError('Field cannot be empty')
-        return value.strip()
-
+        return value
+        
     def get_table_schema(self):
         """Retrieve schema for a table in Databricks Unity Catalog."""
         try:
