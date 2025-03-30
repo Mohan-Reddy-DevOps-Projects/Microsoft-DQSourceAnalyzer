@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 import pyodbc
-from src.ConvertToDQDataType import DQDataType
 import re
+from src.ConvertToDQDataType import DQDataType
 
 class SnowflakeBaseModel(BaseModel):
     user: str = Field(..., description="UserName must be provided")
@@ -11,18 +11,21 @@ class SnowflakeBaseModel(BaseModel):
     database: str = Field(..., description="Database must be provided")
     snowflakeschema: str = Field(..., description="Schema must be provided")
 
-    @field_validator('account')
+    @field_validator("account", mode="before")
+    @classmethod
     def validate_account(cls, value):
         """Validate Snowflake account format."""
         pattern = r"^[a-zA-Z0-9_-]+\.[a-z0-9-]+\.snowflakecomputing\.com$"
         if not re.match(pattern, value):
-            raise ValueError("Invalid Snowflake account. Must follow '.snowflakecomputing.com' format.")
+            raise ValueError("Invalid Snowflake account. Must follow '<account>.<region>.snowflakecomputing.com' format.")
         return value
 
-    @field_validator('user', 'password', 'account', 'warehouse', 'database', 'snowflakeschema')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
+    @field_validator("user", "password", "warehouse", "database", "snowflakeschema", mode="before")
+    @classmethod
+    def validate_non_empty_fields(cls, value):
+        """Ensure required fields are not empty."""
+        if not value or not str(value).strip():
+            raise ValueError("Field cannot be empty")
         return value
 
     def quote_identifier(self, identifier: str) -> str:
@@ -30,6 +33,7 @@ class SnowflakeBaseModel(BaseModel):
         return f'"{identifier}"' if not identifier.isupper() else identifier
 
     def get_connection_string(self):
+        """Construct Snowflake ODBC connection string."""
         return (
             f"Driver=/usr/lib64/snowflake/odbc/lib/libSnowflake.so;"
             f"Server={self.account};"
@@ -44,7 +48,10 @@ class SnowflakeBaseModel(BaseModel):
         )
 
 class SnowflakeDWRequest(SnowflakeBaseModel):
+    """Handles Snowflake connection testing."""
+
     def test_connection(self):
+        """Test Snowflake ODBC connection."""
         try:
             conn = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = conn.cursor()
@@ -58,15 +65,19 @@ class SnowflakeDWRequest(SnowflakeBaseModel):
             return {"status": "error", "message": str(e)}
 
 class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
+    """Handles Snowflake table schema retrieval."""
     table: str = Field(..., description="Table Name must be provided")
 
-    @field_validator('table')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
+    @field_validator("table", mode="before")
+    @classmethod
+    def validate_table(cls, value):
+        """Ensure table name is not empty."""
+        if not value or not str(value).strip():
+            raise ValueError("Table Name cannot be empty")
         return value
 
     def get_table_schema(self):
+        """Fetch table schema from Snowflake."""
         try:
             conn = pyodbc.connect(self.get_connection_string(), autocommit=True)
             cursor = conn.cursor()
