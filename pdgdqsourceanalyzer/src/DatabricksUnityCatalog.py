@@ -66,10 +66,10 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     table: str = Field(..., description="Table name must be provided")
 
     @field_validator('table')
-    def validate_table(cls, value):
-        """Ensure table name is not empty."""
+    def field_not_empty(cls, value):
+        """Ensure no fields are empty."""
         if not value or value.strip() == "":
-            raise ValueError('Table name cannot be empty')
+            raise ValueError('Field cannot be empty')
         return value.strip()
 
     def get_table_schema(self):
