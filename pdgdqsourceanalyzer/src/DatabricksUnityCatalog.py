@@ -7,7 +7,15 @@ class DatabricksBaseModel(BaseModel):
     http_path: str = Field(..., description="Databricks HTTP path must be provided")
     access_token: str = Field(..., description="Access token must be provided")
     catalog: str = Field(..., description="Databricks catalog must be provided")
-    unitycatalogschema: str = Field(..., description="Databricks schema must be provided")    
+    unitycatalogschema: str = Field(..., description="Databricks schema must be provided")
+
+    @field_validator('hostname')
+    def validate_hostname(cls, value):
+        """Validate Databricks hostname format."""
+        pattern = r"^https:\/\/adb-\d+\.\d+\.azuredatabricks\.net$"
+        if not re.match(pattern, value):
+            raise ValueError("Invalid Databricks hostname. Must follow 'https://adb-<unique-id>.<shard>.azuredatabricks.net' format.")
+        return value    
 
     @field_validator('hostname', 'http_path', 'access_token', 'catalog', 'unitycatalogschema')
     def field_not_empty(cls, value):
