@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 import pyodbc
 from src.ConvertToDQDataType import DQDataType
+import re
 
 class DatabricksBaseModel(BaseModel):
     hostname: str = Field(..., description="Databricks hostname must be provided")
