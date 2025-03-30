@@ -15,7 +15,7 @@ class SnowflakeBaseModel(BaseModel):
     @classmethod
     def validate_account(cls, value):
         """Validate Snowflake account format."""
-        pattern = r"^[a-zA-Z0-9_-]+\.[a-z0-9-]+\.snowflakecomputing\.com$"
+        pattern = r"\.snowflakecomputing\.com$"
         if not re.match(pattern, value):
             raise ValueError("Invalid Snowflake account. Must follow '<account>.<region>.snowflakecomputing.com' format.")
         return value
