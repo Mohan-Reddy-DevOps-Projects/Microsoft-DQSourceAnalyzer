@@ -24,6 +24,31 @@ class ADLSGen2Request(BaseModel):
     #https://adlsdeveus02.dfs.core.windows.net/
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator('account_url')
+    def validate_account_url(cls, value):
+        """Ensure account_url has a valid Azure Storage domain."""
+        
+        value = value.strip() # Remove leading/trailing spaces
+
+        # Remove trailing slash `/` if it exists
+        if value.endswith("/"):
+            value = value[:-1]
+
+        valid_suffixes = (
+            ".dfs.storage.azure.net",
+            ".blob.storage.azure.net",
+            ".blob.core.windows.net",
+            ".dfs.core.windows.net"
+        )
+
+        if not value.endswith(valid_suffixes):
+            raise ValueError(
+                "Invalid account_url. Must end with one of: "
+                "'.dfs.storage.azure.net/', '.blob.storage.azure.net/', "
+                "'.blob.core.windows.net/', '.dfs.core.windows.net/'"
+            )
+        return value
     
     @field_validator('account_url', 'token','expires_on')
     def field_not_empty(cls, value):
