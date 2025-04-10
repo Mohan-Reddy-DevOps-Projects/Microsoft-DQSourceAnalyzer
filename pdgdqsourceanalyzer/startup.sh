@@ -113,7 +113,7 @@ elif DQS_ENV_REGION == "uksouth":
 elif DQS_ENV_REGION == "westcentralus":
     key_vault_name = os.getenv('westcentralus_KEYVAULT_NAME')
     cert_name = os.getenv('westcentralus_PFX_CERT_NAME')
-    client_cert_names = os.getenv('uksouth_CLIENT_PFX_CERT_NAMES', '').split(',')
+    client_cert_names = os.getenv('westcentralus_CLIENT_PFX_CERT_NAMES', '').split(',')
 elif DQS_ENV_REGION == "westus":
     key_vault_name = os.getenv('westus_KEYVAULT_NAME')
     cert_name = os.getenv('westus_PFX_CERT_NAME')
