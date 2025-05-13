@@ -18,13 +18,13 @@ gcs_cert_san: PROD-AME.WCUS.GENEVA.KEYVAULT.BABYLON.AZURE.COM
 # # https://eng.ms/docs/products/geneva/collect/references/linuxcontainers
 # # MDSD, MDM, FluentD are Distroless Containers and AzSecPack is Standard Geneva Container (Ubuntu)
 mdsd:
-  dockerTag: mariner_20250225.2
+  dockerTag: 1.35.1-20250429-1
   genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdsd
 fluentd:
-  dockerTag: mariner_20250225.2
+  dockerTag: 1.18.0-20250429-1
   genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevafluentd_td-agent
 mdm:
-  dockerTag: 2.2025.221.1419-471fea-20250222t1522
+  dockerTag: 2.202505011038.0-20250502-1
   genevaACR: linuxgeneva-microsoft.azurecr.io/distroless/genevamdm
 
 dqs:
