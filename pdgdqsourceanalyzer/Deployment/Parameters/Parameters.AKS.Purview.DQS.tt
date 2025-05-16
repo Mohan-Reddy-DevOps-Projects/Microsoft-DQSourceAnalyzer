@@ -33,7 +33,7 @@ foreach (var environment in environments)
       "value": "<#= GetClusterIdentityName(environment) #>"
     },
     "kubernetesVersion": {
-        "value": "1.29.2"
+        "value": "1.30.11"
     },
     "keyVaultName": {
       "value": "<#= GetKeyVaultName(environment) #>"
