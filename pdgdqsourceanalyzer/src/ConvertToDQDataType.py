@@ -43,7 +43,7 @@ class DQDataType:
                 "DateTime": ["TIMESTAMP","TIMESTAMP[NS]", "TIMESTAMP[US]", "TIMESTAMP[MS]", "TIMESTAMP[S]","TIMESTAMP[NS, TZ=UTC]", "TIMESTAMP[US, TZ=UTC]", "TIMESTAMP[MS, TZ=UTC]","TIMESTAMP[S, TZ=UTC]"]
                 },
             "delta": {
-                "String": ["STRING", "VARCHAR", "CHAR","INTERVAL", "BINARY","ARRAY","MAP"],
+                "String": ["STRING", "VARCHAR", "CHAR","INTERVAL", "BINARY","ARRAY","MAP","VARIANT"],
                 "Boolean": ["BOOLEAN"],
                 "Number_integral": ["BYTE", "SHORT", "INT", "BIGINT", "LONG","INTEGER","TINYINT", "SMALLINT"],
                 "Number_non_integral": ["FLOAT", "DOUBLE"],
