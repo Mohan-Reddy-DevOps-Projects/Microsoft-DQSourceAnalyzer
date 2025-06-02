@@ -1,7 +1,7 @@
 pyodbc==5.1.0
 pyarrowfs-adlgen2==0.2.5
 adlfs==2023.12.0
-fastapi[all]==0.115.0
+fastapi[all]>=0.115.1
 fastapi-utils==0.7.0
 python-dotenv==1.0.1
 applicationinsights==0.11.10
