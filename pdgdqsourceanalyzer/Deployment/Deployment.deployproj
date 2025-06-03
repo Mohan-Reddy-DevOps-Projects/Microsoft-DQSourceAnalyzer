@@ -120,6 +120,14 @@
     <Generator>TextTemplatingFileGenerator</Generator>
     <OutputFilePath>$(GeneratedRoot)\Helm\dqs</OutputFilePath>
     </None>
+	<None Include="ScopeBindings\ScopeBinding.Service.Purview.DQS.tt">
+	<Generator>TextTemplatingFileGenerator</Generator>
+    <OutputFilePath>$(GeneratedRoot)\ScopeBindings</OutputFilePath>
+	</None>
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
+  <Target Name="GenerateTarFiles">
+	<Message Text="Creating docker-shell-package.tar.gz" />
+	<Exec Command="tar -C  $(GeneratedRoot)/Scripts -pczvf $(GeneratedRoot)/Bins/docker-shell-package.tar.gz ." />
+  </Target>
 </Project>

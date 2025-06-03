@@ -23,6 +23,57 @@
             }]
           }
         }
+   },
+     {
+       "name": "get-geneva-mdsd-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-mdsd-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
+     },
+     {
+       "name": "get-geneva-fluentd-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-fluentd-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
+     },
+     {
+       "name": "get-geneva-mdm-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-mdm-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
     }]
   }],
   "ServiceResourceGroups": [
@@ -31,11 +82,28 @@
       "Location": "Brazil South",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "821eff2c-3cef-46d9-8484-16c4161f1b45",
+      "scopeTags": [
+        {
+          "name": "Production"
+        }
+      ],
       "ServiceResources": [
       {
         "Name": "Purview.DQS.AKS.Service",
         "InstanceOf": "ShellResource",
         "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.PROD.brs.json"
+      },
+      {
+        "Name": "get-geneva-mdsd-container-tag",
+        "InstanceOf": "get-geneva-mdsd-container-tag"
+      },
+      {
+        "Name": "get-geneva-fluentd-container-tag",
+        "InstanceOf": "get-geneva-fluentd-container-tag"
+      },
+      {
+        "Name": "get-geneva-mdm-container-tag",
+        "InstanceOf": "get-geneva-mdm-container-tag"
       }]
   }]
 }
