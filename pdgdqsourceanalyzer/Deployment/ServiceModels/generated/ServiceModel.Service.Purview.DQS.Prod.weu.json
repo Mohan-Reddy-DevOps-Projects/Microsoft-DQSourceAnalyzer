@@ -23,57 +23,6 @@
             }]
           }
         }
-   },
-     {
-       "name": "get-geneva-mdsd-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-mdsd-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
-     },
-     {
-       "name": "get-geneva-fluentd-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-fluentd-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
-     },
-     {
-       "name": "get-geneva-mdm-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-mdm-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
     }]
   }],
   "ServiceResourceGroups": [
@@ -82,28 +31,11 @@
       "Location": "West Europe",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "1e63d3c1-be40-4e8c-aff2-254f652cefdb",
-      "scopeTags": [
-        {
-          "name": "Production"
-        }
-      ],
       "ServiceResources": [
       {
         "Name": "Purview.DQS.AKS.Service",
         "InstanceOf": "ShellResource",
         "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.PROD.weu.json"
-      },
-      {
-        "Name": "get-geneva-mdsd-container-tag",
-        "InstanceOf": "get-geneva-mdsd-container-tag"
-      },
-      {
-        "Name": "get-geneva-fluentd-container-tag",
-        "InstanceOf": "get-geneva-fluentd-container-tag"
-      },
-      {
-        "Name": "get-geneva-mdm-container-tag",
-        "InstanceOf": "get-geneva-mdm-container-tag"
       }]
   }]
 }

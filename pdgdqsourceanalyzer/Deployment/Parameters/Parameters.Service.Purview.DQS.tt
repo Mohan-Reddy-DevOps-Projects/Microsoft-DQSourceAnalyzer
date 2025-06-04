@@ -88,18 +88,6 @@ foreach (var environment in environments)
         "value": "<#= GetEnvironmentType(environment)["allowedServiceTagsAuthz"].ToString() #>"
       },
       {
-        "name": "GENEVA_MDSD_MARINER_VERSION",
-        "value": "$(GenevaMdsdMarinerVersion)"
-      },
-      {
-        "name": "GENEVA_FLUENTD_MARINER_VERSION",
-        "value": "$(GenevaFluentdMarinerVersion)"
-      },
-      {
-        "name": "GENEVA_MDM_MARINER_VERSION",
-        "value": "$(GenevaMdmMarinerVersion)"
-      },
-      {
         "name": "regionName",
         "value": "<#= GetCompactLocation(environment) #>"
       }
