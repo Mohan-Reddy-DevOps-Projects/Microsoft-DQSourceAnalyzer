@@ -28,57 +28,6 @@ foreach (var environment in environments)
             }]
           }
         }
-   },
-     {
-       "name": "get-geneva-mdsd-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-mdsd-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
-     },
-     {
-       "name": "get-geneva-fluentd-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-fluentd-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
-     },
-     {
-       "name": "get-geneva-mdm-container-tag",
-       "composedOf": {
-         "extension": {
-           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
-           "shell": [
-             {
-               "type": "get-geneva-mdm-container-tag",
-               "properties": {
-                 "imageName": "adm-mariner-20-l",
-                 "imageVersion": "v9"
-               }
-             }
-           ]
-         }
-       }
     }]
   }],
   "ServiceResourceGroups": [
@@ -87,28 +36,11 @@ foreach (var environment in environments)
       "Location": "<#= GetEv2ExtensionLocation(environment) #>",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "<#= environment["subscription"] #>",
-      "scopeTags": [
-        {
-          "name": "<#= environment["name"] #>"
-        }
-      ],
       "ServiceResources": [
       {
         "Name": "Purview.DQS.AKS.Service",
         "InstanceOf": "ShellResource",
         "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.<#= GetUpperCaseEnvironmentShortName(environment) #>.<#= environment["shortLocation"] #>.json"
-      },
-      {
-        "Name": "get-geneva-mdsd-container-tag",
-        "InstanceOf": "get-geneva-mdsd-container-tag"
-      },
-      {
-        "Name": "get-geneva-fluentd-container-tag",
-        "InstanceOf": "get-geneva-fluentd-container-tag"
-      },
-      {
-        "Name": "get-geneva-mdm-container-tag",
-        "InstanceOf": "get-geneva-mdm-container-tag"
       }]
   }]
 }

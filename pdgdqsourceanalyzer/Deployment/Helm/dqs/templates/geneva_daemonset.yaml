@@ -21,7 +21,7 @@ spec:
       containers:
         # MDSD
         - name: mdsd
-          image: {{.Values.mdsd.genevaACR }}@{{ .Values.mdsd.dockerTag }}
+          image: {{.Values.mdsd.genevaACR }}:{{ .Values.mdsd.dockerTag }}
           args: [ "-D", "-A", "-a", "-p", "0", "-f", "0", "-i", "0", "-y", "0" ]
           env:
           - name: TENANT
@@ -64,7 +64,7 @@ spec:
               mountPath: /var/lib/vsanodescan
         # FluentD
         - name: fluentd
-          image: {{ .Values.fluentd.genevaACR }}@{{ .Values.fluentd.dockerTag }}
+          image: {{ .Values.fluentd.genevaACR }}:{{ .Values.fluentd.dockerTag }}
           args: ["-c", "/etc/fluentd/fluentd.conf", "--log", "/dev/stdout"]
           env:
           - name: FLUENTD_CONF
@@ -86,7 +86,7 @@ spec:
               readOnly: true
         # MDM
         - name: mdm
-          image: {{ .Values.mdm.genevaACR }}@{{ .Values.mdm.dockerTag }}
+          image: {{ .Values.mdm.genevaACR }}:{{ .Values.mdm.dockerTag }}
           env:
           - name: MDM_ACCOUNT
             value: {{ .Values.gcs_account | quote }}
