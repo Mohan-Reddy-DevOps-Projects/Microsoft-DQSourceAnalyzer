@@ -261,7 +261,10 @@ podIdentityResourceId=$podMSIResourceId,\
 podIdentityClientId=$podMSIClientId,\
 tlsDNS=$tlsDNS,\
 dqs.imagePath=$imagePath,\
-dqs.allowedServiceTags=$allowedServiceTags"
+dqs.allowedServiceTags=$allowedServiceTags",\
+mdsd.dockerTag=$GENEVA_MDSD_MARINER_VERSION,\
+mdm.dockerTag=$GENEVA_MDM_MARINER_VERSION,\
+fluentd.dockerTag=$GENEVA_FLUENTD_MARINER_VERSION"
 
 echo "Helm --set parameters: $helmParams"
 

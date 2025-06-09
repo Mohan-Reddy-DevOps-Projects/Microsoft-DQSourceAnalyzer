@@ -83,8 +83,16 @@
         "value": "AzureCloud,CorpNetPublic"
       },
       {
-        "name": "regionName",
-        "value": "westus2"
+        "name": "GENEVA_MDSD_MARINER_VERSION",
+        "value": "$(GenevaMdsdMarinerVersion)"
+      },
+      {
+        "name": "GENEVA_FLUENTD_MARINER_VERSION",
+        "value": "$(GenevaFluentdMarinerVersion)"
+      },
+      {
+        "name": "GENEVA_MDM_MARINER_VERSION",
+        "value": "$(GenevaMdmMarinerVersion)"
       }
     ],
       "identity": {

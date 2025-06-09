@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/rolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "shellExtensions": [
+    {
+      "name": "get-geneva-mdsd-container-tag",
+      "type": "get-geneva-mdsd-container-tag",
+      "properties": {
+        "maxExecutionTime": "PT10M",
+        "enableOutput": true
+      },
+      "package": {
+        "reference": { "path": "pushImageToAcr.tar.gz" }
+      },
+      "launch": {
+        "command": [ "getContainerTag.sh" ],
+        "environmentVariables": [
+          {
+            "name": "IMAGE_NAME",
+            "value": "linuxgeneva-microsoft.azurecr.io/distroless/genevamdsd"
+          },
+          {
+            "name": "IMAGE_TAG",
+            "value": "recommended"
+          }
+
+        ],
+        "secretVolumes": [],
+        "fileVolumes": []
+      }
+    },
+    {
+      "name": "get-geneva-fluentd-container-tag",
+      "type": "get-geneva-fluentd-container-tag",
+      "properties": {
+        "maxExecutionTime": "PT10M",
+        "enableOutput": true
+      },
+      "package": {
+        "reference": { "path": "pushImageToAcr.tar.gz" }
+      },
+      "launch": {
+        "command": [ "getContainerTag.sh" ],
+        "environmentVariables": [
+          {
+            "name": "IMAGE_NAME",
+            "value": "linuxgeneva-microsoft.azurecr.io/distroless/genevafluentd"
+          },
+          {
+            "name": "IMAGE_TAG",
+            "value": "recommended"
+          }
+        ],
+        "secretVolumes": [],
+        "fileVolumes": []
+      }
+    },
+    {
+      "name": "get-geneva-mdm-container-tag",
+      "type": "get-geneva-mdm-container-tag",
+      "properties": {
+        "maxExecutionTime": "PT10M",
+        "enableOutput": true
+      },
+      "package": {
+        "reference": { "path": "pushImageToAcr.tar.gz" }
+      },
+      "launch": {
+        "command": [ "getContainerTag.sh" ],
+        "environmentVariables": [
+          {
+            "name": "IMAGE_NAME",
+            "value": "linuxgeneva-microsoft.azurecr.io/distroless/genevamdm"
+          },
+          {
+            "name": "IMAGE_TAG",
+            "value": "recommended"
+          }
+        ],
+        "secretVolumes": [],
+        "fileVolumes": []
+      }
+    }
+  ]
+}

@@ -3,6 +3,7 @@
   "ContentVersion": "1.0.0.0",
   "RolloutMetadata": {
     "ServiceModelPath": "ServiceModels\\generated\\ServiceModel.Service.Purview.DQS.DEV.wus2.json",
+    "ScopeBindingsPath": "ScopeBindings\\generated\\ScopeBinding.Service.Purview.DQS.DEV.wus2.json",
     "Name": "Purview Data Quality Service Development West US 2 BUILD_NUMBER",
     "RolloutType": "Major",
     "BuildSource": {
@@ -14,9 +15,35 @@
   },
   "OrchestratedSteps": [
   {
+  "name": "ps-get-geneva-mdsd-container-tag",
+    "targetType": "serviceResource",
+    "targetName": "get-geneva-mdsd-container-tag",
+    "actions": ["Shell/get-geneva-mdsd-container-tag"],
+    "dependsOn": []
+  },
+  {
+    "name": "ps-get-geneva-fluentd-container-tag",
+    "targetType": "serviceResource",
+    "targetName": "get-geneva-fluentd-container-tag",
+    "actions": ["Shell/get-geneva-fluentd-container-tag"],
+    "dependsOn": ["ps-get-geneva-mdsd-container-tag"]
+  },
+  {
+    "name": "ps-get-geneva-mdm-container-tag",
+    "targetType": "serviceResource",
+    "targetName": "get-geneva-mdm-container-tag",
+    "actions": ["Shell/get-geneva-mdm-container-tag"],
+    "dependsOn": ["ps-get-geneva-fluentd-container-tag"]
+  },
+  {
     "Name": "Rollout_Service",
     "TargetType": "ServiceResource",
     "TargetName": "Purview.DQS.AKS.Service",
-    "Actions": [ "Shell/deploy-dqs-to-aks" ]
+    "Actions": [ "Shell/deploy-dqs-to-aks" ],
+    "dependsOn": [   
+        "ps-get-geneva-mdsd-container-tag",
+        "ps-get-geneva-fluentd-container-tag",
+        "ps-get-geneva-mdm-container-tag"
+      ]
   }]
 }
