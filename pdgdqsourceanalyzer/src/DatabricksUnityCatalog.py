@@ -81,7 +81,25 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
             cursor.execute(query)
 
             columns = cursor.fetchall()
-            schema_info = [{"column_name": row[0], "dtype": row[1]} for row in columns]
+
+            # Robustly parse rows, skipping headers, partition metadata, and empty rows
+            schema_info = []
+            for row in columns:
+                col_name = row[0]
+                dtype = row[1] if len(row) > 1 else None
+
+                if (
+                    col_name is None or
+                    col_name.strip() == "" or
+                    col_name.strip().startswith("#") or
+                    dtype is None
+                ):
+                    continue
+
+                schema_info.append({
+                    "column_name": col_name.strip(),
+                    "dtype": dtype.strip()
+                })
 
             cursor.close()
             connection.close()
@@ -92,3 +110,4 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
+
