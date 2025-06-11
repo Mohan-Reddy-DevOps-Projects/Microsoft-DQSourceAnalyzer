@@ -28,7 +28,7 @@
       "value": "PurviewDQSA_UMIManagedIdentity_prod_ae"
     },
     "kubernetesVersion": {
-        "value": "1.29.2"
+        "value": "1.30.11"
     },
     "keyVaultName": {
       "value": "dqsa-prod-kv-ae"
