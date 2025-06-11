@@ -83,6 +83,10 @@
         "value": "AzureCloud"
       },
       {
+        "name": "regionName",
+        "value": "canadacentral"
+      },
+      {
         "name": "GENEVA_MDSD_MARINER_VERSION",
         "value": "$(GenevaMdsdMarinerVersion)"
       },
