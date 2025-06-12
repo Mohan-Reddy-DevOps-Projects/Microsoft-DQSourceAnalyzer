@@ -23,6 +23,57 @@
             }]
           }
         }
+    },
+     {
+       "name": "get-geneva-mdsd-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-mdsd-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
+     },
+     {
+       "name": "get-geneva-fluentd-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-fluentd-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
+     },
+     {
+       "name": "get-geneva-mdm-container-tag",
+       "composedOf": {
+         "extension": {
+           "rolloutParametersPath": "Parameters/get-geneva-container-tags-parameters.json",
+           "shell": [
+             {
+               "type": "get-geneva-mdm-container-tag",
+               "properties": {
+                 "imageName": "adm-mariner-20-l",
+                 "imageVersion": "v9"
+               }
+             }
+           ]
+         }
+       }
     }]
   }],
   "ServiceResourceGroups": [
@@ -31,11 +82,28 @@
       "Location": "West Central US",
       "InstanceOf": "Purview.DQS.Service.Group",
       "AzureSubscriptionId": "c41a5a27-c6e8-4933-962b-14d94ea429bb",
+      "scopeTags": [
+        {
+          "name": "Production"
+        }
+      ],
       "ServiceResources": [
       {
         "Name": "Purview.DQS.AKS.Service",
         "InstanceOf": "ShellResource",
         "RolloutParametersPath": "Parameters\\generated\\Parameters.Service.Purview.DQS.PROD.wcus.json"
+      },
+      {
+        "Name": "get-geneva-mdsd-container-tag",
+        "InstanceOf": "get-geneva-mdsd-container-tag"
+      },
+      {
+        "Name": "get-geneva-fluentd-container-tag",
+        "InstanceOf": "get-geneva-fluentd-container-tag"
+      },
+      {
+        "Name": "get-geneva-mdm-container-tag",
+        "InstanceOf": "get-geneva-mdm-container-tag"
       }]
   }]
 }
