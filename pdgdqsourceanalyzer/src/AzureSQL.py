@@ -14,21 +14,25 @@ class AzureSQLBaseModel(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
     @field_validator('server')
-    def validate_server(cls, value):
-        """Ensure server has a valid Azure SQL or Fabric domain."""
-        valid_suffixes = (
-            ".database.windows.net",
-            ".sql.azuresynapse.net",
-            "-ondemand.sql.azuresynapse.net",
-            ".datawarehouse.fabric.microsoft.com"
-        )
+    def validate_server(cls, value: str) -> str:
+        # Disallow semicolons and connection string fragments
+        if ';' in value or '=' in value or '/' in value:
+            raise ValueError("Server Not authentic.")
 
-        if not value.endswith(valid_suffixes):
+        # Strict patterns for allowed services
+        allowed_patterns = [
+            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])?\.database\.windows\.net$",               # Azure SQL
+            r"^[a-z][a-z0-9-]{1,61}[a-z0-9]\.sql\.azuresynapse\.net$",                    # Synapse Dedicated SQL pool
+            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])?-ondemand\.sql\.azuresynapse\.net$",      # Synapse Serverless SQL
+            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])\.datawarehouse\.fabric\.microsoft\.com$"  # Fabric
+        ]
+
+
+        if not any(re.fullmatch(p, value) for p in allowed_patterns):
             raise ValueError(
-                "Invalid server. Must end with one of: "
-                "'.database.windows.net', '.sql.azuresynapse.net', "
-                "'-ondemand.sql.azuresynapse.net', '.datawarehouse.fabric.microsoft.com'"
+                f"Invalid server: '{value}'. Must be a well-formed Azure SQL, Synapse, or Fabric FQDN."
             )
+
         return value
 
     @field_validator('database', 'token', 'expires_on')
