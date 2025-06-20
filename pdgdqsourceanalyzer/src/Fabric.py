@@ -19,6 +19,16 @@ class FabricRequest(BaseModel):
     directory_path: str = Field(..., description="Directory Path must be provided")
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator("account_name", mode="before")
+    def validate_account_name(cls, value: str) -> str:
+        """
+        Only 'onelake' (all lowercase) is accepted as a valid account_name.
+        """
+        value = value.strip()
+        if value != "onelake":
+            raise ValueError("Invalid account_name. Only lowercase 'onelake' is allowed.")
+        return value
     
     @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
     def field_not_empty(cls, value):
