@@ -6,6 +6,7 @@ from src.CustomTokenCredentialHelper import CustomTokenCredential
 import struct
 import re
 from src.ConvertToDQDataType import DQDataType
+from src.validators import SourceValidators
 
 class AzureSQLBaseModel(BaseModel):
     server: str = Field(..., description="Server must be provided")
@@ -13,33 +14,13 @@ class AzureSQLBaseModel(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
-    @field_validator('server')
-    def validate_server(cls, value: str) -> str:
-        # Disallow semicolons and connection string fragments
-        if ';' in value or '=' in value or '/' in value:
-            raise ValueError("Server Not authentic.")
-
-        # Strict patterns for allowed services
-        allowed_patterns = [
-            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])?\.database\.windows\.net$",               # Azure SQL
-            r"^[a-z][a-z0-9-]{1,61}[a-z0-9]\.sql\.azuresynapse\.net$",                    # Synapse Dedicated SQL pool
-            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])?-ondemand\.sql\.azuresynapse\.net$",      # Synapse Serverless SQL
-            r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])\.datawarehouse\.fabric\.microsoft\.com$"  # Fabric
-        ]
-
-
-        if not any(re.fullmatch(p, value) for p in allowed_patterns):
-            raise ValueError(
-                f"Invalid server: '{value}'. Must be a well-formed Azure SQL, Synapse, or Fabric FQDN."
-            )
-
-        return value
+    @field_validator("server", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_server(value)
 
     @field_validator('database', 'token', 'expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
 
     def get_token_struct(self) -> bytes:
         """Generate token struct for ODBC authentication."""
@@ -84,10 +65,8 @@ class AzureSQLSchemaRequest(AzureSQLBaseModel):
     schema: str = Field(..., description="Schema Name must be provided")
 
     @field_validator('table','schema')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
 
     def get_table_schema(self) -> Dict[str, List[Dict[str, str]]]:
         """Retrieve table schema from Azure SQL."""
