@@ -32,9 +32,13 @@ class ADLSGen2Request(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_account_url(value)
 
-    @field_validator('account_url','token','expires_on')
+    @field_validator('account_url','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def test_connection(account_url: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
@@ -61,9 +65,13 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_account_url(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -93,9 +101,14 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_account_url(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -131,10 +144,15 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_account_url(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
-        
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
+
     def get_table_schema(account_name, file_system_name, directory_path,token:str,expires_on:int):
         #credential = DefaultAzureCredential()
         credential = CustomTokenCredential(token=token,expires_on=expires_on)
@@ -168,9 +186,14 @@ class ADLSGen2FormatDetector(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_account_url(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def detect_format(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
