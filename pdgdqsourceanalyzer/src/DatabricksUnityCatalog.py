@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 import pyodbc
 from src.ConvertToDQDataType import DQDataType
 import re
+from src.validators import SourceValidators
 
 class DatabricksBaseModel(BaseModel):
     hostname: str = Field(..., description="Databricks hostname must be provided")
@@ -10,20 +11,13 @@ class DatabricksBaseModel(BaseModel):
     catalog: str = Field(..., description="Databricks catalog must be provided")
     unitycatalogschema: str = Field(..., description="Databricks schema must be provided")
 
-    @field_validator('hostname')
-    def validate_hostname(cls, value):
-        """Validate Databricks hostname format adb-<unique-id>.<shard>.azuredatabricks.net"""
-        pattern = r"^adb-\d+\.\d+\.azuredatabricks\.net$"
-        if not re.match(pattern, value):
-            raise ValueError("Invalid Databricks hostname. Must follow 'adb-<unique-id>.<shard>.azuredatabricks.net' format.")
-        return value
+    @field_validator("hostname", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_hostname(value)
 
     @field_validator('http_path', 'access_token', 'catalog', 'unitycatalogschema', 'hostname')
-    def field_not_empty(cls, value):
-        """Ensure no fields are empty."""
-        if not value or value.strip() == "":
-            raise ValueError('Field cannot be empty')
-        return value.strip()
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
 
     def get_connection_string(self):
         """Generate Databricks ODBC connection string."""
@@ -66,11 +60,8 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     table: str = Field(..., description="Table name must be provided")
 
     @field_validator('table')
-    def field_not_empty(cls, value):
-        """Ensure no fields are empty."""
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
         
     def get_table_schema(self):
         """Retrieve schema for a table in Databricks Unity Catalog."""
