@@ -25,7 +25,10 @@ class FabricRequest(BaseModel):
         """
         Only 'onelake' (all lowercase) is accepted as a valid account_name.
         """
-        value = value.strip()
+        if isinstance(value, str):
+            value = value.strip()
+        else:
+            raise ValueError("Invalid account_name. Value must be a string.")
         if value != "onelake":
             raise ValueError("Invalid account_name. Only lowercase 'onelake' is allowed.")
         return value
