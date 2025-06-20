@@ -1,3 +1,5 @@
+import re
+from urllib.parse import urlparse
 from pydantic import BaseModel, Field, field_validator
 from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
@@ -25,37 +27,37 @@ class ADLSGen2Request(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
-    @field_validator('account_url')
-@field_validator('account_url', mode="before")
+    @field_validator('account_url', mode='before')
     def validate_account_url(cls, value: str) -> str:
         """
-        Ensure account_url is a valid Azure Storage HTTPS endpoint.
-        Accepts only well-formed storage account URLs ending with:
-        - .blob.core.windows.net
-        - .dfs.core.windows.net
-        - .blob.storage.azure.net
-        - .dfs.storage.azure.net
+        Validate Azure Storage account URL:
+        - Must start with https://
+        - Must not contain connection string fragments or illegal characters
+        - Must have a valid domain structure for Azure storage endpoints
         """
-        value = value.strip().rstrip("/")
-        # Check for illegal characters
-        if any(c in value for c in [';', '=', '?', ' ', '--']):
-            raise ValueError("account_url must not contain connection string fragments or illegal characters.")
-        # Enforce HTTPS
-        if not value.lower().startswith("https://"):
-            raise ValueError("account_url must start with 'https://'.")
-        # Remove scheme to validate domain
-        domain = value[8:]  # Remove "https://"
+        value = value.strip().rstrip('/')
+        # Reject common injection/fragment characters
+        if any(c in value for c in [';', '=', '?', ' ','--']):
+            raise ValueError("account_url must not contain semicolons, equals, question marks, or spaces.")
+
+        # Ensure proper scheme
+        parsed_url = urlparse(value)
+        if parsed_url.scheme.lower() != "https":
+            raise ValueError("account_url must use HTTPS.")
+        domain = parsed_url.netloc
+        # Length constraints
         if len(domain) > 253:
             raise ValueError("account_url domain is too long (max 253 characters).")
-        # Define allowed suffixes and corresponding regex
+        # Allowed Azure Storage patterns
         allowed_patterns = [
-            r"^[a-z0-9]{3,24}\.[a-z0-9-]+\.(dfs|blob)\.storage\.azure\.net$",  # zonal storage like z39.blob.storage.azure.net
-            r"^[a-z0-9]{3,24}\.(blob|dfs)\.core\.windows\.net$",               # standard core storage
+            r"^[a-z0-9]{3,24}\.[a-z0-9-]+\.(dfs|blob)\.storage\.azure\.net$",  # zonal storage
+            r"^[a-z0-9]{3,24}\.(blob|dfs)\.core\.windows\.net$",               # core storage
         ]
         if not any(re.fullmatch(p, domain) for p in allowed_patterns):
             raise ValueError(
-                f"Invalid account_url: '{value}'. Must be a valid Azure Storage HTTPS URL with known suffixes."
+                f"Invalid account_url domain '{domain}'. Must match known Azure Storage patterns."
             )
+
         return value
     
     @field_validator('account_url', 'token','expires_on')
