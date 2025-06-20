@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 import pyodbc
 import re
 from src.ConvertToDQDataType import DQDataType
+from src.validators import SourceValidators
 
 class SnowflakeBaseModel(BaseModel):
     user: str = Field(..., description="UserName must be provided")
@@ -12,40 +13,12 @@ class SnowflakeBaseModel(BaseModel):
     snowflakeschema: str = Field(..., description="Schema must be provided")
 
     @field_validator("account", mode="before")
-    def validate_account(cls, value: str) -> str:
-        """
-        Validate Snowflake account FQDN.
-        Accepts multi-label hostnames like:
-        '<account>.<region>.snowflakecomputing.com' or '<account>.<region>.<cloud>.snowflakecomputing.com'.
-        """
-        # Disallow suspicious characters
-        if any(c in value for c in [';', '=', ' ', '/', '--']):
-            raise ValueError("Account not authentic. Contains illegal characters.")
-        # Overall DNS name length (max 253 characters)
-        if len(value) > 253:
-            raise ValueError("Account FQDN too long (max 253 characters).")
-        # Ensure it ends with the correct domain
-        if not value.lower().endswith(".snowflakecomputing.com"):
-            raise ValueError("Account must end with '.snowflakecomputing.com'.")
-        # Split and validate all DNS labels
-        labels = value.split('.')
-        if len(labels) < 3:
-            raise ValueError("Incomplete account domain. Expected at least 3 parts before '.snowflakecomputing.com'.")
-
-        for label in labels:
-            if not re.fullmatch(r"[a-zA-Z0-9-]{1,63}", label):
-                raise ValueError(f"Invalid label '{label}'. Must be 1-63 alphanumeric or hyphen characters.")
-            if label.startswith('-') or label.endswith('-'):
-                raise ValueError(f"Label '{label}' cannot start or end with a hyphen.")
-
-        return value
-
+    def validate_url(cls, value):
+        return SourceValidators.validate_snowflake_account(value)
+    
     @field_validator("user", "password", "warehouse", "database", "snowflakeschema", mode="before")
-    def validate_non_empty_fields(cls, value):
-        """Ensure required fields are not empty."""
-        if not value or not str(value).strip():
-            raise ValueError("Field cannot be empty")
-        return value
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
 
     def quote_identifier(self, identifier: str) -> str:
         """Ensure that the identifier is properly quoted for Snowflake."""
@@ -88,11 +61,8 @@ class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
     table: str = Field(..., description="Table Name must be provided")
 
     @field_validator("table", mode="before")
-    def validate_table(cls, value):
-        """Ensure table name is not empty."""
-        if not value or not str(value).strip():
-            raise ValueError("Table Name cannot be empty")
-        return value
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
 
     def get_table_schema(self):
         """Fetch table schema from Snowflake."""
