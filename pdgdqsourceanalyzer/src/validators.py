@@ -23,6 +23,18 @@ class SourceValidators:
         if not any(re.fullmatch(p, domain) for p in allowed_patterns):
             raise ValueError(f"Invalid account_url domain '{domain}'. Must match known Azure Storage patterns.")
         return value
+    
+    @staticmethod
+    def validate_storage_account_name(value: str) -> str:
+        if not re.fullmatch(r"^[a-z0-9]{3,24}$", value):
+            raise ValueError("Storage account name must be 3-24 characters long and contain only lowercase letters and numbers.")
+        return value
+
+    @staticmethod
+    def validate_container_name(value: str) -> str:
+        if not re.fullmatch(r"^(?!-)(?!.*--)[a-z0-9]([a-z0-9-]{1,61})[a-z0-9]$", value):
+            raise ValueError("Container name must be 3-63 characters, lowercase, start/end with letter/number, and cannot contain consecutive hyphens.")
+        return value
 
     @staticmethod
     def not_empty(value):
