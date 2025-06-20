@@ -12,27 +12,31 @@ class SnowflakeBaseModel(BaseModel):
     snowflakeschema: str = Field(..., description="Schema must be provided")
 
     @field_validator("account", mode="before")
-    def validate_account(cls, value: str) -> str:        
+    def validate_account(cls, value: str) -> str:
         """
-        Validate Snowflake account URL format.
-        Accepts only valid FQDNs like '<account>.<region>.snowflakecomputing.com'.
+        Validate Snowflake account FQDN.
+        Accepts multi-label hostnames like:
+        '<account>.<region>.snowflakecomputing.com' or '<account>.<region>.<cloud>.snowflakecomputing.com'.
         """
-        if ';' in value or '=' in value or ' ' in value or '/' in value:
-            raise ValueError("Account not authentic.")
-
-       # Length restriction for total FQDN (DNS max is 253 chars)
+        # Disallow suspicious characters
+        if any(c in value for c in [';', '=', ' ', '/', '--']):
+            raise ValueError("Account not authentic. Contains illegal characters.")
+        # Overall DNS name length (max 253 characters)
         if len(value) > 253:
-            raise ValueError("Account FQDN is too long (must be <= 253 characters).")
+            raise ValueError("Account FQDN too long (max 253 characters).")
+        # Ensure it ends with the correct domain
+        if not value.lower().endswith(".snowflakecomputing.com"):
+            raise ValueError("Account must end with '.snowflakecomputing.com'.")
+        # Split and validate all DNS labels
+        labels = value.split('.')
+        if len(labels) < 3:
+            raise ValueError("Incomplete account domain. Expected at least 3 parts before '.snowflakecomputing.com'.")
 
-        # Subdomain constraints
-        label = r"[a-z][a-z0-9-]{0,61}[a-z0-9]"  # standard DNS label, max 63 chars
-        gov_prefix = r"(gov\.)?"                 # optional `gov.` in domain
-        domain = rf"{label}\.{label}\.{gov_prefix}snowflakecomputing\.com"
-
-        if not re.fullmatch(rf"^{domain}$", value, flags=re.IGNORECASE):
-            raise ValueError(
-                "Invalid Snowflake account format. Expected format: '<account>.<region>.snowflakecomputing.com'"
-            )
+        for label in labels:
+            if not re.fullmatch(r"[a-zA-Z0-9-]{1,63}", label):
+                raise ValueError(f"Invalid label '{label}'. Must be 1-63 alphanumeric or hyphen characters.")
+            if label.startswith('-') or label.endswith('-'):
+                raise ValueError(f"Label '{label}' cannot start or end with a hyphen.")
 
         return value
 
