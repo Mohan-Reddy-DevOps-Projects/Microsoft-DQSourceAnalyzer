@@ -57,6 +57,7 @@ class SourceValidators:
             r"^[a-z](?:[a-z0-9-]{1,61}[a-z0-9])\.datawarehouse\.fabric\.microsoft\.com$"  # Fabric
         ]
 
+
         if not any(re.fullmatch(p, value) for p in allowed_patterns):
             raise ValueError(
                 f"Invalid server: '{value}'. Must be a well-formed Azure SQL, Synapse, or Fabric FQDN."
@@ -109,5 +110,14 @@ class SourceValidators:
                 raise ValueError(f"Invalid label '{label}'. Must be 1-63 alphanumeric or hyphen characters.")
             if label.startswith('-') or label.endswith('-'):
                 raise ValueError(f"Label '{label}' cannot start or end with a hyphen.")
-
+        return value
+    
+    @staticmethod
+    def validate_expires_on(value):
+        if not isinstance(value, int):
+            raise ValueError("Value must be an integer")
+        if value <= 0:
+            raise ValueError("Value must be a positive integer")
+        if value > 2_147_483_647:
+            raise ValueError("Value exceeds 32-bit signed integer max limit")
         return value
