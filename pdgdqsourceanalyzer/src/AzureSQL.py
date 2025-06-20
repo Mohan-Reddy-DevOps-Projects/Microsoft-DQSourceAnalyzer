@@ -18,9 +18,14 @@ class AzureSQLBaseModel(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_server(value)
 
-    @field_validator('database', 'token', 'expires_on')
+    @field_validator('database', 'token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def get_token_struct(self) -> bytes:
         """Generate token struct for ODBC authentication."""
