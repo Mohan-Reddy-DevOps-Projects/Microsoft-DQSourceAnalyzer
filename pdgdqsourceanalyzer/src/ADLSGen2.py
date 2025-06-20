@@ -26,27 +26,35 @@ class ADLSGen2Request(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
     @field_validator('account_url')
-    def validate_account_url(cls, value):
-        """Ensure account_url has a valid Azure Storage domain."""
-        
-        value = value.strip() # Remove leading/trailing spaces
-
-        # Remove trailing slash `/` if it exists
-        if value.endswith("/"):
-            value = value[:-1]
-
-        valid_suffixes = (
-            ".dfs.storage.azure.net",
-            ".blob.storage.azure.net",
-            ".blob.core.windows.net",
-            ".dfs.core.windows.net"
-        )
-
-        if not value.endswith(valid_suffixes):
+@field_validator('account_url', mode="before")
+    def validate_account_url(cls, value: str) -> str:
+        """
+        Ensure account_url is a valid Azure Storage HTTPS endpoint.
+        Accepts only well-formed storage account URLs ending with:
+        - .blob.core.windows.net
+        - .dfs.core.windows.net
+        - .blob.storage.azure.net
+        - .dfs.storage.azure.net
+        """
+        value = value.strip().rstrip("/")
+        # Check for illegal characters
+        if any(c in value for c in [';', '=', '?', ' ', '--']):
+            raise ValueError("account_url must not contain connection string fragments or illegal characters.")
+        # Enforce HTTPS
+        if not value.lower().startswith("https://"):
+            raise ValueError("account_url must start with 'https://'.")
+        # Remove scheme to validate domain
+        domain = value[8:]  # Remove "https://"
+        if len(domain) > 253:
+            raise ValueError("account_url domain is too long (max 253 characters).")
+        # Define allowed suffixes and corresponding regex
+        allowed_patterns = [
+            r"^[a-z0-9]{3,24}\.[a-z0-9-]+\.(dfs|blob)\.storage\.azure\.net$",  # zonal storage like z39.blob.storage.azure.net
+            r"^[a-z0-9]{3,24}\.(blob|dfs)\.core\.windows\.net$",               # standard core storage
+        ]
+        if not any(re.fullmatch(p, domain) for p in allowed_patterns):
             raise ValueError(
-                "Invalid account_url. Must end with one of: "
-                "'.dfs.storage.azure.net/', '.blob.storage.azure.net/', "
-                "'.blob.core.windows.net/', '.dfs.core.windows.net/'"
+                f"Invalid account_url: '{value}'. Must be a valid Azure Storage HTTPS URL with known suffixes."
             )
         return value
     
