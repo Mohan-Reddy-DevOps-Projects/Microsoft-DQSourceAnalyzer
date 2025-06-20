@@ -16,8 +16,8 @@ class AzureSQLBaseModel(BaseModel):
     @field_validator('server')
     def validate_server(cls, value: str) -> str:
         # Disallow semicolons and connection string fragments
-        if any(c in value for c in [';', '=', '?', ' ','--']):
-            raise ValueError("server must not contain semicolons, equals, question marks, or spaces.")
+        if ';' in value or '=' in value or '/' in value:
+            raise ValueError("Server Not authentic.")
 
         # Strict patterns for allowed services
         allowed_patterns = [
