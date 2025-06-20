@@ -62,11 +62,11 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
     @field_validator("account_name", mode="before")
-    def validate_url(cls, value):
+    def validate_account_name(cls, value):
         return SourceValidators.validate_storage_account_name(value)
 
     @field_validator("file_system_name", mode="before")
-    def validate_url(cls, value):
+    def validate_container_name(cls, value):
         return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
@@ -102,11 +102,11 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
     @field_validator("account_name", mode="before")
-    def validate_url(cls, value):
+    def validate_account_name(cls, value):
         return SourceValidators.validate_storage_account_name(value)
 
     @field_validator("file_system_name", mode="before")
-    def validate_url(cls, value):
+    def validate_container_name(cls, value):
         return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
@@ -149,11 +149,11 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
     @field_validator("account_name", mode="before")
-    def validate_url(cls, value):
+    def validate_account_name(cls, value):
         return SourceValidators.validate_storage_account_name(value)
 
     @field_validator("file_system_name", mode="before")
-    def validate_url(cls, value):
+    def validate_container_name(cls, value):
         return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
@@ -195,11 +195,11 @@ class ADLSGen2FormatDetector(BaseModel):
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
     @field_validator("account_name", mode="before")
-    def validate_url(cls, value):
+    def validate_account_name(cls, value):
         return SourceValidators.validate_storage_account_name(value)
 
     @field_validator("file_system_name", mode="before")
-    def validate_url(cls, value):
+    def validate_container_name(cls, value):
         return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
