@@ -63,7 +63,11 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
 
     @field_validator("account_name", mode="before")
     def validate_url(cls, value):
-        return SourceValidators.validate_account_url(value)
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
@@ -99,7 +103,11 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
 
     @field_validator("account_name", mode="before")
     def validate_url(cls, value):
-        return SourceValidators.validate_account_url(value)
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
@@ -142,7 +150,11 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     
     @field_validator("account_name", mode="before")
     def validate_url(cls, value):
-        return SourceValidators.validate_account_url(value)
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
@@ -184,7 +196,11 @@ class ADLSGen2FormatDetector(BaseModel):
     
     @field_validator("account_name", mode="before")
     def validate_url(cls, value):
-        return SourceValidators.validate_account_url(value)
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_container_name(value)
 
     @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
