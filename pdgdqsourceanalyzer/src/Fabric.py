@@ -25,9 +25,14 @@ class FabricRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_fabric_account_name(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
@@ -55,9 +60,13 @@ class FabricDeltaSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_fabric_account_name(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -85,9 +94,13 @@ class FabricIcebergSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_fabric_account_name(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -125,9 +138,13 @@ class FabricParquetSchemaRequest(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_fabric_account_name(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
         
     def get_table_schema(account_name, file_system_name, directory_path,token:str,expires_on:int):
         #credential = DefaultAzureCredential()
@@ -162,9 +179,13 @@ class FabricFormatDetector(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_fabric_account_name(value)
 
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def detect_format(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
