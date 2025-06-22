@@ -25,7 +25,7 @@ class ADLSGen2Request(BaseModel):
     #https://synapseadlszonedeveus01.z39.blob.storage.azure.net/
     #https://adlsdeveus02.blob.core.windows.net/
     #https://adlsdeveus02.dfs.core.windows.net/
-    token: str = Field(..., description="Token must be provided")
+    token: str = Field(..., description="Token must  be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
     @field_validator("account_url", mode="before")
