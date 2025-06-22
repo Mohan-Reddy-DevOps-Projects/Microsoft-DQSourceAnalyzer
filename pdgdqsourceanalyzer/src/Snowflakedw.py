@@ -17,7 +17,7 @@ class SnowflakeBaseModel(BaseModel):
         return SourceValidators.validate_snowflake_account(value)
     
     @field_validator("user","warehouse","database","snowflakeschema", mode="before")
-    def validate_url(cls, value):
+    def validate_identifier(cls, value):
         return SourceValidators.validate_snowflake_identifier(value)
     
     @field_validator("user", "password", "warehouse", "database", "snowflakeschema", mode="before")
@@ -65,7 +65,7 @@ class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
     table: str = Field(..., description="Table Name must be provided")
 
     @field_validator("table", mode="before")
-    def validate_url(cls, value):
+    def validate_table(cls, value):
         return SourceValidators.validate_snowflake_identifier(value)
 
     @field_validator("table", mode="before")

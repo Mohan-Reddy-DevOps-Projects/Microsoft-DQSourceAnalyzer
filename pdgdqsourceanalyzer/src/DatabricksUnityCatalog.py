@@ -16,11 +16,11 @@ class DatabricksBaseModel(BaseModel):
         return SourceValidators.validate_hostname(value)
     
     @field_validator("http_path", mode="before")
-    def validate_url(cls, value):
+    def validate_http_path(cls, value):
         return SourceValidators.validate_databricks_http_path(value)
 
     @field_validator("catalog","unitycatalogschema", mode="before")
-    def validate_url(cls, value):
+    def validate_identifier(cls, value):
         return SourceValidators.validate_unity_catalog(value)    
     
     @field_validator('http_path', 'access_token', 'catalog', 'unitycatalogschema', 'hostname')
