@@ -14,7 +14,15 @@ class DatabricksBaseModel(BaseModel):
     @field_validator("hostname", mode="before")
     def validate_url(cls, value):
         return SourceValidators.validate_hostname(value)
+    
+    @field_validator("http_path", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_databricks_http_path(value)
 
+    @field_validator("catalog","unitycatalogschema", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_unity_catalog(value)    
+    
     @field_validator('http_path', 'access_token', 'catalog', 'unitycatalogschema', 'hostname')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
@@ -59,6 +67,10 @@ class DatabricksUnityCatalogRequest(DatabricksBaseModel):
 class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
     table: str = Field(..., description="Table name must be provided")
 
+    @field_validator("catalog","table", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_unity_catalog(value) 
+
     @field_validator('table')
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
@@ -94,11 +106,8 @@ class DatabricksUnityCatalogSchemaRequest(DatabricksBaseModel):
 
             cursor.close()
             connection.close()
-
             schema = DQDataType().fnconvertToDQDataType(schema_list=schema_info, sourceType="delta")
-
             return schema
-
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
