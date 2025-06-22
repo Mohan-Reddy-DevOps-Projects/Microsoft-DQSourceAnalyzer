@@ -133,3 +133,27 @@ class SourceValidators:
         if value > 2_147_483_647:
             raise ValueError("Value exceeds 32-bit signed integer max limit")
         return value
+    @staticmethod
+    def validate_sql_identifier(value: str) -> str:
+        pattern = r"^[A-Za-z_][A-Za-z0-9_]{0,127}$"
+        if not re.fullmatch(pattern, value):
+            raise ValueError("Identifier must start with a letter or underscore, contain only letters, numbers, or underscores, and be at most 128 characters.")
+        return value
+    @staticmethod
+    def validate_databricks_http_path(value: str) -> str:
+        pattern = r"^/sql/(?P<version>[0-9]+\.[0-9]+)/warehouses/(?P<warehouse_id>[a-f0-9]{16})$"
+        if not re.fullmatch(pattern, value):
+            raise ValueError("Invalid http_path. Expected format: /sql/{version}/warehouses/{warehouse_id} ")
+        return value
+    @staticmethod
+    def validate_unity_catalog(value: str) -> str:
+        pattern = r"^[A-Za-z][A-Za-z0-9_]{0,254}$"
+        if not re.fullmatch(pattern, value):
+            raise ValueError(f"Invalid {value}.")
+        return value
+    @staticmethod
+    def validate_snowflake_identifier(value: str) -> str:
+        pattern = r"^[A-Za-z][A-Za-z0-9_]{0,254}$"
+        if not re.fullmatch(pattern, value):
+            raise ValueError(f"Invalid {value}.")
+        return value
