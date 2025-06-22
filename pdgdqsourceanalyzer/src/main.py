@@ -369,25 +369,25 @@ async def get_azure_sql_schema(request: Request, schema_request: AzureSQLSchemaR
         logger.exception("An unexpected error occurred.")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
-@app.post("/powerbi/testconnection")
-async def test_powerbi_connection(request: Request, connection_request: PowerBIRequest):
-    verify_client_certificate(request)
-    try:
-        result = PowerBIRequest.test_connection(
-            connection_request.tenantId,
-            connection_request.token,
-            connection_request.expires_on
-        )
-        if result["status"] == "error":
-            logger.error(f"PBI Test Connection failed: {result['message']}")
-            raise HTTPException(status_code=400, detail=result["message"])
-        return result
-    except HTTPException as e:
-        logger.error(f"HTTP exception occurred: {e.detail}")
-        raise e
-    except Exception as e:
-        logger.exception("An unexpected error occurred.")
-        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+#@app.post("/powerbi/testconnection")
+#async def test_powerbi_connection(request: Request, connection_request: PowerBIRequest):
+#    verify_client_certificate(request)
+#    try:
+#        result = PowerBIRequest.test_connection(
+#            connection_request.tenantId,
+#            connection_request.token,
+#            connection_request.expires_on
+#        )
+#        if result["status"] == "error":
+#            logger.error(f"PBI Test Connection failed: {result['message']}")
+#            raise HTTPException(status_code=400, detail=result["message"])
+#        return result
+#    except HTTPException as e:
+#        logger.error(f"HTTP exception occurred: {e.detail}")
+#        raise e
+#    except Exception as e:
+#        logger.exception("An unexpected error occurred.")
+#        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @app.post("/fabric/testconnection")
 async def test_fabric_connection(request: Request, connection_request: FabricRequest):

@@ -12,6 +12,7 @@ from fsspec import filesystem
 from adlfs import AzureBlobFileSystem
 from src.CustomTokenCredentialHelper import CustomTokenCredential
 from src.ConvertToDQDataType import DQDataType
+from src.validators import SourceValidators
 
 class FabricRequest(BaseModel):
     account_name: str = Field(..., description="Storage account name must be provided")
@@ -19,12 +20,19 @@ class FabricRequest(BaseModel):
     directory_path: str = Field(..., description="Directory Path must be provided")
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator("account_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_fabric_account_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def test_connection(account_name: str, file_system_name: str, directory_path: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
@@ -46,13 +54,19 @@ class FabricDeltaSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: int = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator("account_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_fabric_account_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -76,11 +90,17 @@ class FabricIcebergSchemaRequest(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator("account_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_fabric_account_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -114,11 +134,17 @@ class FabricParquetSchemaRequest(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator("account_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_fabric_account_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
         
     def get_table_schema(account_name, file_system_name, directory_path,token:str,expires_on:int):
         #credential = DefaultAzureCredential()
@@ -149,11 +175,17 @@ class FabricFormatDetector(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator("account_name", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_fabric_account_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def detect_format(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
