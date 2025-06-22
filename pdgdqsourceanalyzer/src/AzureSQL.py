@@ -17,6 +17,11 @@ class AzureSQLBaseModel(BaseModel):
     @field_validator("server", mode="before")
     def validate_url(cls, value):
         return SourceValidators.validate_server(value)
+    
+    @field_validator("database",mode="before")
+    def validate_sql_database(cls,value):
+        return SourceValidators.validate_sql_identifier(value)
+
 
     @field_validator('database', 'token')
     def check_not_empty(cls, value):
@@ -68,6 +73,10 @@ class AzureSQLRequest(AzureSQLBaseModel):
 class AzureSQLSchemaRequest(AzureSQLBaseModel):
     table: str = Field(..., description="Table Name must be provided")
     schema: str = Field(..., description="Schema Name must be provided")
+
+    @field_validator("table","schema",mode="before")
+    def validate_sql_table_schema(cls,value):
+        return SourceValidators.validate_sql_identifier(value)
 
     @field_validator('table','schema')
     def check_not_empty(cls, value):
