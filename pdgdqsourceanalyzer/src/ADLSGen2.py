@@ -1,3 +1,5 @@
+import re
+from urllib.parse import urlparse
 from pydantic import BaseModel, Field, field_validator
 from azure.identity import DefaultAzureCredential, ClientSecretCredential
 from azure.storage.filedatalake import DataLakeServiceClient
@@ -14,6 +16,7 @@ import duckdb
 from fsspec import filesystem
 from src.CustomTokenCredentialHelper import CustomTokenCredential
 from src.ConvertToDQDataType import DQDataType
+from src.validators import SourceValidators
 
 class ADLSGen2Request(BaseModel):
     account_url: str = Field(..., description="Storage account URL name must be provided")
@@ -22,39 +25,20 @@ class ADLSGen2Request(BaseModel):
     #https://synapseadlszonedeveus01.z39.blob.storage.azure.net/
     #https://adlsdeveus02.blob.core.windows.net/
     #https://adlsdeveus02.dfs.core.windows.net/
-    token: str = Field(..., description="Token must be provided")
+    token: str = Field(..., description="Token must  be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")
 
-    @field_validator('account_url')
-    def validate_account_url(cls, value):
-        """Ensure account_url has a valid Azure Storage domain."""
-        
-        value = value.strip() # Remove leading/trailing spaces
+    @field_validator("account_url", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_account_url(value)
 
-        # Remove trailing slash `/` if it exists
-        if value.endswith("/"):
-            value = value[:-1]
-
-        valid_suffixes = (
-            ".dfs.storage.azure.net",
-            ".blob.storage.azure.net",
-            ".blob.core.windows.net",
-            ".dfs.core.windows.net"
-        )
-
-        if not value.endswith(valid_suffixes):
-            raise ValueError(
-                "Invalid account_url. Must end with one of: "
-                "'.dfs.storage.azure.net/', '.blob.storage.azure.net/', "
-                "'.blob.core.windows.net/', '.dfs.core.windows.net/'"
-            )
-        return value
+    @field_validator('account_url','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
     
-    @field_validator('account_url', 'token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def test_connection(account_url: str, token:str,expires_on:int) -> Dict[str, str]:
         try:
@@ -75,13 +59,23 @@ class ADLSGen2DeltaSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: int = Field(..., description="Token Expiration must be provided")    
+    expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator("account_name", mode="before")
+    def validate_account_name(cls, value):
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_container_name(cls, value):
+        return SourceValidators.validate_container_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -105,13 +99,24 @@ class ADLSGen2IcebergSchemaRequest(BaseModel):
     file_system_name: str = Field(..., description="File System Name must be provided") #mycontainer
     directory_path: str = Field(..., description="Directory Path must be provided")  #"someDeltapath/mytable"
     token: str = Field(..., description="Token must be provided")
-    expires_on: int = Field(..., description="Token Expiration must be provided")    
-    
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    expires_on: int = Field(..., description="Token Expiration must be provided")
+
+    @field_validator("account_name", mode="before")
+    def validate_account_name(cls, value):
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_container_name(cls, value):
+        return SourceValidators.validate_container_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def get_table_schema(account_name: str, file_system_name: str, directory_path: str,token:str,expires_on:int) -> Dict[str, List[Dict[str, str]]]:
         try:
@@ -143,12 +148,23 @@ class ADLSGen2ParquetSchemaRequest(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
-        
+    @field_validator("account_name", mode="before")
+    def validate_account_name(cls, value):
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_container_name(cls, value):
+        return SourceValidators.validate_container_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
+
     def get_table_schema(account_name, file_system_name, directory_path,token:str,expires_on:int):
         #credential = DefaultAzureCredential()
         credential = CustomTokenCredential(token=token,expires_on=expires_on)
@@ -178,11 +194,22 @@ class ADLSGen2FormatDetector(BaseModel):
     token: str = Field(..., description="Token must be provided")
     expires_on: int = Field(..., description="Token Expiration must be provided")    
     
-    @field_validator('account_name', 'file_system_name', 'directory_path','token','expires_on')
-    def field_not_empty(cls, value):
-        if not value:
-            raise ValueError('Field cannot be empty')
-        return value
+    @field_validator("account_name", mode="before")
+    def validate_account_name(cls, value):
+        return SourceValidators.validate_storage_account_name(value)
+
+    @field_validator("file_system_name", mode="before")
+    def validate_container_name(cls, value):
+        return SourceValidators.validate_container_name(value)
+
+    @field_validator('account_name', 'file_system_name', 'directory_path','token')
+    def check_not_empty(cls, value):
+        return SourceValidators.not_empty(value)
+    
+    @field_validator('expires_on')
+    def check_expires_on(cls,value):
+        return SourceValidators.validate_expires_on(value)
+
 
     def detect_format(account_name, file_system_name, directory_path,token:str,expires_on:int) -> str:
         """
