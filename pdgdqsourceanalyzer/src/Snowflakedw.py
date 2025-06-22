@@ -16,6 +16,10 @@ class SnowflakeBaseModel(BaseModel):
     def validate_url(cls, value):
         return SourceValidators.validate_snowflake_account(value)
     
+    @field_validator("user","warehouse","database","snowflakeschema", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_snowflake_identifier(value)
+    
     @field_validator("user", "password", "warehouse", "database", "snowflakeschema", mode="before")
     def check_not_empty(cls, value):
         return SourceValidators.not_empty(value)
@@ -59,6 +63,10 @@ class SnowflakeDWRequest(SnowflakeBaseModel):
 class SnowflakeDWSchemaRequest(SnowflakeBaseModel):
     """Handles Snowflake table schema retrieval."""
     table: str = Field(..., description="Table Name must be provided")
+
+    @field_validator("table", mode="before")
+    def validate_url(cls, value):
+        return SourceValidators.validate_snowflake_identifier(value)
 
     @field_validator("table", mode="before")
     def check_not_empty(cls, value):
