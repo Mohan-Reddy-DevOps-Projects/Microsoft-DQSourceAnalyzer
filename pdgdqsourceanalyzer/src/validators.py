@@ -52,8 +52,8 @@ class SourceValidators:
             value = value.strip()
         else:
             raise ValueError("Invalid account_name. Value must be a string.")
-        if value != "onelake":
-            raise ValueError("Invalid account_name. Only lowercase 'onelake' is allowed.")
+        if value.lower() != "onelake":
+            raise ValueError("Invalid account_name. Only 'onelake' is allowed.")
         return value
     @staticmethod
     def validate_server(value):
